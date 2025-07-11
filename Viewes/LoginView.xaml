@@ -11,10 +11,10 @@
     <Grid Background="White">
         <Label HorizontalContentAlignment="Center" Content="АВТОРИЗАЦИЯ" HorizontalAlignment="Center" Margin="0,150,0,0" FontSize="36" FontWeight="Bold" VerticalAlignment="Top" Width="344"/>
         <Label Content="Логин:" HorizontalAlignment="Center" Margin="0,264,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <TextBox HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="244" Height="32" FontSize="18" Margin="0,300,0,0"/>
+        <TextBox Text="{Binding Login}" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="244" Height="32" FontSize="18" Margin="0,300,0,0"/>
         <Label Content="Пароль:" HorizontalAlignment="Center" Margin="0,343,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <PasswordBox HorizontalAlignment="Center" Margin="0,379,0,0" VerticalAlignment="Top" Width="244" Height="31" FontSize="18"/>
-        <Button Content="ВОЙТИ" HorizontalAlignment="Center" Width="244" Height="52" FontSize="16" VerticalAlignment="Top" Margin="0,440,0,0"/>
+        <PasswordBox x:Name="PasswordInput" PasswordChanged="PasswordBox_PasswordChanged" HorizontalAlignment="Center" Margin="0,379,0,0" VerticalAlignment="Top" Width="244" Height="31" FontSize="18"/>
+        <Button Command="{Binding EnterEvent}" Content="ВОЙТИ" HorizontalAlignment="Center" Width="244" Height="52" FontSize="16" VerticalAlignment="Top" Margin="0,440,0,0"/>
         <Rectangle VerticalAlignment="Top" Height="98.8" Fill="#FF194F9E" Stroke="#FF568FE2"/>
         <TextBlock TextWrapping="Wrap" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="White" Margin="0,23,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ"/><LineBreak/><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ"/></TextBlock>
         <Rectangle Height="80" Width="80" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0">

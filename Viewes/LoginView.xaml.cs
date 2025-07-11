@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FireTestingApp_net8.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,16 @@ namespace FireTestingApp_net8.Viewes
         public LoginView()
         {
             InitializeComponent();
+
+            DataContext = new LoginViewModel();
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if(DataContext is LoginViewModel vm)
+            {
+                vm.Password = PasswordInput.Password;
+            }
         }
     }
 }
