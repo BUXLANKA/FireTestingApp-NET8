@@ -4,11 +4,16 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
+      xmlns:vm="clr-namespace:FireTestingApp_net8.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
       Title="InstructorView">
 
-    <Grid Background="White">
+    <Page.DataContext>
+        <vm:InstructorViewModel/>
+    </Page.DataContext>
+
+        <Grid Background="White">
         <TabControl Margin="0,104,0,0" FontSize="14">
 
 
@@ -16,16 +21,16 @@
             <TabItem Header="Результаты тестирования">
                 <Grid Background="#FFE5E5E5">
                     <Button Content="ВЫЙТИ" HorizontalAlignment="Right" Margin="0,303,10,0" VerticalAlignment="Top" Width="278" Height="40"/>
-                    <TextBlock x:Name="HelloTB" HorizontalAlignment="Right" Margin="0,10,10,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="278" Height="33" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding WelcomeMessage}" HorizontalAlignment="Right" Margin="0,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" Height="33" TextAlignment="Center"/>
 
-                    <DataGrid x:Name="DGUsersResults" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True" Margin="0,0,303,0" FontSize="14">
+                    <DataGrid ItemsSource="{Binding ResultsTable}" AutoGenerateColumns="false" ColumnWidth="auto" IsReadOnly="True" Margin="0,0,303,0" FontSize="14">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Имя" Binding="{Binding User.Firstname}"/>
                             <DataGridTextColumn Header="Фамилия" Binding="{Binding User.Lastname}"/>
                             <DataGridTextColumn Header="Отчество" Binding="{Binding User.Surname}"/>
-                            <DataGridTextColumn Header="Дата сдачи" Binding="{Binding TestDate, StringFormat=dd.MM.yyy | HH:MM}"/>
-                            <DataGridTextColumn Header="Баллы" Binding="{Binding UserScore}"/>
-                            <DataGridTextColumn Header="Статус экзамена" Binding="{Binding TestStatus.Statusname}"/>
+                            <DataGridTextColumn Header="Дата сдачи" Binding="{Binding Testdate, StringFormat=dd.MM.yyy | HH:MM}"/>
+                            <DataGridTextColumn Header="Баллы" Binding="{Binding Userscore}"/>
+                            <DataGridTextColumn Header="Статус экзамена" Binding="{Binding Status.Statusname}"/>
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -43,21 +48,21 @@
             <TabItem Header="Пользовательские ответы">
                 <Grid Background="#FFE5E5E5">
 
-                    <DataGrid x:Name="DGUserAnswers" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True">
+                    <DataGrid ItemsSource="{Binding UserAnswerTable}" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Имя" Binding="{Binding User.Firstname}"/>
                             <DataGridTextColumn Header="Фамилия" Binding="{Binding User.Lastname}"/>
                             <DataGridTextColumn Header="Отчество" Binding="{Binding User.Surname}"/>
-                            <DataGridTextColumn Header="Дата" Binding="{Binding AnswerDate, StringFormat=dd.MM.yyy | HH:MM}"/>
-                            <DataGridTextColumn Header="Вопрос" Binding="{Binding Question.QuestionText}">
+                            <DataGridTextColumn Header="Дата" Binding="{Binding Answerdate, StringFormat=dd.MM.yyy | HH:MM}"/>
+                            <DataGridTextColumn Header="Вопрос" Binding="{Binding Question.Questiontext}">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="TextWrapping" Value="Wrap"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Header="Ответ" Binding="{Binding Answer.AnswerText}"/>
-                            <DataGridTextColumn Header="Правильность" Binding="{Binding IsCorrect}"/>
+                            <DataGridTextColumn Header="Ответ" Binding="{Binding Answer.Answertext}"/>
+                            <DataGridTextColumn Header="Правильность" Binding="{Binding Isorrect}"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -66,13 +71,13 @@
 
             <TabItem x:Name="DGTickets" Header="Тикеты">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid x:Name="DGUserTickets" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True" FontSize="14">
+                    <DataGrid ItemsSource="{Binding TicketTable}" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True" FontSize="14">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding User.Firstname}"/>
-                            <DataGridTextColumn Header="Фамилия" Binding="{Binding User.Lastname}"/>
-                            <DataGridTextColumn Header="Отчество" Binding="{Binding User.Surname}"/>
-                            <DataGridTextColumn Header="Дата" Binding="{Binding TicketDate, StringFormat=dd.MM.yyy | HH:MM}"/>
-                            <DataGridTextColumn Header="Описание" Binding="{Binding TicketText}"/>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding Fromuser.Firstname}"/>
+                            <DataGridTextColumn Header="Фамилия" Binding="{Binding Fromuser.Lastname}"/>
+                            <DataGridTextColumn Header="Отчество" Binding="{Binding Fromuser.Surname}"/>
+                            <DataGridTextColumn Header="Дата" Binding="{Binding Ticketdate, StringFormat=dd.MM.yyy | HH:MM}"/>
+                            <DataGridTextColumn Header="Описание" Binding="{Binding Tickettext}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
