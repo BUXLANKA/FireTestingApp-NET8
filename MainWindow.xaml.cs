@@ -37,7 +37,7 @@ namespace FireTestingApp_net8
 
             Navigation.Register<InstructorViewModel>(() =>
             {
-                var vm = new InstructorViewModel();
+                var vm = new InstructorViewModel(Navigation);
                 var page = new InstructorView();
                 page.DataContext = vm;
                 return page;
