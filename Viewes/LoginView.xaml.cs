@@ -24,8 +24,6 @@ namespace FireTestingApp_net8.Viewes
         public LoginView()
         {
             InitializeComponent();
-
-            DataContext = new LoginViewModel();
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)

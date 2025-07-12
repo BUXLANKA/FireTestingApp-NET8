@@ -4,9 +4,14 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
+      xmlns:vm="clr-namespace:FireTestingApp_net8.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
       Title="LoginView">
+
+    <Page.DataContext>
+        <vm:LoginViewModel/>
+    </Page.DataContext>
 
     <Grid Background="White">
         <Label HorizontalContentAlignment="Center" Content="АВТОРИЗАЦИЯ" HorizontalAlignment="Center" Margin="0,150,0,0" FontSize="36" FontWeight="Bold" VerticalAlignment="Top" Width="344"/>
