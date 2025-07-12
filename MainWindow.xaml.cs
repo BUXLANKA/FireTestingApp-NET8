@@ -19,6 +19,9 @@ namespace FireTestingApp_net8
         public MainWindow()
         {
             InitializeComponent();
+
+            this.MinHeight = 640;
+            this.MinWidth = 960;
         }
     }
 }
