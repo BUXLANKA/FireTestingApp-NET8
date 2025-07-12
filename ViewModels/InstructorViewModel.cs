@@ -26,6 +26,12 @@ namespace FireTestingApp_net8.ViewModels
         public ObservableCollection<Useranswer> UserAnswerTable { get; set; }
         public ObservableCollection<Ticket> TicketTable { get; set; }
 
+        public RelayCommand ExitEvent { get; }
+        private void Exit()
+        {
+
+        }
+
         public InstructorViewModel()
         {
             WelcomeMessage = $"Добро пожаловать!";

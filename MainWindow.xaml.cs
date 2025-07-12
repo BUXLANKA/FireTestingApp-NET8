@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using FireTestingApp_net8.Services;
+using FireTestingApp_net8.Viewes;
+using FireTestingApp_net8.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,9 +19,31 @@ namespace FireTestingApp_net8
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static PageService? Navigation;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            Navigation = new PageService(MainFrame);
+
+            Navigation.Register<LoginViewModel>(() =>
+            {
+                var vm = new LoginViewModel(Navigation);   
+                var page = new LoginView();                
+                page.DataContext = vm;                     
+                return page;
+            });
+
+            Navigation.Register<InstructorViewModel>(() =>
+            {
+                var vm = new InstructorViewModel();
+                var page = new InstructorView();
+                page.DataContext = vm;
+                return page;
+            });
+
+            Navigation.NavigateTo<LoginViewModel>();
 
             this.MinHeight = 640;
             this.MinWidth = 960;

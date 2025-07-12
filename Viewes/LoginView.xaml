@@ -9,9 +9,9 @@
       d:DesignHeight="640" d:DesignWidth="960"
       Title="LoginView">
 
-    <Page.DataContext>
+    <!--<Page.DataContext>
         <vm:LoginViewModel/>
-    </Page.DataContext>
+    </Page.DataContext>-->
 
     <Grid Background="White">
         <Label HorizontalContentAlignment="Center" Content="АВТОРИЗАЦИЯ" HorizontalAlignment="Center" Margin="0,150,0,0" FontSize="36" FontWeight="Bold" VerticalAlignment="Top" Width="344"/>
