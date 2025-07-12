@@ -17,21 +17,13 @@ using System.Windows.Shapes;
 namespace FireTestingApp_net8.Viewes
 {
     /// <summary>
-    /// Логика взаимодействия для LoginView.xaml
+    /// Логика взаимодействия для InstructorView.xaml
     /// </summary>
-    public partial class LoginView : Page
+    public partial class InstructorView : Page
     {
-        public LoginView()
+        public InstructorView()
         {
             InitializeComponent();
-        }
-
-        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if(DataContext is LoginViewModel vm)
-            {
-                vm.Password = PasswordInput.Password;
-            }
         }
     }
 }
