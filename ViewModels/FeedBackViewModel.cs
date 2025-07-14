@@ -1,5 +1,6 @@
 ﻿using FireTestingApp.Models;
 using FireTestingApp_net8.Models.Shema;
+using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,13 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(FeedBackMessage));
             }
         }
-        public FeedBackViewModel()
+
+        private readonly INavigationService _nav;
+        public FeedBackViewModel(INavigationService nav)
         {
             SendMessageEvent = new RelayCommand(SendMessage);
             GoBackEvent = new RelayCommand(GoBack);
+            _nav = nav;
         }
 
         public RelayCommand SendMessageEvent { get; }
@@ -41,10 +45,18 @@ namespace FireTestingApp_net8.ViewModels
 
                 try
                 {
-                    using(var Context = new AppDbContext())
+                    using (var Context = new AppDbContext())
                     {
                         Context.Tickets.Add(TicketTable);
                         Context.SaveChanges();
+
+                        MessageBox.Show(
+                        "Отзыв успешно отправлен!",
+                        "Спасибо",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+
+                        //go back
                     }
                 }
                 catch (Exception ex)
@@ -53,12 +65,21 @@ namespace FireTestingApp_net8.ViewModels
                     throw;
                 }
             }
+            else
+            {
+                MessageBox.Show(
+                    "Нельзя отправить пустое сообщение",
+                    "А что исправлять то?",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
         }
 
         public RelayCommand GoBackEvent { get; }
         private void GoBack()
         {
-
+            //_nav.NavigateTo<UserResultsView>();
         }
     }
 }

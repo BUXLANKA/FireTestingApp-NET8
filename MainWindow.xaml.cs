@@ -46,7 +46,7 @@ namespace FireTestingApp_net8
 
             Navigation.Register<FeedBackViewModel>(() =>
             {
-                var vm = new FeedBackViewModel();
+                var vm = new FeedBackViewModel(Navigation);
                 var page = new FeedBackView();
                 page.DataContext = vm;
                 return page;
