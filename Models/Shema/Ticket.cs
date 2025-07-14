@@ -19,7 +19,7 @@ public partial class Ticket
     [Column("ticketdate", TypeName = "timestamp without time zone")]
     public DateTime Ticketdate { get; set; }
 
-    [Column("tickettext")]
+    [Column("tickettext", TypeName = "character varying")]
     public string Tickettext { get; set; } = null!;
 
     [ForeignKey("Fromuserid")]

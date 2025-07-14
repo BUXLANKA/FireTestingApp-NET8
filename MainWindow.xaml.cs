@@ -1,6 +1,7 @@
 ﻿using FireTestingApp_net8.Services;
 using FireTestingApp_net8.Viewes;
 using FireTestingApp_net8.ViewModels;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -39,6 +40,14 @@ namespace FireTestingApp_net8
             {
                 var vm = new InstructorViewModel(Navigation);
                 var page = new InstructorView();
+                page.DataContext = vm;
+                return page;
+            });
+
+            Navigation.Register<FeedBackViewModel>(() =>
+            {
+                var vm = new FeedBackViewModel(Navigation);
+                var page = new FeedBackView();
                 page.DataContext = vm;
                 return page;
             });
