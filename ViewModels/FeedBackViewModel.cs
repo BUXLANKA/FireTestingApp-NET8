@@ -56,7 +56,7 @@ namespace FireTestingApp_net8.ViewModels
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
 
-                        //go back
+                        //_nav.NavigateTo<UserResultsView>();
                     }
                 }
                 catch (Exception ex)
