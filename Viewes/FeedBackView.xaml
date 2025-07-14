@@ -1,0 +1,26 @@
+﻿<Page x:Class="FireTestingApp_net8.Viewes.FeedBackView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
+      mc:Ignorable="d" 
+      d:DesignHeight="640" d:DesignWidth="960"
+      Title="FeedBackView">
+
+    <Grid Background="White">
+        <Rectangle VerticalAlignment="Top" Height="98.8" Fill="#FF194F9E" Stroke="#FF568FE2"/>
+        <TextBlock TextWrapping="Wrap" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="White" Margin="0,23,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ"/><LineBreak/><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ"/></TextBlock>
+        <Rectangle Height="80" Width="80" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Label HorizontalContentAlignment="Center" Content="Форма обратной связи" FontSize="36" FontWeight="Bold" VerticalAlignment="Top" Margin="0,115,0,0"/>
+        <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,184,10,0" Height="158" FontSize="20"><Run Text="Если вы столкнулись с некорректной работой приложения"/><Run Language="ru-ru" Text=", не согласны с результатами теста"/><Run Text=" или обнаружили иные недочёты"/><Run Text=" (например, неправильная формулировка вопроса или заведомо верный ответ оказался неверным)"/><Run Text=", пожалуйста, сообщите нам об этом, заполнив форму ниже"/><Run Text=", описав суть проблемы максимально подробно."/><LineBreak/><Run/><LineBreak/><Run Text="Мы рассмотрим ваше обращение в кратчайшие сроки"/><Run Text=" и "/><Run Text="отправим"/><Run Text=" ответ"/><Run Text="."/></TextBlock>
+        <TextBox Text="{Binding FeedBackMessage}" TextWrapping="Wrap" Margin="10,349,10,138" FontSize="16"/>
+        <Button Command="{Binding SendMessageEvent}" Content="Отправить" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="406" Height="52" FontSize="16" Margin="0,0,0,36"/>
+        <Button Command="{Binding GoBackEvent}" Content="&lt; Назад" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="22,0,0,46" Height="33" Width="89" FontSize="16"/>
+
+    </Grid>
+</Page>
