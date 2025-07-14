@@ -1,4 +1,5 @@
 ﻿using FireTestingApp_net8.Models.Shema;
+using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,11 +27,14 @@ namespace FireTestingApp_net8.ViewModels
         public ObservableCollection<Useranswer> UserAnswerTable { get; set; }
         public ObservableCollection<Ticket> TicketTable { get; set; }
 
-        public InstructorViewModel()
+        public InstructorViewModel(INavigationService nav)
         {
             WelcomeMessage = $"Добро пожаловать!";
 
-            using(var Context = new AppDbContext())
+            ExitEvent = new RelayCommand(Exit);
+            _nav = nav;
+
+            using (var Context = new AppDbContext())
             {
                 var ResultsList = Context.Results
                     .Include(r => r.User)
@@ -50,6 +54,13 @@ namespace FireTestingApp_net8.ViewModels
                     .ToList();
                 TicketTable = new ObservableCollection<Ticket>(TicketList);
             }
+        }
+
+        public RelayCommand ExitEvent { get; }
+        private readonly INavigationService? _nav;
+        private void Exit()
+        {
+            _nav.NavigateTo<LoginViewModel>();
         }
     }
 }

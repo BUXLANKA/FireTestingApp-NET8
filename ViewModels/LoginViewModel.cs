@@ -1,6 +1,8 @@
 ﻿using FireTestingApp.Models;
 using FireTestingApp_net8.Models.Shema;
+using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,9 +39,12 @@ namespace FireTestingApp_net8.ViewModels
 
         public RelayCommand EnterEvent { get; }
 
-        public LoginViewModel()
+        private readonly INavigationService _nav;
+
+        public LoginViewModel(INavigationService nav)
         {
             EnterEvent = new RelayCommand(EnterAccount);
+            _nav = nav;
         }
 
         private void EnterAccount()
@@ -63,6 +68,7 @@ namespace FireTestingApp_net8.ViewModels
                         switch (Session.RoleID)
                         {
                             case 1:
+                                _nav.NavigateTo<InstructorViewModel>();
                                 //NavigationService.Navigate(new InstructorPage());
                                 break;
 
@@ -103,13 +109,14 @@ namespace FireTestingApp_net8.ViewModels
                             MessageBoxImage.Error);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     MessageBox.Show(
                         "Не удаётся создать соединение с базой данный. Обратитесь к администратору.",
                         "Ошибка сервера",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
+                    MessageBox.Show(ex.Message);
                     return;
                     throw;
                 }
