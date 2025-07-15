@@ -60,6 +60,14 @@ namespace FireTestingApp_net8
                 return page;
             });
 
+            Navigation.Register<MainTestViewModel>(() =>
+            {
+                var vm = new MainTestViewModel(Navigation);
+                var page = new MainTestView();
+                page.DataContext = vm;
+                return page;
+            });
+
             Navigation.NavigateTo<LoginViewModel>();
 
             this.MinHeight = 640;
