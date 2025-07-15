@@ -56,7 +56,7 @@ namespace FireTestingApp_net8.ViewModels
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
 
-                        //_nav.NavigateTo<UserResultsView>();
+                        _nav.NavigateTo<ResultsViewModel>();
                     }
                 }
                 catch (Exception ex)
@@ -79,7 +79,7 @@ namespace FireTestingApp_net8.ViewModels
         public RelayCommand GoBackEvent { get; }
         private void GoBack()
         {
-            //_nav.NavigateTo<UserResultsView>();
+            _nav.NavigateTo<ResultsViewModel>();
         }
     }
 }

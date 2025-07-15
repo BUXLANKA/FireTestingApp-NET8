@@ -10,8 +10,8 @@
 
     <Grid Background="White">
         <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Top" Margin="0,141,0,0"><Run Language="ru-ru" Text="РЕЗУЛЬТАТЫ ТЕСТА"/></TextBlock>
-        <TextBlock x:Name="ResultLB" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Width="507"/>
-        <Button x:Name="FeedBackFormButton" Click="FeedBackFormButton_Click" Content="Форма обратной связи" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="43" Width="344" Margin="0,0,0,45" FontSize="16"/>
+        <TextBlock Text="{Binding ResultMessage}" x:Name="ResultLB" TextWrapping="Wrap" TextAlignment="Center" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Width="507"/>
+        <Button Command="{Binding OpenFeedbackPageEvent}" x:Name="FeedBackFormButton" Content="Форма обратной связи" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="43" Width="344" Margin="0,0,0,45" FontSize="16"/>
         <Rectangle VerticalAlignment="Top" Height="98.8" Fill="#FF194F9E" Stroke="#FF568FE2"/>
         <TextBlock TextWrapping="Wrap" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="White" Margin="0,23,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ"/><LineBreak/><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ"/></TextBlock>
         <Rectangle Height="80" Width="80" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0">
@@ -19,7 +19,7 @@
                 <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
             </Rectangle.Fill>
         </Rectangle>
-        <Button Click="ExitButton_Click" Content="Завершить и выйти" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="43" Width="344" Margin="0,0,0,120" FontSize="16"/>
+        <Button Command="{Binding ContinueAndExitEvent}" Content="Завершить и выйти" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="43" Width="344" Margin="0,0,0,120" FontSize="16"/>
 
     </Grid>
 </Page>

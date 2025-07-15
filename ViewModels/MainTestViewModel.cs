@@ -172,7 +172,7 @@ namespace FireTestingApp_net8.ViewModels
                     MessageBox.Show($"Ошибка при сохранении результата: {ex.Message}");
                     throw;
                 }
-                _nav.NavigateTo<LoginViewModel>(); // todo end page need
+                _nav.NavigateTo<ResultsViewModel>();
             }
         }
 
