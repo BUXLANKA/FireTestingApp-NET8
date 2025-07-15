@@ -44,7 +44,7 @@
             </Rectangle.Fill>
         </Rectangle>
         <TextBlock Text="{Binding QuestionIndex}" x:Name="QuestionIndexTB" TextWrapping="Wrap" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="#FF2575EA" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,110,0,0" Width="127"/>
-        <Label x:Name="TimerLabel" Content="Label" HorizontalContentAlignment="Right" VerticalContentAlignment="Stretch" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,110,10,0" Width="164" FontSize="14"/>
+        <Label Content="{Binding TimeLeft}" x:Name="TimerLabel" HorizontalContentAlignment="Right" VerticalContentAlignment="Stretch" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,110,10,0" Width="164" FontSize="14"/>
 
     </Grid>
 </Page>

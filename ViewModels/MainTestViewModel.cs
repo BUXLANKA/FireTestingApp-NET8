@@ -10,12 +10,25 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents.DocumentStructures;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 using static System.Formats.Asn1.AsnWriter;
 
 namespace FireTestingApp_net8.ViewModels
 {
     public class MainTestViewModel : BaseViewModel
     {
+        ITimerService Timer = new ITimerService();
+        private string? _timeLeft;
+        public string? TimeLeft
+        {
+            get => _timeLeft;
+            set
+            {
+                _timeLeft = value;
+                OnPropertyChanged(nameof(TimeLeft));
+            }
+        }
+
         private readonly INavigationService _nav;
 
         private int _currentQuestionIndex { get; set; }
@@ -30,8 +43,8 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
-        private string _questionText;
-        public string QuestionText
+        private string? _questionText;
+        public string? QuestionText
         {
             get => _questionText;
             set
@@ -41,8 +54,8 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
-        private string _questionIndex;
-        public string QuestionIndex
+        private string? _questionIndex;
+        public string? QuestionIndex
         {
             get => _questionIndex;
             set
@@ -61,7 +74,12 @@ namespace FireTestingApp_net8.ViewModels
         {
             _nav = nav;
 
-            using(var Context = new AppDbContext())
+            Timer.SetMinutes(1);
+            Timer.TimeUpdated += Timer_TimeUpdated;
+            TimeLeft = Timer.GetTimeLeft().ToString(@"mm\:ss");
+            Timer.Start();
+
+            using (var Context = new AppDbContext())
             {
                 var QuestionFromDB = Context.Questions
                     .Include(q => q.Answers)
@@ -81,7 +99,7 @@ namespace FireTestingApp_net8.ViewModels
         {
             SelectedAnswerIndex = null;
 
-            var Question = Questions[CurrentQuestionIndex + 1];
+            var Question = Questions[CurrentQuestionIndex];
             QuestionText = Question.Questiontext;
             QuestionIndex = $"Вопрос №{CurrentQuestionIndex + 1}";
 
@@ -123,7 +141,7 @@ namespace FireTestingApp_net8.ViewModels
             }
             else
             {
-                //Timer.Stop();
+                Timer.Stop();
 
                 Session.UserScore = Score;
 
@@ -195,5 +213,43 @@ namespace FireTestingApp_net8.ViewModels
                 throw;
             }
         }
+
+        private void Timer_TimeUpdated(object? sender, EventArgs e)
+        {
+            TimeLeft = Timer.GetTimeLeft().ToString(@"mm\:ss");
+
+            if (Timer.GetTimeLeft().TotalSeconds == 0)
+            {
+                Timer.Stop();
+                MessageBox.Show(
+                    "Тест закрыт по истечению времени прохождения.",
+                    "Кажется, вы не успели...",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                // добавление в базу данных данных о закрытии теста
+                CurrentResults.Userid = Session.UserID;
+                CurrentResults.Testdate = DateTime.Now;
+                CurrentResults.Userscore = 0;
+                CurrentResults.Statusid = 2;
+
+                try
+                {
+                    using(var Context = new AppDbContext())
+                    {
+                        Context.Results.Add(CurrentResults);
+                        Context.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при сохранении результата: {ex.Message}");
+                    throw;
+                }
+                Timer.TimeUpdated -= Timer_TimeUpdated;
+                _nav.NavigateTo<LoginViewModel>();
+            }
+        }
+
     }
 }
