@@ -32,7 +32,7 @@ namespace FireTestingApp_net8.ViewModels
         // constructor
         public MainTestViewModel(INavigationService navigation)
         {
-            Timer.SetMinutes(1);
+            Timer.SetMinutes(5);
             Timer.TimeUpdated += Timer_TimeUpdated;
             TimeLeft = Timer.GetTimeLeft().ToString(@"mm\:ss");
             Timer.Start();
