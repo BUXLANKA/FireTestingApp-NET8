@@ -16,7 +16,7 @@ namespace FireTestingApp_net8.ViewModels
         private int _currentQuestionIndex;
         private int? _selectedAnswerIndex;
 
-        private Result CurrentResults = new();
+        private Result _сurrentResults = new();
 
         private readonly INavigationService _navigation;
 
@@ -142,17 +142,17 @@ namespace FireTestingApp_net8.ViewModels
 
                 Session.UserScore = Score;
 
-                CurrentResults.Userid = Session.UserID;
-                CurrentResults.Testdate = DateTime.Now;
-                CurrentResults.Userscore = Session.UserScore;
+                _сurrentResults.Userid = Session.UserID;
+                _сurrentResults.Testdate = DateTime.Now;
+                _сurrentResults.Userscore = Session.UserScore;
 
                 if (Score >= 8)
                 {
-                    CurrentResults.Statusid = 1;
+                    _сurrentResults.Statusid = 1;
                 }
                 else
                 {
-                    CurrentResults.Statusid = 2;
+                    _сurrentResults.Statusid = 2;
                 }
 
 
@@ -160,7 +160,7 @@ namespace FireTestingApp_net8.ViewModels
                 {
                     using (var Context = new AppDbContext())
                     {
-                        Context.Results.Add(CurrentResults);
+                        Context.Results.Add(_сurrentResults);
                         Context.SaveChanges();
                     }
                 }
@@ -238,16 +238,16 @@ namespace FireTestingApp_net8.ViewModels
                     MessageBoxImage.Error);
 
                 // добавление в базу данных данных о закрытии теста
-                CurrentResults.Userid = Session.UserID;
-                CurrentResults.Testdate = DateTime.Now;
-                CurrentResults.Userscore = 0;
-                CurrentResults.Statusid = 2;
+                _сurrentResults.Userid = Session.UserID;
+                _сurrentResults.Testdate = DateTime.Now;
+                _сurrentResults.Userscore = 0;
+                _сurrentResults.Statusid = 2;
 
                 try
                 {
                     using (var Context = new AppDbContext())
                     {
-                        Context.Results.Add(CurrentResults);
+                        Context.Results.Add(_сurrentResults);
                         Context.SaveChanges();
                     }
                 }
