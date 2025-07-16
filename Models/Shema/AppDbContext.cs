@@ -80,8 +80,6 @@ public partial class AppDbContext : DbContext
         {
             entity.HasKey(e => e.Ticketid).HasName("pk__tickets__712cc62741682771");
 
-            entity.Property(e => e.Ticketid).ValueGeneratedNever();
-
             entity.HasOne(d => d.Fromuser).WithMany(p => p.Tickets)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk__tickets__fromuse__4d94879b");

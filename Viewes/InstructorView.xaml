@@ -7,18 +7,14 @@
       xmlns:vm="clr-namespace:FireTestingApp_net8.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
-      Title="InstructorView">
+      Title="Админ-панель">
 
-    <Page.DataContext>
-        <vm:InstructorViewModel/>
-    </Page.DataContext>
-
-        <Grid Background="White">
+    <Grid Background="White">
         <TabControl Margin="0,104,0,0" FontSize="14">
 
             <TabItem Header="Результаты тестирования">
                 <Grid Background="#FFE5E5E5">
-                    <Button Content="ВЫЙТИ" HorizontalAlignment="Right" Margin="0,303,10,0" VerticalAlignment="Top" Width="278" Height="40"/>
+                    <Button Command="{Binding ExitEvent}" Content="ВЫЙТИ" HorizontalAlignment="Right" Margin="0,303,10,0" VerticalAlignment="Top" Width="278" Height="40"/>
                     <TextBlock Text="{Binding WelcomeMessage}" HorizontalAlignment="Right" Margin="0,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" Height="33" TextAlignment="Center"/>
 
                     <DataGrid ItemsSource="{Binding ResultsTable}" AutoGenerateColumns="false" ColumnWidth="auto" IsReadOnly="True" Margin="0,0,303,0" FontSize="14">
@@ -32,7 +28,9 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="Редактировать"/>
+                                        <Button Content="Редактировать"
+                                        Command="{Binding DataContext.EditResultEvent, RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -89,6 +87,5 @@
                 <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
             </Rectangle.Fill>
         </Rectangle>
-
     </Grid>
 </Page>
