@@ -68,7 +68,7 @@ namespace FireTestingApp_net8.ViewModels
                         switch (Session.RoleID)
                         {
                             case 1:
-                                _nav.NavigateTo<MainTestViewModel>();
+                                _nav.NavigateTo<InstructorViewModel>();
                                 //NavigationService.Navigate(new InstructorPage());
                                 break;
 
