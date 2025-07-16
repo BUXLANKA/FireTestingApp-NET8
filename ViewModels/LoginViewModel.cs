@@ -51,7 +51,6 @@ namespace FireTestingApp_net8.ViewModels
         // collection
 
         // command
-
         public RelayCommand EnterEvent { get; }
 
         // logic
@@ -106,6 +105,8 @@ namespace FireTestingApp_net8.ViewModels
                             "Ошибка авторизации",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error);
+
+                        return;
                     }
                 }
                 catch (Exception ex)
@@ -116,17 +117,18 @@ namespace FireTestingApp_net8.ViewModels
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                     MessageBox.Show(ex.Message);
-                    return;
                     throw;
                 }
             }
             else
             {
                 MessageBox.Show(
-                    "Введите логин и пароль",
+                    "Введите логин или пароль",
                     "Пусто? Пусто!",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+
+                return;
             }
         }
     }

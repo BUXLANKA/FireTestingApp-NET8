@@ -19,7 +19,7 @@ namespace FireTestingApp_net8.ViewModels
         // constructor
         public ResultsViewModel(INavigationService navigation)
         {
-            ResultMessage = Session.UserScore.ToString();
+            ResultMessage = $"{Session.UserFirstname} {Session.UserLastname} вы набрали {Session.UserScore}/10";
 
             ContinueAndExitEvent = new RelayCommand(ContinueAndExit);
             OpenFeedbackPageEvent = new RelayCommand(OpenFeedbackPage);

@@ -1,4 +1,5 @@
-﻿using FireTestingApp_net8.Services;
+﻿using FireTestingApp.Models;
+using FireTestingApp_net8.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,15 @@ namespace FireTestingApp_net8.ViewModels
         // private
         private bool _isChecked;
 
+        private string? _welcomeMessage;
+
         private readonly INavigationService _navigation;
 
         // constructor
         public AnnotationViewModel(INavigationService navigation)
         {
+            WelcomeMessage = $"Добро пожаловать, {Session.UserFirstname} {Session.UserLastname}!";
+
             StartTestEvent = new RelayCommand(StartTest);
 
             _navigation = navigation;
@@ -34,10 +39,19 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
+        public string? WelcomeMessage
+        {
+            get => _welcomeMessage;
+            set
+            {
+                _welcomeMessage = value;
+                OnPropertyChanged(nameof(WelcomeMessage));
+            }
+        }
+
         // collection
 
         // command
-
         public RelayCommand StartTestEvent { get; }
 
         // logic
