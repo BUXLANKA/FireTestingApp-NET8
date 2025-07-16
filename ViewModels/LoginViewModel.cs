@@ -15,10 +15,21 @@ namespace FireTestingApp_net8.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
+        // private
         private string? _login;
         private string? _password;
 
-        public string Login
+        private readonly INavigationService _navigation;
+
+        // constructor
+        public LoginViewModel(INavigationService navigation)
+        {
+            EnterEvent = new RelayCommand(EnterAccount);
+            _navigation = navigation;
+        }
+
+        // public
+        public string? Login
         {
             get { return _login; }
             set
@@ -27,7 +38,7 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(Login));
             }
         }
-        public string Password
+        public string? Password
         {
             get => _password!;
             set
@@ -37,28 +48,25 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
+        // collection
+
+        // command
+
         public RelayCommand EnterEvent { get; }
 
-        private readonly INavigationService _nav;
-
-        public LoginViewModel(INavigationService nav)
-        {
-            EnterEvent = new RelayCommand(EnterAccount);
-            _nav = nav;
-        }
-
+        // logic
         private void EnterAccount()
         {
-            if(!string.IsNullOrEmpty(Login) || !string.IsNullOrEmpty(Password))
+            if (!string.IsNullOrEmpty(Login) || !string.IsNullOrEmpty(Password))
             {
                 try
                 {
-                    using var Context = new AppDbContext();
+                    using var context = new AppDbContext();
 
-                    var User = Context.Users.AsNoTracking()
+                    var User = context.Users.AsNoTracking()
                         .FirstOrDefault(u => u.Userlogin == Login);
 
-                    if(User != null && User.Userpassword == Password)
+                    if (User != null && User.Userpassword == Password)
                     {
                         Session.UserID = User.Userid;
                         Session.RoleID = User.Roleid;
@@ -68,16 +76,11 @@ namespace FireTestingApp_net8.ViewModels
                         switch (Session.RoleID)
                         {
                             case 1:
-                                _nav.NavigateTo<InstructorViewModel>();
-                                //NavigationService.Navigate(new InstructorPage());
-                                break;
-
-                            case 2:
-                                //NavigationService.Navigate(new RevisorPage());
+                                _navigation.NavigateTo<InstructorViewModel>();
                                 break;
 
                             case 3:
-                                var ExamDateRestrict = Context.Results.AsNoTracking()
+                                var ExamDateRestrict = context.Results.AsNoTracking()
                                     .FirstOrDefault(e => e.Userid == Session.UserID);
 
                                 if (ExamDateRestrict?.Testdate != null && (DateTime.Now - ExamDateRestrict.Testdate).TotalDays <= 31)
@@ -91,12 +94,8 @@ namespace FireTestingApp_net8.ViewModels
                                 }
                                 else
                                 {
-                                    //NavigationService.Navigate(new UserPage());
+                                    _navigation.NavigateTo<AnnotationViewModel>();
                                 }
-                                break;
-
-                            case 4:
-                                //NavigationService.Navigate(new InstructorPage());
                                 break;
                         }
                     }

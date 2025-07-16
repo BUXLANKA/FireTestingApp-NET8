@@ -12,18 +12,13 @@ namespace FireTestingApp_net8.ViewModels
 {
     public class ResultsEditorViewModel : BaseViewModel
     {
-        public Result EditedResult { get; set; }
+        // private
+        private readonly INavigationService _navigation;
 
-        public ObservableCollection<Teststatus> StatusList { get; set; }
-
-        public RelayCommand SaveEvent{ get; }
-        public RelayCommand CancelEvent { get; }
-
-        private readonly INavigationService _nav;
-
-        public ResultsEditorViewModel(INavigationService nav)
+        // constructor
+        public ResultsEditorViewModel(INavigationService navigation)
         {
-            _nav = nav;
+            _navigation = navigation;
 
             // Получение переданного Result
             EditedResult = NavigationParameterService.Get<Result>("SelectedResult");
@@ -38,34 +33,56 @@ namespace FireTestingApp_net8.ViewModels
             CancelEvent = new RelayCommand(Cancel);
         }
 
+        // public
+        public Result? EditedResult { get; set; }
+
+        // collection
+        public ObservableCollection<Teststatus> StatusList { get; set; }
+
+        // command
+        public RelayCommand SaveEvent { get; }
+        public RelayCommand CancelEvent { get; }
+
+        // logic
         private void Save()
         {
             try
             {
                 using (var context = new AppDbContext())
                 {
-                    var result = context.Results.FirstOrDefault(r => r.Resultid == EditedResult.Resultid);
-                    if (result != null)
+                    if (EditedResult != null)
                     {
-                        result.Userscore = EditedResult.Userscore;
-                        result.Statusid = EditedResult.Statusid;
-                        result.Testdate = EditedResult.Testdate;
-                        context.SaveChanges();
+                        var result = context.Results.FirstOrDefault(r => r.Resultid == EditedResult.Resultid);
+
+                        if (result != null)
+                        {
+                            result.Userscore = EditedResult.Userscore;
+                            result.Statusid = EditedResult.Statusid;
+                            result.Testdate = EditedResult.Testdate;
+                            context.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "EditResult оказался Null",
+                            "Ошибка данных",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
                     }
                 }
 
                 MessageBox.Show("данные успешно сохранены");
-                _nav.NavigateTo<InstructorViewModel>();
+                _navigation.NavigateTo<InstructorViewModel>();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ошибка при сохранении: " + ex.Message);
             }
         }
-
         private void Cancel()
         {
-            _nav.NavigateTo<InstructorViewModel>();
+            _navigation.NavigateTo<InstructorViewModel>();
         }
     }
 }

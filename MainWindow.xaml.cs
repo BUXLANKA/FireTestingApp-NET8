@@ -52,14 +52,6 @@ namespace FireTestingApp_net8
                 return page;
             });
 
-            Navigation.Register<UserResultsViewModel>(() =>
-            {
-                var vm = new UserResultsViewModel(Navigation);
-                var page = new UserResultsView();
-                page.DataContext = vm;
-                return page;
-            });
-
             Navigation.Register<MainTestViewModel>(() =>
             {
                 var vm = new MainTestViewModel(Navigation);
@@ -80,6 +72,14 @@ namespace FireTestingApp_net8
             {
                 var vm = new ResultsEditorViewModel(Navigation);
                 var page = new ResultsEditorView();
+                page.DataContext = vm;
+                return page;
+            });
+
+            Navigation.Register<AnnotationViewModel>(() =>
+            {
+                var vm = new AnnotationViewModel(Navigation);
+                var page = new AnnotationView();
                 page.DataContext = vm;
                 return page;
             });

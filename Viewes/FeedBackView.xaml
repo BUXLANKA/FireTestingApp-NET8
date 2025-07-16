@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
-      Title="FeedBackView">
+      Title="Форма обратной связи">
 
     <Grid Background="White">
         <Rectangle VerticalAlignment="Top" Height="98.8" Fill="#FF194F9E" Stroke="#FF568FE2"/>

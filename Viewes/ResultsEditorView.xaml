@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
-      Title="ResultsEditorView">
+      Title="Редактор результатов">
 
     <Grid Background="White" Margin="0,14,0,-14">
         <TextBox IsEnabled="False" Text="{Binding EditedResult.User.Firstname}" x:Name="TBFirstname" HorizontalAlignment="Center" Margin="0,230,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="27"/>
@@ -38,8 +38,5 @@
                 <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
             </Rectangle.Fill>
         </Rectangle>
-
-
-
     </Grid>
 </Page>

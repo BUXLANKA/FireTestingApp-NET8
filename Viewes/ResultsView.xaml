@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
-      Title="ResultsView">
+      Title="Результаты теста">
 
     <Grid Background="White">
         <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Top" Margin="0,141,0,0"><Run Language="ru-ru" Text="РЕЗУЛЬТАТЫ ТЕСТА"/></TextBlock>

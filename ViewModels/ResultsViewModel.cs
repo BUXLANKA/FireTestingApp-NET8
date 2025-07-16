@@ -11,9 +11,23 @@ namespace FireTestingApp_net8.ViewModels
 {
     public class ResultsViewModel : BaseViewModel
     {
-        private readonly INavigationService _nav;
-
+        // private
         private string? _resultMessage;
+
+        private readonly INavigationService _navigation;
+
+        // constructor
+        public ResultsViewModel(INavigationService navigation)
+        {
+            ResultMessage = Session.UserScore.ToString();
+
+            ContinueAndExitEvent = new RelayCommand(ContinueAndExit);
+            OpenFeedbackPageEvent = new RelayCommand(OpenFeedbackPage);
+
+            _navigation = navigation;
+        }
+
+        // public
         public string? ResultMessage
         {
             get => _resultMessage;
@@ -24,27 +38,22 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
+        // collection
+
+
+        // command
+
         public RelayCommand ContinueAndExitEvent { get; }
         public RelayCommand OpenFeedbackPageEvent { get; }
 
-        public ResultsViewModel(INavigationService nav)
-        {
-            _nav = nav;
-
-            ResultMessage = Session.UserScore.ToString();
-
-            ContinueAndExitEvent = new RelayCommand(ContinueAndExit);
-            OpenFeedbackPageEvent = new RelayCommand(OpenFeedbackPage);
-        }
-
+        // logic
         private void ContinueAndExit()
         {
-            _nav.NavigateTo<LoginViewModel>();
+            _navigation.NavigateTo<LoginViewModel>();
         }
-
         private void OpenFeedbackPage()
         {
-            _nav.NavigateTo<FeedBackViewModel>();
+            _navigation.NavigateTo<FeedBackViewModel>();
         }
     }
 }
