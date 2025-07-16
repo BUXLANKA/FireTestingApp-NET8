@@ -17,64 +17,22 @@ namespace FireTestingApp_net8.ViewModels
 {
     public class MainTestViewModel : BaseViewModel
     {
-        ITimerService Timer = new ITimerService();
+        // private
         private string? _timeLeft;
-        public string? TimeLeft
-        {
-            get => _timeLeft;
-            set
-            {
-                _timeLeft = value;
-                OnPropertyChanged(nameof(TimeLeft));
-            }
-        }
-
-        private readonly INavigationService _nav;
-
-        private int _currentQuestionIndex { get; set; }
-        public int CurrentQuestionIndex
-        {
-            get => _currentQuestionIndex;
-            set
-            {
-                _currentQuestionIndex = value;
-                OnPropertyChanged(nameof(CurrentQuestionIndex));
-                LoadQuestion();
-            }
-        }
-
         private string? _questionText;
-        public string? QuestionText
-        {
-            get => _questionText;
-            set
-            {
-                _questionText = value;
-                OnPropertyChanged(nameof(QuestionText));
-            }
-        }
-
         private string? _questionIndex;
-        public string? QuestionIndex
+        
+        private int _currentQuestionIndex;
+        private int? _selectedAnswerIndex;
+
+        private Result CurrentResults = new();
+
+        private readonly INavigationService _navigation;
+
+        // constructor
+        public MainTestViewModel(INavigationService navigation)
         {
-            get => _questionIndex;
-            set
-            {
-                _questionIndex = value;
-                OnPropertyChanged(nameof(QuestionIndex));
-            }
-        }
-
-        public int Score = 0;
-
-        public List<string> AnswerContents { get; set; } = new() { "", "", "", "", "" };
-        public List<Question> Questions { get; set; }
-
-        public MainTestViewModel(INavigationService nav)
-        {
-            _nav = nav;
-
-            Timer.SetMinutes(1);
+            Timer.SetMinutes(5);
             Timer.TimeUpdated += Timer_TimeUpdated;
             TimeLeft = Timer.GetTimeLeft().ToString(@"mm\:ss");
             Timer.Start();
@@ -93,25 +51,50 @@ namespace FireTestingApp_net8.ViewModels
             }
             CurrentQuestionIndex = 0;
             GoToNextQuestionEvent = new RelayCommand(GoNext);
+
+            _navigation = navigation;
         }
 
-        private void LoadQuestion()
+        // public
+        public string? TimeLeft
         {
-            SelectedAnswerIndex = null;
-
-            var Question = Questions[CurrentQuestionIndex];
-            QuestionText = Question.Questiontext;
-            QuestionIndex = $"Вопрос №{CurrentQuestionIndex + 1}";
-
-            for(int i =0;  i < 5; i++)
+            get => _timeLeft;
+            set
             {
-                AnswerContents[i] = Question.Answers.ElementAtOrDefault(i)?.Answertext ?? "";
+                _timeLeft = value;
+                OnPropertyChanged(nameof(TimeLeft));
             }
-
-            OnPropertyChanged(nameof(AnswerContents));
+        }
+        public string? QuestionText
+        {
+            get => _questionText;
+            set
+            {
+                _questionText = value;
+                OnPropertyChanged(nameof(QuestionText));
+            }
+        }
+        public string? QuestionIndex
+        {
+            get => _questionIndex;
+            set
+            {
+                _questionIndex = value;
+                OnPropertyChanged(nameof(QuestionIndex));
+            }
         }
 
-        private int? _selectedAnswerIndex { get; set; }
+        public int CurrentQuestionIndex
+        {
+            get => _currentQuestionIndex;
+            set
+            {
+                _currentQuestionIndex = value;
+                OnPropertyChanged(nameof(CurrentQuestionIndex));
+                LoadQuestion();
+            }
+        }        
+        public int Score = 0;
         public int? SelectedAnswerIndex
         {
             get => _selectedAnswerIndex;
@@ -122,8 +105,31 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
+        public TimerService Timer = new();
+
+        // collection
+        public List<string> AnswerContents { get; set; } = new() { "", "", "", "", "" };
+        public List<Question> Questions { get; set; }
+
+        // command
         public RelayCommand GoToNextQuestionEvent { get; }
-        private Result CurrentResults = new Result();
+
+        // logic
+        private void LoadQuestion()
+        {
+            SelectedAnswerIndex = null;
+
+            var Question = Questions[CurrentQuestionIndex];
+            QuestionText = Question.Questiontext;
+            QuestionIndex = $"Вопрос №{CurrentQuestionIndex + 1}";
+
+            for (int i = 0; i < 5; i++)
+            {
+                AnswerContents[i] = Question.Answers.ElementAtOrDefault(i)?.Answertext ?? "";
+            }
+
+            OnPropertyChanged(nameof(AnswerContents));
+        }
         private void GoNext()
         {
             if (SelectedAnswerIndex is null)
@@ -161,7 +167,7 @@ namespace FireTestingApp_net8.ViewModels
 
                 try
                 {
-                    using(var Context = new AppDbContext())
+                    using (var Context = new AppDbContext())
                     {
                         Context.Results.Add(CurrentResults);
                         Context.SaveChanges();
@@ -172,48 +178,61 @@ namespace FireTestingApp_net8.ViewModels
                     MessageBox.Show($"Ошибка при сохранении результата: {ex.Message}");
                     throw;
                 }
-                _nav.NavigateTo<ResultsViewModel>();
+                _navigation.NavigateTo<ResultsViewModel>();
             }
         }
-
         private void CheckIsCorrect()
         {
             var Question = Questions[CurrentQuestionIndex];
             var Answers = Question.Answers.OrderBy(a => a.Answerid);
             var CorrectAnswer = Answers.FirstOrDefault(a => a.Iscorrectanswer);
 
-            
 
-                var AnswersList = Answers.ToList();
-            var SelectedAnswer = AnswersList[SelectedAnswerIndex.Value];
 
-            var CurrentUserAnswer = new Useranswer
+            var AnswersList = Answers.ToList();
+
+            if (SelectedAnswerIndex.HasValue)
             {
-                Userid = Session.UserID,
-                Questionid = Question.Questionid,
-                Answerid = SelectedAnswer.Answerid,
-                Answerdate = DateTime.Now,
-                Iscorrect = SelectedAnswer.Answerid == CorrectAnswer?.Answerid
-            };
+                var SelectedAnswer = AnswersList[SelectedAnswerIndex.Value];
 
-            if (CurrentUserAnswer.Iscorrect)
-                Score++;
-
-            try
-            {
-                using (var Context = new AppDbContext())
+                var CurrentUserAnswer = new Useranswer
                 {
-                    Context.Useranswers.Add(CurrentUserAnswer);
-                    Context.SaveChanges();
+                    Userid = Session.UserID,
+                    Questionid = Question.Questionid,
+                    Answerid = SelectedAnswer.Answerid,
+                    Answerdate = DateTime.Now,
+                    Iscorrect = SelectedAnswer.Answerid == CorrectAnswer?.Answerid
+                };
+
+                if (CurrentUserAnswer.Iscorrect)
+                {
+                    Score++;
+                }
+
+                try
+                {
+                    using (var Context = new AppDbContext())
+                    {
+                        Context.Useranswers.Add(CurrentUserAnswer);
+                        Context.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при сохранении ответа: {ex.Message}");
+                    throw;
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Ошибка при сохранении ответа: {ex.Message}");
-                throw;
+                MessageBox.Show(
+                    "Выбранный ответ имел неверные значения",
+                    "Ошибка",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
             }
         }
-
         private void Timer_TimeUpdated(object? sender, EventArgs e)
         {
             TimeLeft = Timer.GetTimeLeft().ToString(@"mm\:ss");
@@ -235,7 +254,7 @@ namespace FireTestingApp_net8.ViewModels
 
                 try
                 {
-                    using(var Context = new AppDbContext())
+                    using (var Context = new AppDbContext())
                     {
                         Context.Results.Add(CurrentResults);
                         Context.SaveChanges();
@@ -247,9 +266,8 @@ namespace FireTestingApp_net8.ViewModels
                     throw;
                 }
                 Timer.TimeUpdated -= Timer_TimeUpdated;
-                _nav.NavigateTo<LoginViewModel>();
+                _navigation.NavigateTo<LoginViewModel>();
             }
         }
-
     }
 }

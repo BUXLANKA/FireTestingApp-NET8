@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace FireTestingApp_net8.Viewes
 {
     /// <summary>
-    /// Логика взаимодействия для UserResultsView.xaml
+    /// Логика взаимодействия для AnnotationView.xaml
     /// </summary>
-    public partial class UserResultsView : Page
+    public partial class AnnotationView : Page
     {
-        public UserResultsView()
+        public AnnotationView()
         {
             InitializeComponent();
         }

@@ -7,11 +7,7 @@
       xmlns:vm="clr-namespace:FireTestingApp_net8.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
-      Title="LoginView">
-
-    <!--<Page.DataContext>
-        <vm:LoginViewModel/>
-    </Page.DataContext>-->
+      Title="Авторизация">
 
     <Grid Background="White">
         <Label HorizontalContentAlignment="Center" Content="АВТОРИЗАЦИЯ" HorizontalAlignment="Center" Margin="0,150,0,0" FontSize="36" FontWeight="Bold" VerticalAlignment="Top" Width="344"/>

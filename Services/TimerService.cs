@@ -7,14 +7,14 @@ using System.Windows.Threading;
 
 namespace FireTestingApp_net8.Services
 {
-    public class ITimerService
+    public class TimerService
     {
         public event EventHandler? TimeUpdated;
 
         private DispatcherTimer timer;
         private TimeSpan timeLeft;
 
-        public ITimerService()
+        public TimerService()
         {
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -41,7 +41,7 @@ namespace FireTestingApp_net8.Services
             return timeLeft;
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object? sender, EventArgs e)
         {
             if (timeLeft.TotalSeconds > 0)
             {

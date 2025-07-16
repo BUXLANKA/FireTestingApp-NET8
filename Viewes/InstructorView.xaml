@@ -7,13 +7,9 @@
       xmlns:vm="clr-namespace:FireTestingApp_net8.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="640" d:DesignWidth="960"
-      Title="InstructorView">
+      Title="Админ-панель">
 
-    <!--<Page.DataContext>
-        <vm:InstructorViewModel/>
-    </Page.DataContext>-->
-
-        <Grid Background="White">
+    <Grid Background="White">
         <TabControl Margin="0,104,0,0" FontSize="14">
 
             <TabItem Header="Результаты тестирования">
@@ -91,6 +87,5 @@
                 <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
             </Rectangle.Fill>
         </Rectangle>
-
     </Grid>
 </Page>

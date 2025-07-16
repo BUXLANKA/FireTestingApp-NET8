@@ -13,8 +13,21 @@ namespace FireTestingApp_net8.ViewModels
 {
     public class FeedBackViewModel : BaseViewModel
     {
+        // private
         private string? _feedBackMessage;
-        public string FeedBackMessage
+        private readonly INavigationService _navigation;
+
+        // constructor
+        public FeedBackViewModel(INavigationService navigation)
+        {
+            SendMessageEvent = new RelayCommand(SendMessage);
+            GoBackEvent = new RelayCommand(GoBack);
+
+            _navigation = navigation;
+        }
+        
+        // public
+        public string? FeedBackMessage
         {
             get => _feedBackMessage;
             set
@@ -24,31 +37,32 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
-        private readonly INavigationService _nav;
-        public FeedBackViewModel(INavigationService nav)
-        {
-            SendMessageEvent = new RelayCommand(SendMessage);
-            GoBackEvent = new RelayCommand(GoBack);
-            _nav = nav;
-        }
+        // collection
+
+
+        // command
 
         public RelayCommand SendMessageEvent { get; }
+        public RelayCommand GoBackEvent { get; }
+
+        // logic
         private void SendMessage()
         {
             if (!string.IsNullOrEmpty(FeedBackMessage))
             {
-                Ticket TicketTable = new Ticket();
-
-                TicketTable.Fromuserid = Session.UserID;
-                TicketTable.Ticketdate = DateTime.Now;
-                TicketTable.Tickettext = FeedBackMessage;
+                Ticket TicketTable = new()
+                {
+                    Fromuserid = Session.UserID,
+                    Ticketdate = DateTime.Now,
+                    Tickettext = FeedBackMessage
+                };
 
                 try
                 {
-                    using (var Context = new AppDbContext())
+                    using (var context = new AppDbContext())
                     {
-                        Context.Tickets.Add(TicketTable);
-                        Context.SaveChanges();
+                        context.Tickets.Add(TicketTable);
+                        context.SaveChanges();
 
                         MessageBox.Show(
                         "Отзыв успешно отправлен!",
@@ -56,7 +70,7 @@ namespace FireTestingApp_net8.ViewModels
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
 
-                        _nav.NavigateTo<ResultsViewModel>();
+                        _navigation.NavigateTo<ResultsViewModel>();
                     }
                 }
                 catch (Exception ex)
@@ -69,17 +83,15 @@ namespace FireTestingApp_net8.ViewModels
             {
                 MessageBox.Show(
                     "Нельзя отправить пустое сообщение",
-                    "А что исправлять то?",
+                    "А что исправлять?",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
                 return;
             }
         }
-
-        public RelayCommand GoBackEvent { get; }
         private void GoBack()
         {
-            _nav.NavigateTo<ResultsViewModel>();
+            _navigation.NavigateTo<ResultsViewModel>();
         }
     }
 }
