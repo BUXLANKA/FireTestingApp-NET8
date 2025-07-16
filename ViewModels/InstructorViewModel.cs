@@ -27,11 +27,15 @@ namespace FireTestingApp_net8.ViewModels
         public ObservableCollection<Useranswer> UserAnswerTable { get; set; }
         public ObservableCollection<Ticket> TicketTable { get; set; }
 
+        public RelayCommand<Result> EditResultEvent { get; }
+
         public InstructorViewModel(INavigationService nav)
         {
             WelcomeMessage = $"Добро пожаловать!";
 
             ExitEvent = new RelayCommand(Exit);
+            EditResultEvent = new RelayCommand<Result>(OnEdit);
+
             _nav = nav;
 
             using (var Context = new AppDbContext())
@@ -61,6 +65,14 @@ namespace FireTestingApp_net8.ViewModels
         private void Exit()
         {
             _nav.NavigateTo<LoginViewModel>();
+        }
+
+        private void OnEdit(Result result)
+        {
+            if(result == null) return;
+
+            NavigationParameterService.Set("SelectedResult", result);
+            _nav?.NavigateTo<ResultsEditorViewModel>();
         }
     }
 }

@@ -32,7 +32,9 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="Редактировать"/>
+                                        <Button Content="Редактировать"
+                                        Command="{Binding DataContext.EditResultEvent, RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
