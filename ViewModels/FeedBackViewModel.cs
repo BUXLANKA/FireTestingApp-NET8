@@ -1,12 +1,6 @@
 ﻿using FireTestingApp.Models;
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
@@ -25,7 +19,7 @@ namespace FireTestingApp_net8.ViewModels
 
             _navigation = navigation;
         }
-        
+
         // public
         public string? FeedBackMessage
         {

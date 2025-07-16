@@ -2,16 +2,7 @@
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents.DocumentStructures;
-using System.Windows.Navigation;
-using System.Windows.Threading;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -21,7 +12,7 @@ namespace FireTestingApp_net8.ViewModels
         private string? _timeLeft;
         private string? _questionText;
         private string? _questionIndex;
-        
+
         private int _currentQuestionIndex;
         private int? _selectedAnswerIndex;
 
@@ -93,7 +84,7 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(CurrentQuestionIndex));
                 LoadQuestion();
             }
-        }        
+        }
         public int Score = 0;
         public int? SelectedAnswerIndex
         {

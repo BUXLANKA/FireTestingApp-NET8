@@ -1,17 +1,7 @@
 ﻿using FireTestingApp_net8.Services;
 using FireTestingApp_net8.Viewes;
 using FireTestingApp_net8.ViewModels;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FireTestingApp_net8
 {
@@ -30,9 +20,9 @@ namespace FireTestingApp_net8
 
             Navigation.Register<LoginViewModel>(() =>
             {
-                var vm = new LoginViewModel(Navigation);   
-                var page = new LoginView();                
-                page.DataContext = vm;                     
+                var vm = new LoginViewModel(Navigation);
+                var page = new LoginView();
+                page.DataContext = vm;
                 return page;
             });
 
