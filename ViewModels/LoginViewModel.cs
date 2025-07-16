@@ -2,14 +2,7 @@
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Navigation;
 
 namespace FireTestingApp_net8.ViewModels
 {
