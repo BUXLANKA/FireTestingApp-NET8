@@ -29,10 +29,25 @@
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="Редактировать"
-                                        Command="{Binding DataContext.EditResultEvent,
-                                        RelativeSource={RelativeSource AncestorType=Page}}"
-                                        CommandParameter="{Binding}"/>
+                                        <Button Content="Редактировать" 
+                                                Background="#4CAF50"
+                                                Foreground="White"
+                                                Command="{Binding DataContext.EditResultEvent,
+                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                CommandParameter="{Binding}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Удалить"
+                                                Background="#F44336"
+                                                Foreground="White"
+                                                Command="{Binding DataContext.DeleteResultEvent,
+                                                RelativeSource={RelativeSource AncestorType=Page}}"
+                                                CommandParameter="{Binding}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -95,6 +110,8 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Content="Удалить"
+                                                Background="#F44336"
+                                                Foreground="White"
                                                 Command="{Binding DataContext.DeleteTicketEvent,
                                                 RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 CommandParameter="{Binding}"/>
