@@ -43,6 +43,11 @@ namespace FireTestingApp_net8.ViewModels
                     .Include(r => r.Fromuser)
                     .ToList();
                 TicketTable = new ObservableCollection<Ticket>(TicketList);
+
+                var userList = Context.Users
+                    .Include(r => r.Role)
+                    .ToList();
+                UserTable = new ObservableCollection<User>(userList);
             }
         }
 
@@ -61,6 +66,7 @@ namespace FireTestingApp_net8.ViewModels
         public ObservableCollection<Result> ResultsTable { get; set; }
         public ObservableCollection<Useranswer> UserAnswerTable { get; set; }
         public ObservableCollection<Ticket> TicketTable { get; set; }
+        public ObservableCollection<User> UserTable { get; set; }
 
         // command
         public RelayCommand<Result> EditResultEvent { get; }
