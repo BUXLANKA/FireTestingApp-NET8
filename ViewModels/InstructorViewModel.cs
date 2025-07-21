@@ -99,8 +99,10 @@ namespace FireTestingApp_net8.ViewModels
         {
             if (result == null) return;
 
-            NavigationParameterService.Set("UserKeyObject", result);
+            NavigationParameterService.Set("SelectedResult", result);
             _navigation.NavigateTo<ResultsEditorViewModel>();
+            
+            ResultsTable = new ObservableCollection<Result>(resultli);
         }
 
         //public void Receive(SelectTabMessage message)

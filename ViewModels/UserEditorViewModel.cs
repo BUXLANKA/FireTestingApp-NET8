@@ -51,8 +51,7 @@ namespace FireTestingApp_net8.ViewModels
         {
             using (var context = new AppDbContext())
             {
-                // добавление
-
+                #region Adding new user code
                 if (UserObject.Roleid == 0)
                 {
                     MessageBox.Show($"role is null");
@@ -68,32 +67,83 @@ namespace FireTestingApp_net8.ViewModels
                     MessageBox.Show($"str is null?");
                 }
 
-                var existsLogin = context.Users.FirstOrDefault(u => u.Userlogin == UserObject.Userlogin);
-
-                if (existsLogin != null) return;
-
-                User newUser = new()
+                if (UserObject.Userid == 0)
                 {
-                    Firstname = UserObject.Firstname,
-                    Surname = UserObject.Surname,
-                    Lastname = UserObject.Lastname,
-                    Roleid = UserObject.Roleid,
-                    Userlogin = UserObject.Userlogin,
-                    Userpassword = UserObject.Userpassword
-                };
+                    var existsLogin = context.Users.FirstOrDefault(u => u.Userlogin == UserObject.Userlogin);
 
-                try
-                {
-                    context.Users.Add(newUser);
-                    context.SaveChanges();
-                    MessageBox.Show($"DONE!");
-                    return;
+                    if (existsLogin != null) return;
+
+                    User newUser = new()
+                    {
+                        Firstname = UserObject.Firstname,
+                        Surname = UserObject.Surname,
+                        Lastname = UserObject.Lastname,
+                        Roleid = UserObject.Roleid,
+                        Userlogin = UserObject.Userlogin,
+                        Userpassword = UserObject.Userpassword
+                    };
+
+                    try
+                    {
+                        context.Users.Add(newUser);
+                        context.SaveChanges();
+                        MessageBox.Show($"DONE!");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{ex.Message}");
+                        throw;
+                    }
                 }
-                catch (Exception ex)
+                #endregion
+
+                #region User editing
+                var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
+
+                if (user != null)
                 {
-                    MessageBox.Show($"{ex.Message}");
-                    throw;
+                    if (string.IsNullOrWhiteSpace(UserObject.Firstname)
+                        ||string.IsNullOrWhiteSpace(UserObject.Surname)
+                        || string.IsNullOrWhiteSpace(UserObject.Lastname)
+                        || string.IsNullOrWhiteSpace(UserObject.Userlogin)
+                        || string.IsNullOrWhiteSpace(UserObject.Userpassword))
+                    {
+                        MessageBox.Show($"string is null");
+                        return;
+                    }
+
+                    user.Firstname = UserObject.Firstname;
+                    user.Surname = UserObject.Surname;
+                    user.Lastname = UserObject.Lastname;
+                    user.Roleid = UserObject.Roleid;
+                    user.Userlogin = UserObject.Userlogin;
+                    user.Userpassword = UserObject.Userpassword;
+
+                    try
+                    {
+                        context.SaveChanges();
+                        MessageBox.Show($"UPDATED");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{ex.Message}");
+                        throw;
+                    }
                 }
+                #endregion
+
+                //#region Editing exists users code
+                //var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
+
+                //if (user != null)
+                //{
+
+                //}
+                //#endregion
+
+
 
                 //if (UserObject.Role == null)
                 //{
@@ -145,7 +195,7 @@ namespace FireTestingApp_net8.ViewModels
                 //    user.Lastname = UserObject.Lastname;
                 //    user.Role = role!;
                 //    user.Userpassword = UserObject.Userpassword;
-                    
+
                 //    bool exitstLogin = context.Users.Any(u => u.Userlogin == UserObject.Userlogin
                 //        && u.Userid != UserObject.Userid);
 
