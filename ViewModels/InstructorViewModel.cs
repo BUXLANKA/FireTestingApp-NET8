@@ -9,7 +9,8 @@ using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
-    public class InstructorViewModel : BaseViewModel, IRecipient<SelectTabMessage>
+    public class InstructorViewModel : BaseViewModel
+        //, IRecipient<SelectTabMessage>
     {
         // private
         private string? _welcomeMessage;
@@ -29,7 +30,7 @@ namespace FireTestingApp_net8.ViewModels
 
             _navigation = navigation;
             
-            WeakReferenceMessenger.Default.Register(this);
+            //WeakReferenceMessenger.Default.Register(this);
 
             using (var Context = new AppDbContext())
             {
@@ -68,11 +69,11 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(WelcomeMessage));
             }
         }
-        public int SelectedTabIndex
-        {
-            get => _selectedTabIndex;
-            set => SetProperty(ref _selectedTabIndex, value);
-        }
+        //public int SelectedTabIndex
+        //{
+        //    get => _selectedTabIndex;
+        //    set => SetProperty(ref _selectedTabIndex, value);
+        //}
 
         // collection
         public ObservableCollection<Result> ResultsTable { get; set; }
@@ -100,10 +101,10 @@ namespace FireTestingApp_net8.ViewModels
             _navigation.NavigateTo<ResultsEditorViewModel>();
         }
 
-        public void Receive(SelectTabMessage message)
-        {
-            SelectedTabIndex = message.TabIndex;
-        }
+        //public void Receive(SelectTabMessage message)
+        //{
+        //    SelectedTabIndex = message.TabIndex;
+        //}
 
         private void DeleteTicket(Ticket ticket)
         {

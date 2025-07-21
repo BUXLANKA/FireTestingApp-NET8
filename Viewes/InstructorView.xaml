@@ -11,10 +11,12 @@
 
     <Grid Background="White">
 
-        <TabControl Margin="0,150,0,0" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+        <!--SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}-->
+        <TabControl Margin="0,150,0,0">
 
+            <!--SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"-->
             <TabItem Header="Администрирование тестов">
-                <TabControl FontSize="14" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+                <TabControl FontSize="14" >
 
                     <TabItem Header="Результаты тестирования">
                         <Grid Background="#FFE5E5E5">
