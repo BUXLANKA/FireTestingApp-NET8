@@ -64,7 +64,7 @@ namespace FireTestingApp_net8.ViewModels
                             user.Firstname = EditedUser.Firstname;
                             user.Surname = EditedUser.Surname;
                             user.Lastname = EditedUser.Lastname;
-                            user.Role = role;
+                            user.Role = role!;
                             user.Userpassword = EditedUser.Userpassword;
 
                             if (!existsUserLogin)
