@@ -27,6 +27,7 @@ namespace FireTestingApp_net8.ViewModels
             EditUserEvent = new RelayCommand<User>(UserEdit);
             DeleteTicketEvent = new RelayCommand<Ticket>(DeleteTicket);
             DeleteResultEvent = new RelayCommand<Result>(DeleteResult);
+            CreateNewUserEvent = new RelayCommand(CreateUser);
 
             _navigation = navigation;
             
@@ -87,6 +88,7 @@ namespace FireTestingApp_net8.ViewModels
         public RelayCommand<Ticket> DeleteTicketEvent { get; }
         public RelayCommand<Result> DeleteResultEvent { get; }
         public RelayCommand ExitEvent { get; }
+        public RelayCommand CreateNewUserEvent { get; }
 
         // logic
         private void Exit()
@@ -97,7 +99,7 @@ namespace FireTestingApp_net8.ViewModels
         {
             if (result == null) return;
 
-            NavigationParameterService.Set("SelectedResult", result);
+            NavigationParameterService.Set("UserKeyObject", result);
             _navigation.NavigateTo<ResultsEditorViewModel>();
         }
 
@@ -180,7 +182,12 @@ namespace FireTestingApp_net8.ViewModels
         {
             if (user == null) return;
 
-            NavigationParameterService.Set("SelectedUser", user);
+            NavigationParameterService.Set("UserKeyObject", user);
+            _navigation.NavigateTo<UserEditorViewModel>();
+        }
+        private void CreateUser()
+        {
+            NavigationParameterService.Set("UserKeyObject", new User());
             _navigation.NavigateTo<UserEditorViewModel>();
         }
     }

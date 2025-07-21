@@ -23,7 +23,7 @@ namespace FireTestingApp_net8.ViewModels
         // constructor
         public UserEditorViewModel(INavigationService navigatoin)
         {
-            EditedUser = NavigationParameterService.Get<User>("SelectedUser");
+            UserObject = NavigationParameterService.Get<User>("UserKeyObject") ?? new User();
 
             SaveEvent = new RelayCommand(Save);
             CancelEvent = new RelayCommand(Cancel);
@@ -37,7 +37,7 @@ namespace FireTestingApp_net8.ViewModels
         }
 
         // public
-        public User? EditedUser { get; set; }
+        public User UserObject { get; set; }
 
         // collection
         public ObservableCollection<Role> RoleList { get; set; }
@@ -49,54 +49,223 @@ namespace FireTestingApp_net8.ViewModels
         // logic
         private void Save()
         {
-            try
+            using (var context = new AppDbContext())
             {
-                if (EditedUser != null)
+                // добавление
+
+                if (UserObject.Roleid == 0)
                 {
-                    using (var context = new AppDbContext())
-                    {
-                        var user = context.Users.FirstOrDefault(u => u.Userid == EditedUser.Userid);
-                        var role = context.Roles.FirstOrDefault(r => r.Roleid == EditedUser.Role.Roleid);
-                        bool existsUserLogin = context.Users.Any(u => u.Userlogin == EditedUser.Userlogin);
-
-                        if (user != null)
-                        {
-                            user.Firstname = EditedUser.Firstname;
-                            user.Surname = EditedUser.Surname;
-                            user.Lastname = EditedUser.Lastname;
-                            user.Role = role!;
-                            user.Userpassword = EditedUser.Userpassword;
-
-                            if (!existsUserLogin)
-                            {
-                                user.Userlogin = EditedUser.Userlogin;
-                            }
-                            else
-                            {
-                                MessageBox.Show("Такой пользователь уже существует. Придумайте другой логин!");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Пользователь не найден");
-                        }
-
-                        context.SaveChanges();
-                        MessageBox.Show("Данные успешно изменены!");
-                        _navigatoin.GoBack();
-                    }
+                    MessageBox.Show($"role is null");
+                    return;
                 }
-                else
+
+                if (string.IsNullOrWhiteSpace(UserObject.Firstname)
+                    || string.IsNullOrWhiteSpace(UserObject.Surname)
+                    || string.IsNullOrWhiteSpace(UserObject.Lastname)
+                    || string.IsNullOrWhiteSpace(UserObject.Userlogin)
+                    || string.IsNullOrWhiteSpace(UserObject.Userpassword))
                 {
-                    MessageBox.Show("Пользователь не выбран");
+                    MessageBox.Show($"str is null?");
                 }
+
+                var existsLogin = context.Users.FirstOrDefault(u => u.Userlogin == UserObject.Userlogin);
+
+                if (existsLogin != null) return;
+
+                User newUser = new()
+                {
+                    Firstname = UserObject.Firstname,
+                    Surname = UserObject.Surname,
+                    Lastname = UserObject.Lastname,
+                    Roleid = UserObject.Roleid,
+                    Userlogin = UserObject.Userlogin,
+                    Userpassword = UserObject.Userpassword
+                };
+
+                try
+                {
+                    context.Users.Add(newUser);
+                    context.SaveChanges();
+                    MessageBox.Show($"DONE!");
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"{ex.Message}");
+                    throw;
+                }
+
+                //if (UserObject.Role == null)
+                //{
+                //    MessageBox.Show("Роль пользователя не выбрана!");
+                //    return;
+                //}
+
+                //var role = context.Roles.FirstOrDefault(r => r.Roleid == UserObject.Role.Roleid);
+
+                ////добавление
+                //if (UserObject.Userid == 0)
+                //{
+                //    User newUser = new()
+                //    {
+                //        Firstname = UserObject.Firstname,
+                //        Surname = UserObject.Surname,
+                //        Lastname = UserObject.Lastname,
+                //        Roleid = UserObject.Role.Roleid,
+                //        Userpassword = UserObject.Userpassword,
+                //        Userlogin = UserObject.Userlogin
+                //    };
+
+                //    bool duplicateUser = context.Users.Any(u => u.Userlogin == UserObject.Userlogin);
+
+                //    if (!duplicateUser)
+                //    {
+                //        try
+                //        {
+                //            //context.Users.Add(newUser);
+                //            //context.SaveChanges();
+                //            MessageBox.Show("user added");
+                //            return;
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            MessageBox.Show($"{ex.Message}");
+                //            throw;
+                //        }
+                //    }
+                //}
+
+                //// изменение
+                //var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
+
+                //if (user != null)
+                //{
+                //    user.Firstname = UserObject.Firstname;
+                //    user.Surname = UserObject.Surname;
+                //    user.Lastname = UserObject.Lastname;
+                //    user.Role = role!;
+                //    user.Userpassword = UserObject.Userpassword;
+                    
+                //    bool exitstLogin = context.Users.Any(u => u.Userlogin == UserObject.Userlogin
+                //        && u.Userid != UserObject.Userid);
+
+                //    if (!exitstLogin)
+                //    {
+                //        user.Userlogin = UserObject.Userlogin;
+                //    }
+                //    else
+                //    {
+                //        MessageBox.Show("REPEAT");
+                //    }
+
+                //        try
+                //        {
+                //            context.SaveChanges();
+                //            MessageBox.Show("DONE!");
+                //            _navigatoin.GoBack();
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            MessageBox.Show($"{ex.Message}");
+                //            throw;
+                //        }
+                //}
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"При выполнении запроса произошла ошибка\n{ex.Message}");
-                throw;
-            }
+
+            //try
+            //{
+            //    if (UserObject != null)
+            //    {
+            //        using (var context = new AppDbContext())
+            //        {
+            //            var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
+            //            var role = context.Roles.FirstOrDefault(r => r.Roleid == UserObject.Role.Roleid);
+            //            bool existsUserLogin = context.Users.Any(u => u.Userlogin == UserObject.Userlogin);
+
+            //            if (user != null)
+            //            {
+            //                user.Firstname = UserObject.Firstname;
+            //                user.Surname = UserObject.Surname;
+            //                user.Lastname = UserObject.Lastname;
+            //                user.Role = role!;
+            //                user.Userpassword = UserObject.Userpassword;
+
+            //                if (!existsUserLogin)
+            //                {
+            //                    user.Userlogin = UserObject.Userlogin;
+            //                }
+            //                else
+            //                {
+            //                    MessageBox.Show("Такой пользователь уже существует. Придумайте другой логин!");
+            //                    return;
+            //                }
+            //            }
+            //            else
+            //            {
+            //                MessageBox.Show("Пользователь не найден");
+            //            }
+
+            //            context.SaveChanges();
+            //            MessageBox.Show("Данные успешно изменены!");
+            //            _navigatoin.GoBack();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        MessageBoxResult msgUserChoice = MessageBox.Show(
+            //            "Пользователь которого вы пытаетесь редактировать не найден\nХотите создать нового пользователя?",
+            //            "Пользователь не найден",
+            //            MessageBoxButton.YesNo,
+            //            MessageBoxImage.Information,
+            //            MessageBoxResult.No);
+
+            //        if (msgUserChoice == MessageBoxResult.Yes)
+            //        {
+            //            using (var context = new AppDbContext())
+            //            {
+            //                //var role = context.Roles.FirstOrDefault(r => r.Roleid == UserObject!.Role.Roleid);
+
+            //                var role = UserObject.Role != null ? 
+            //                    context.Roles.FirstOrDefault(r => r.Roleid == UserObject.Role.Roleid) : null;
+
+            //                bool existsUserLogin = context.Users.Any(u => u.Userlogin == UserObject!.Userlogin && u.Userid != UserObject.Userid);
+
+            //                User user = new()
+            //                {
+            //                    Firstname = UserObject!.Firstname,
+            //                    Lastname = UserObject.Lastname,
+            //                    Surname = UserObject.Surname,
+            //                    Role = UserObject.Role,
+            //                    Userlogin = UserObject.Userlogin,
+            //                    Userpassword = UserObject.Userpassword
+            //                };
+
+            //                if (UserObject.Firstname != null && UserObject.Surname != null
+            //                    && UserObject.Lastname != null && UserObject.Role != null && !existsUserLogin 
+            //                    && UserObject.Userpassword != null)
+            //                {
+            //                    context.Add(user);
+            //                    context.SaveChanges();
+            //                }
+            //                else
+            //                {
+            //                    MessageBox.Show("error");
+            //                    return;
+            //                }
+
+            //            }
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show("Операция отменена");
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"При выполнении запроса произошла ошибка\n{ex.Message}");
+            //    throw;
+            //}
         }
         private void Cancel()
         {

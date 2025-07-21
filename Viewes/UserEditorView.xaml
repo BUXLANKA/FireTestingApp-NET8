@@ -9,14 +9,14 @@
       Title="UserEditorView">
 
     <Grid Background="White" Margin="0,-5,0,5">
-        <TextBox Text="{Binding EditedUser.Firstname}" x:Name="TBFirstname" HorizontalAlignment="Center" Margin="0,230,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="27"/>
+        <TextBox Text="{Binding UserObject.Firstname}" x:Name="TBFirstname" HorizontalAlignment="Center" Margin="0,230,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="27"/>
 
-        <TextBox Text="{Binding EditedUser.Lastname}" x:Name="TBLastname" HorizontalAlignment="Center" Margin="0,263,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28"/>
+        <TextBox Text="{Binding UserObject.Lastname}" x:Name="TBLastname" HorizontalAlignment="Center" Margin="0,263,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28"/>
 
-        <TextBox Text="{Binding EditedUser.Surname}" x:Name="TBSurname" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,296,0,0"/>
+        <TextBox Text="{Binding UserObject.Surname}" x:Name="TBSurname" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,296,0,0"/>
 
         <Label HorizontalContentAlignment="Right" Content="Пароль" Margin="245,400,612,0" VerticalAlignment="Top" Width="103" Height="28" VerticalContentAlignment="Stretch" FontSize="14"/>
-        <ComboBox ItemsSource="{Binding RoleList}" x:Name="CBExamStatus" SelectedValue="{Binding EditedUser.Roleid, Mode=TwoWay}" DisplayMemberPath="Rolename" SelectedValuePath="Roleid" HorizontalAlignment="Center" Margin="0,331,0,0" VerticalAlignment="Top" Width="254" Height="28" FontSize="14"/>
+        <ComboBox ItemsSource="{Binding RoleList}" x:Name="CBExamStatus" SelectedValue="{Binding UserObject.Roleid, Mode=TwoWay}" DisplayMemberPath="Rolename" SelectedValuePath="Roleid" HorizontalAlignment="Center" Margin="0,331,0,0" VerticalAlignment="Top" Width="254" Height="28" FontSize="14"/>
 
         <Button Command="{Binding CancelEvent}" Content="Отмена" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="254" Height="38" Margin="0,0,0,72" FontSize="16"/>
 
@@ -34,7 +34,7 @@
                 <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
             </Rectangle.Fill>
         </Rectangle>
-        <TextBox Text="{Binding EditedUser.Userlogin}" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,367,0,0"/>
-        <TextBox Text="{Binding EditedUser.Userpassword}" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,400,0,0"/>
+        <TextBox Text="{Binding UserObject.Userlogin}" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,367,0,0"/>
+        <TextBox Text="{Binding UserObject.Userpassword}" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,400,0,0"/>
     </Grid>
 </Page>
