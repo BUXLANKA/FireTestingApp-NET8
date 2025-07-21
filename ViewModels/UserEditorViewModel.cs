@@ -56,8 +56,8 @@ namespace FireTestingApp_net8.ViewModels
                     using (var context = new AppDbContext())
                     {
                         var user = context.Users.FirstOrDefault(u => u.Userid == EditedUser.Userid);
-
                         var role = context.Roles.FirstOrDefault(r => r.Roleid == EditedUser.Role.Roleid);
+                        bool existsUserLogin = context.Users.Any(u => u.Userlogin == EditedUser.Userlogin);
 
                         if (user != null)
                         {
@@ -65,8 +65,17 @@ namespace FireTestingApp_net8.ViewModels
                             user.Surname = EditedUser.Surname;
                             user.Lastname = EditedUser.Lastname;
                             user.Role = role;
-                            user.Userlogin = EditedUser.Userlogin;
                             user.Userpassword = EditedUser.Userpassword;
+
+                            if (!existsUserLogin)
+                            {
+                                user.Userlogin = EditedUser.Userlogin;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Такой пользователь уже существует. Придумайте другой логин!");
+                                return;
+                            }
                         }
                         else
                         {
@@ -75,7 +84,7 @@ namespace FireTestingApp_net8.ViewModels
 
                         context.SaveChanges();
                         MessageBox.Show("Данные успешно изменены!");
-                        _navigatoin.NavigateTo<InstructorViewModel>();
+                        _navigatoin.GoBack();
                     }
                 }
                 else
@@ -91,7 +100,7 @@ namespace FireTestingApp_net8.ViewModels
         }
         private void Cancel()
         {
-            WeakReferenceMessenger.Default.Send(new SelectTabMessage(2));
+            //WeakReferenceMessenger.Default.Send(new SelectTabMessage(2));
             _navigatoin.GoBack();
         }
     }
