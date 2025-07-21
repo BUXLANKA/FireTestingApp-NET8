@@ -25,15 +25,18 @@
                             <DataGridTextColumn Header="Дата сдачи" Binding="{Binding Testdate, StringFormat=dd.MM.yyy | HH:MM}"/>
                             <DataGridTextColumn Header="Баллы" Binding="{Binding Userscore}"/>
                             <DataGridTextColumn Header="Статус экзамена" Binding="{Binding Status.Statusname}"/>
+                            
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Content="Редактировать"
-                                        Command="{Binding DataContext.EditResultEvent, RelativeSource={RelativeSource AncestorType=Page}}"
+                                        Command="{Binding DataContext.EditResultEvent,
+                                        RelativeSource={RelativeSource AncestorType=Page}}"
                                         CommandParameter="{Binding}"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+                            
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -51,11 +54,13 @@
                             <DataGridTextColumn Header="Отчество" Binding="{Binding User.Surname}"/>
                             <DataGridTextColumn Header="Дата" Binding="{Binding Answerdate, StringFormat=dd.MM.yyy | HH:MM}"/>
                             <DataGridTextColumn Header="Вопрос" Binding="{Binding Question.Questiontext}">
+                                
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="TextWrapping" Value="Wrap"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
+                                
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Ответ" Binding="{Binding Answer.Answertext}"/>
                             <DataGridTextColumn Header="Правильность" Binding="{Binding Isorrect}"/>
@@ -73,7 +78,29 @@
                             <DataGridTextColumn Header="Фамилия" Binding="{Binding Fromuser.Lastname}"/>
                             <DataGridTextColumn Header="Отчество" Binding="{Binding Fromuser.Surname}"/>
                             <DataGridTextColumn Header="Дата" Binding="{Binding Ticketdate, StringFormat=dd.MM.yyy | HH:MM}"/>
-                            <DataGridTextColumn Header="Описание" Binding="{Binding Tickettext}"/>
+                            <DataGridTextColumn Header="Описание" MaxWidth="580" Binding="{Binding Tickettext}">
+                                
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                                
+                            </DataGridTextColumn>
+                            
+                            
+                            
+                            
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Удалить"
+                                                Command="{Binding DataContext.DeleteTicketEvent,
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                CommandParameter="{Binding}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
