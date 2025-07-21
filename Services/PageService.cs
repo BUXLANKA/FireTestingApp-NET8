@@ -23,5 +23,12 @@ namespace FireTestingApp_net8.Services
             var page = _pageMap[typeof(TViewModel)]();
             _mainFrame.Navigate(page);
         }
+        public void GoBack()
+        {
+            if (_mainFrame.CanGoBack)
+                _mainFrame.GoBack();
+        }
+
+        public bool CanGoBack() => _mainFrame.CanGoBack;
     }
 }

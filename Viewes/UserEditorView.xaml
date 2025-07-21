@@ -1,0 +1,40 @@
+﻿<Page x:Class="FireTestingApp_net8.Viewes.UserEditorView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
+      mc:Ignorable="d" 
+      d:DesignHeight="640" d:DesignWidth="960"
+      Title="UserEditorView">
+
+    <Grid Background="White" Margin="0,-5,0,5">
+        <TextBox Text="{Binding EditedUser.Firstname}" x:Name="TBFirstname" HorizontalAlignment="Center" Margin="0,230,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="27"/>
+
+        <TextBox Text="{Binding EditedUser.Lastname}" x:Name="TBLastname" HorizontalAlignment="Center" Margin="0,263,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28"/>
+
+        <TextBox Text="{Binding EditedUser.Surname}" x:Name="TBSurname" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,296,0,0"/>
+
+        <Label HorizontalContentAlignment="Right" Content="Пароль" Margin="245,400,612,0" VerticalAlignment="Top" Width="103" Height="28" VerticalContentAlignment="Stretch" FontSize="14"/>
+        <ComboBox ItemsSource="{Binding RoleList}" x:Name="CBExamStatus" SelectedValue="{Binding EditedUser.Roleid, Mode=TwoWay}" DisplayMemberPath="Rolename" SelectedValuePath="Roleid" HorizontalAlignment="Center" Margin="0,331,0,0" VerticalAlignment="Top" Width="254" Height="28" FontSize="14"/>
+
+        <Button Command="{Binding CancelEvent}" Content="Отмена" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="254" Height="38" Margin="0,0,0,72" FontSize="16"/>
+
+        <Button Command="{Binding SaveEvent}" Content="Сохранить и закрыть" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="254" Height="38" FontSize="16" Margin="0,0,0,140"/>
+        <TextBlock TextWrapping="Wrap" FontSize="36" FontWeight="Bold" TextAlignment="Center" VerticalAlignment="Top" Margin="0,120,0,0"><Run Text="Редактор "/><Run Language="ru-ru" Text="пользователя"/></TextBlock>
+        <Label HorizontalContentAlignment="Right" Content="Логин" Margin="245,367,612,0" VerticalAlignment="Top" Width="103" Height="28" FontSize="14"/>
+        <Label HorizontalContentAlignment="Right" Content="Роль" Margin="245,329,612,0" VerticalAlignment="Top" Width="103" Height="28" FontSize="14"/>
+        <Label HorizontalContentAlignment="Right" Content="Отчество" Margin="245,296,612,0" VerticalAlignment="Top" Width="103" Height="28" FontSize="14"/>
+        <Label HorizontalContentAlignment="Right" Content="Фамилия" Margin="245,263,612,0" VerticalAlignment="Top" Width="103" Height="28" FontSize="14"/>
+        <Label Content="Имя" Margin="245,230,612,0" VerticalAlignment="Top" Width="103" Height="28" HorizontalContentAlignment="Right" FontSize="14"/>
+        <Rectangle VerticalAlignment="Top" Height="98.8" Fill="#FF194F9E" Stroke="#FF568FE2"/>
+        <TextBlock TextWrapping="Wrap" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="White" Margin="0,23,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ"/><LineBreak/><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ"/></TextBlock>
+        <Rectangle Height="80" Width="80" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0">
+            <Rectangle.Fill>
+                <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
+            </Rectangle.Fill>
+        </Rectangle>
+        <TextBox Text="{Binding EditedUser.Userlogin}" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,367,0,0"/>
+        <TextBox Text="{Binding EditedUser.Userpassword}" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top" Width="254" Height="28" Margin="0,400,0,0"/>
+    </Grid>
+</Page>

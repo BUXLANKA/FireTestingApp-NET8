@@ -68,7 +68,7 @@ namespace FireTestingApp_net8.ViewModels
                 }
 
                 MessageBox.Show("данные успешно сохранены");
-                _navigation.NavigateTo<InstructorViewModel>();
+                _navigation.GoBack();
             }
             catch (Exception ex)
             {
@@ -77,7 +77,8 @@ namespace FireTestingApp_net8.ViewModels
         }
         private void Cancel()
         {
-            _navigation.NavigateTo<InstructorViewModel>();
+            //_navigation.NavigateTo<InstructorViewModel>();
+            _navigation.GoBack();
         }
     }
 }

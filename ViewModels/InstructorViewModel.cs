@@ -1,16 +1,20 @@
-﻿using FireTestingApp_net8.Models.Shema;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
+using FireTestingApp_net8.Viewes;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
-    public class InstructorViewModel : BaseViewModel
+    public class InstructorViewModel : BaseViewModel, IRecipient<SelectTabMessage>
     {
         // private
         private string? _welcomeMessage;
         private readonly INavigationService _navigation;
+        private int _selectedTabIndex;
 
         // constructor
         public InstructorViewModel(INavigationService navigation)
@@ -19,10 +23,13 @@ namespace FireTestingApp_net8.ViewModels
 
             ExitEvent = new RelayCommand(Exit);
             EditResultEvent = new RelayCommand<Result>(OnEdit);
+            EditUserEvent = new RelayCommand<User>(UserEdit);
             DeleteTicketEvent = new RelayCommand<Ticket>(DeleteTicket);
             DeleteResultEvent = new RelayCommand<Result>(DeleteResult);
 
             _navigation = navigation;
+            
+            WeakReferenceMessenger.Default.Register(this);
 
             using (var Context = new AppDbContext())
             {
@@ -61,6 +68,11 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(WelcomeMessage));
             }
         }
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set => SetProperty(ref _selectedTabIndex, value);
+        }
 
         // collection
         public ObservableCollection<Result> ResultsTable { get; set; }
@@ -70,6 +82,7 @@ namespace FireTestingApp_net8.ViewModels
 
         // command
         public RelayCommand<Result> EditResultEvent { get; }
+        public RelayCommand<User> EditUserEvent { get; }
         public RelayCommand<Ticket> DeleteTicketEvent { get; }
         public RelayCommand<Result> DeleteResultEvent { get; }
         public RelayCommand ExitEvent { get; }
@@ -86,6 +99,12 @@ namespace FireTestingApp_net8.ViewModels
             NavigationParameterService.Set("SelectedResult", result);
             _navigation.NavigateTo<ResultsEditorViewModel>();
         }
+
+        public void Receive(SelectTabMessage message)
+        {
+            SelectedTabIndex = message.TabIndex;
+        }
+
         private void DeleteTicket(Ticket ticket)
         {
             if (ticket == null) return;
@@ -155,6 +174,13 @@ namespace FireTestingApp_net8.ViewModels
                 return;
                 throw;
             }
+        }
+        private void UserEdit(User user)
+        {
+            if (user == null) return;
+
+            NavigationParameterService.Set("SelectedUser", user);
+            _navigation.NavigateTo<UserEditorViewModel>();
         }
     }
 }

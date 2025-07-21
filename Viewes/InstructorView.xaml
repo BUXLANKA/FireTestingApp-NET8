@@ -11,10 +11,10 @@
 
     <Grid Background="White">
 
-        <TabControl Margin="0,150,0,0">
-            
+        <TabControl Margin="0,150,0,0" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+
             <TabItem Header="Администрирование тестов">
-                <TabControl FontSize="14">
+                <TabControl FontSize="14" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
 
                     <TabItem Header="Результаты тестирования">
                         <Grid Background="#FFE5E5E5">
@@ -132,49 +132,56 @@
 
             <TabItem Header="Администрирование пользователей">
 
-                <TabControl>
+                <TabControl SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
                     <TabItem Header="Пользователи">
 
-                        <DataGrid ItemsSource="{Binding UserTable}" AutoGenerateColumns="false" IsReadOnly="true">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Имя" Binding="{Binding Firstname}"/>
-                                <DataGridTextColumn Header="Фамилия" Binding="{Binding Lastname}"/>
-                                <DataGridTextColumn Header="Отчество" Binding="{Binding Surname}"/>
-                                <DataGridTextColumn Header="Роль" Binding="{Binding Role.Rolename}"/>
-                                <DataGridTextColumn Header="Логин" Binding="{Binding Userlogin}"/>
-                                <DataGridTextColumn Header="Пароль" Binding="{Binding Userpassword}"/>
+                        <Grid>
 
-                                <DataGridTemplateColumn>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="Редактировать" 
-                                                    Background="#4CAF50"
-                                                    Foreground="White"
-                                                    Command=""
-                                                    CommandParameter=""/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
 
-                                <DataGridTemplateColumn>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="Удалить"
-                                                    Background="#F44336"
-                                                    Foreground="White"
-                                                    Command=""
-                                                    CommandParameter=""/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                
-                                
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        
+
+                            <DataGrid ItemsSource="{Binding UserTable}" AutoGenerateColumns="false" IsReadOnly="true" Margin="0,49,0,0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Имя" Binding="{Binding Firstname}"/>
+                                    <DataGridTextColumn Header="Фамилия" Binding="{Binding Lastname}"/>
+                                    <DataGridTextColumn Header="Отчество" Binding="{Binding Surname}"/>
+                                    <DataGridTextColumn Header="Роль" Binding="{Binding Role.Rolename}"/>
+                                    <DataGridTextColumn Header="Логин" Binding="{Binding Userlogin}"/>
+                                    <DataGridTextColumn Header="Пароль" Binding="{Binding Userpassword}"/>
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Редактировать" 
+                            Background="#4CAF50"
+                            Foreground="White"
+                            Command="{Binding DataContext.EditUserEvent,
+                            RelativeSource={RelativeSource AncestorType=Page}}"
+                            CommandParameter="{Binding}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="Удалить"
+                            Background="#F44336"
+                            Foreground="White"
+                            Command=""
+                            CommandParameter=""/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Button Content="Создать пользователя" Width="150" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0"/>
+                        </Grid>
+
                     </TabItem>
                 </TabControl>
-                
+
             </TabItem>
         </TabControl>
 
