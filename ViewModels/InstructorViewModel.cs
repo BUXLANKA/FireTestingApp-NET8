@@ -20,6 +20,7 @@ namespace FireTestingApp_net8.ViewModels
             ExitEvent = new RelayCommand(Exit);
             EditResultEvent = new RelayCommand<Result>(OnEdit);
             DeleteTicketEvent = new RelayCommand<Ticket>(DeleteTicket);
+            DeleteResultEvent = new RelayCommand<Result>(DeleteResult);
 
             _navigation = navigation;
 
@@ -63,8 +64,9 @@ namespace FireTestingApp_net8.ViewModels
 
         // command
         public RelayCommand<Result> EditResultEvent { get; }
-        public RelayCommand ExitEvent { get; }
         public RelayCommand<Ticket> DeleteTicketEvent { get; }
+        public RelayCommand<Result> DeleteResultEvent { get; }
+        public RelayCommand ExitEvent { get; }
 
         // logic
         private void Exit()
@@ -82,18 +84,69 @@ namespace FireTestingApp_net8.ViewModels
         {
             if (ticket == null) return;
 
+            MessageBoxResult msgUserChoice = MessageBox.Show(
+                $"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
+                "Удаление строки",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning,
+                MessageBoxResult.No);
+
             try
             {
-                using (var context = new AppDbContext())
+                if (msgUserChoice == MessageBoxResult.Yes)
                 {
-                    context.Tickets.Remove(ticket);
-                    context.SaveChanges();
-                    TicketTable.Remove(ticket);
+                    using (var context = new AppDbContext())
+                    {
+                        context.Tickets.Remove(ticket);
+                        context.SaveChanges();
+                        TicketTable.Remove(ticket);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Процесс удаления остановлен");
+                    return;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Произошла ошибка при обработке команды\n{ex.Message}");
+                MessageBox.Show($"Произошла ошибка при выполнении запроса\n{ex.Message}");
+                return;
+                throw;
+            }
+        }
+        private void DeleteResult(Result result)
+        {
+            if (result == null) return;
+
+            MessageBoxResult msgUserChoice = MessageBox.Show(
+                        $"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
+                        "Удаление строки",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning,
+                        MessageBoxResult.No);
+
+            try
+            {
+                if (msgUserChoice == MessageBoxResult.Yes)
+                {
+                    using (var context = new AppDbContext())
+                    {
+                        context.Results.Remove(result);
+                        context.SaveChanges();
+                        ResultsTable.Remove(result);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Процесс удаления остановлен");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка при выполнении запроса\n{ex.Message}");
+                return;
                 throw;
             }
         }
