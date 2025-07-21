@@ -56,6 +56,7 @@ namespace FireTestingApp_net8.ViewModels
                             result.Statusid = EditedResult.Statusid;
                             result.Testdate = EditedResult.Testdate;
                             context.SaveChanges();
+
                         }
                     }
                     else

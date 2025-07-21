@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using FireTestingApp_net8.Models;
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using FireTestingApp_net8.Viewes;
@@ -30,34 +31,39 @@ namespace FireTestingApp_net8.ViewModels
             CreateNewUserEvent = new RelayCommand(CreateUser);
 
             _navigation = navigation;
-            
+
             //WeakReferenceMessenger.Default.Register(this);
 
-            using (var Context = new AppDbContext())
-            {
-                var ResultsList = Context.Results
-                    .Include(r => r.User)
-                    .Include(r => r.Status)
-                    .ToList();
-                ResultsTable = new ObservableCollection<Result>(ResultsList);
+            //using (var Context = new AppDbContext())
+            //{
+            //    var ResultsList = Context.Results
+            //        .Include(r => r.User)
+            //        .Include(r => r.Status)
+            //        .ToList();
+            //    ResultsTable = new ObservableCollection<Result>(ResultsList);
 
-                var UserAnswerList = Context.Useranswers
-                    .Include(r => r.User)
-                    .Include(r => r.Question)
-                    .Include(r => r.Answer)
-                    .ToList();
-                UserAnswerTable = new ObservableCollection<Useranswer>(UserAnswerList);
+            //    var UserAnswerList = Context.Useranswers
+            //        .Include(r => r.User)
+            //        .Include(r => r.Question)
+            //        .Include(r => r.Answer)
+            //        .ToList();
+            //    UserAnswerTable = new ObservableCollection<Useranswer>(UserAnswerList);
 
-                var TicketList = Context.Tickets
-                    .Include(r => r.Fromuser)
-                    .ToList();
-                TicketTable = new ObservableCollection<Ticket>(TicketList);
+            //    var TicketList = Context.Tickets
+            //        .Include(r => r.Fromuser)
+            //        .ToList();
+            //    TicketTable = new ObservableCollection<Ticket>(TicketList);
 
-                var userList = Context.Users
-                    .Include(r => r.Role)
-                    .ToList();
-                UserTable = new ObservableCollection<User>(userList);
-            }
+            //    var userList = Context.Users
+            //        .Include(r => r.Role)
+            //        .ToList();
+            //    UserTable = new ObservableCollection<User>(userList);
+            //}
+
+            ResultsTable = TableAgent.GetResults();
+            UserAnswerTable = TableAgent.GetUserAnswers();
+            TicketTable = TableAgent.GetTickets();
+            UserTable = TableAgent.GetUsers();
         }
 
         // public
@@ -77,6 +83,9 @@ namespace FireTestingApp_net8.ViewModels
         //}
 
         // collection
+
+        // todo сделать эту хуйню через private - public свойства. иначе нихуя не работает
+
         public ObservableCollection<Result> ResultsTable { get; set; }
         public ObservableCollection<Useranswer> UserAnswerTable { get; set; }
         public ObservableCollection<Ticket> TicketTable { get; set; }
@@ -101,8 +110,6 @@ namespace FireTestingApp_net8.ViewModels
 
             NavigationParameterService.Set("SelectedResult", result);
             _navigation.NavigateTo<ResultsEditorViewModel>();
-            
-            ResultsTable = new ObservableCollection<Result>(resultli);
         }
 
         //public void Receive(SelectTabMessage message)
