@@ -15,7 +15,7 @@ namespace FireTestingApp_net8.ViewModels
         // private
         private string? _welcomeMessage;
         private readonly INavigationService _navigation;
-        private int _selectedTabIndex;
+        //private int _selectedTabIndex;
 
         // constructor
         public InstructorViewModel(INavigationService navigation)
