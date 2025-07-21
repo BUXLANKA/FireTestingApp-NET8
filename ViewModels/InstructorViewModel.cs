@@ -2,6 +2,7 @@
 using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -18,6 +19,7 @@ namespace FireTestingApp_net8.ViewModels
 
             ExitEvent = new RelayCommand(Exit);
             EditResultEvent = new RelayCommand<Result>(OnEdit);
+            DeleteTicketEvent = new RelayCommand<Ticket>(DeleteTicket);
 
             _navigation = navigation;
 
@@ -62,6 +64,7 @@ namespace FireTestingApp_net8.ViewModels
         // command
         public RelayCommand<Result> EditResultEvent { get; }
         public RelayCommand ExitEvent { get; }
+        public RelayCommand<Ticket> DeleteTicketEvent { get; }
 
         // logic
         private void Exit()
@@ -74,6 +77,25 @@ namespace FireTestingApp_net8.ViewModels
 
             NavigationParameterService.Set("SelectedResult", result);
             _navigation.NavigateTo<ResultsEditorViewModel>();
+        }
+        private void DeleteTicket(Ticket ticket)
+        {
+            if (ticket == null) return;
+
+            try
+            {
+                using (var context = new AppDbContext())
+                {
+                    context.Tickets.Remove(ticket);
+                    context.SaveChanges();
+                    TicketTable.Remove(ticket);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка при обработке команды\n{ex.Message}");
+                throw;
+            }
         }
     }
 }

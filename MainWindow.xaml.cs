@@ -74,7 +74,7 @@ namespace FireTestingApp_net8
                 return page;
             });
 
-            Navigation.NavigateTo<LoginViewModel>();
+            Navigation.NavigateTo<InstructorViewModel>();
 
             this.MinHeight = 720;
             this.MinWidth = 1024;
