@@ -21,6 +21,12 @@ namespace FireTestingApp_net8.ViewModels
         // constructor
         public InstructorViewModel(INavigationService navigation)
         {
+            WeakReferenceMessenger.Default.Register<ResultsUpdatedMessage>(this, (r, m) =>
+            {
+                UpdateResultTable();
+            });
+            UpdateResultTable();
+
             WelcomeMessage = $"Добро пожаловать!";
 
             ExitEvent = new RelayCommand(Exit);
@@ -198,6 +204,11 @@ namespace FireTestingApp_net8.ViewModels
         {
             NavigationParameterService.Set("UserKeyObject", new User());
             _navigation.NavigateTo<UserEditorViewModel>();
+        }
+        private void UpdateResultTable()
+        {
+            ResultsTable = TableAgent.GetResults();
+            OnPropertyChanged(nameof(ResultsTable));
         }
     }
 }
