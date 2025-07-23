@@ -36,6 +36,7 @@ namespace FireTestingApp_net8.ViewModels
             DeleteTicketEvent = new RelayCommand<Ticket>(DeleteTicket);
             DeleteResultEvent = new RelayCommand<Result>(DeleteResult);
             CreateNewUserEvent = new RelayCommand(CreateUser);
+            AddNewQuestionEvent = new RelayCommand(CreateQuestion);
 
             _navigation = navigation;
 
@@ -105,6 +106,7 @@ namespace FireTestingApp_net8.ViewModels
         public RelayCommand<Result> DeleteResultEvent { get; }
         public RelayCommand ExitEvent { get; }
         public RelayCommand CreateNewUserEvent { get; }
+        public RelayCommand AddNewQuestionEvent { get; }
 
         // logic
         private void Exit()
@@ -216,6 +218,10 @@ namespace FireTestingApp_net8.ViewModels
         {
             UserTable = TableAgent.GetUsers();
             OnPropertyChanged(nameof(UserTable));
+        }
+        private void CreateQuestion()
+        {
+            _navigation.NavigateTo<QuestionEditorViewModel>();
         }
     }
 }

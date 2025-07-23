@@ -82,6 +82,14 @@ namespace FireTestingApp_net8
                 return page;
             });
 
+            Navigation.Register<QuestionEditorViewModel>(() =>
+            {
+                var vm = new QuestionEditorViewModel(Navigation);
+                var page = new QuestionEditorView();
+                page.DataContext = vm;
+                return page;
+            });
+
             Navigation.NavigateTo<InstructorViewModel>();
 
             this.MinHeight = 720;
