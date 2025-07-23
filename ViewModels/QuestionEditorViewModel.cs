@@ -1,153 +1,86 @@
-﻿using FireTestingApp_net8.Models.Shema;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
     public class QuestionEditorViewModel : BaseViewModel
     {
-        // private
         private readonly INavigationService _navigation;
 
-        //private string? _newQuestionText;
-        //private string? _answerTextVariant1;
-        //private string? _answerTextVariant2;
-        //private string? _answerTextVariant3;
-        //private string? _answerTextVariant4;
-        //private string? _answerTextVariant5;
-
-        private int? _selectedAnswerIndex;
-
-        // constructor
         public QuestionEditorViewModel(INavigationService navigation)
         {
             _navigation = navigation;
 
-            AddNewQuestionEvent = new RelayCommand(Save);
-
             QuestionObject = NavigationParameterService.Get<Question>("QuestionObject") ?? new Question();
-            AnswerObject = NavigationParameterService.Get<Answer>("AnswerObject") ?? new Answer();
-        }
+            Answers = new ObservableCollection<Answer>();
 
-        // public
+            SaveEvent = new RelayCommand(Save);
+            CancelEvent = new RelayCommand(Cancel);
 
-
-        public int? SelectedAnswerIndex
-        {
-            get => _selectedAnswerIndex;
-            set
+            if (QuestionObject.Questionid != 0)
             {
-                _selectedAnswerIndex = value;
-                OnPropertyChanged(nameof(SelectedAnswerIndex));
+                using var context = new AppDbContext();
+                var loadedAnswers = context.Answers
+                    .Where(a => a.Questionid == QuestionObject.Questionid)
+                    .OrderBy(a => a.Answerid)
+                    .ToList();
+
+                foreach (var answer in loadedAnswers)
+                    Answers.Add(answer);
+
+                SelectedAnswerIndex = loadedAnswers.FindIndex(a => a.Iscorrectanswer);
+            }
+            else
+            {
+                for (int i = 0; i < 5; i++)
+                    Answers.Add(new Answer());
             }
         }
-        //public string? NewQuestionText
-        //{
-        //    get => _newQuestionText;
-        //    set
-        //    {
-        //        _newQuestionText = value;
-        //        OnPropertyChanged(nameof(NewQuestionText));
-        //    }
-        //}
-        //public string? AnswerTextVariant1
-        //{
-        //    get => _answerTextVariant1;
-        //    set
-        //    {
-        //        _answerTextVariant1 = value;
-        //        OnPropertyChanged(nameof(AnswerTextVariant1));
-        //    }
-        //}
-        //public string? AnswerTextVariant2
-        //{
-        //    get => _answerTextVariant2;
-        //    set
-        //    {
-        //        _answerTextVariant2 = value;
-        //        OnPropertyChanged(nameof(AnswerTextVariant2));
-        //    }
-        //}
-        //public string? AnswerTextVariant3
-        //{
-        //    get => _answerTextVariant3;
-        //    set
-        //    {
-        //        _answerTextVariant3 = value;
-        //        OnPropertyChanged(nameof(AnswerTextVariant3));
-        //    }
-        //}
-        //public string? AnswerTextVariant4
-        //{
-        //    get => _answerTextVariant4;
-        //    set
-        //    {
-        //        _answerTextVariant4 = value;
-        //        OnPropertyChanged(nameof(AnswerTextVariant4));
-        //    }
-        //}
-        //public string? AnswerTextVariant5
-        //{
-        //    get => _answerTextVariant5;
-        //    set
-        //    {
-        //        _answerTextVariant5 = value;
-        //        OnPropertyChanged(nameof(AnswerTextVariant5));
-        //    }
-        //}
+
         public Question QuestionObject { get; set; }
-        public Answer AnswerObject { get; set; }
+        public ObservableCollection<Answer> Answers { get; set; }
+        public int SelectedAnswerIndex { get; set; } = -1;
 
-        // collection
+        public RelayCommand SaveEvent { get; }
+        public RelayCommand CancelEvent { get; }
 
-
-        // command
-        public RelayCommand AddNewQuestionEvent { get; }
-
-        // logic
         private void Save()
         {
+            if (string.IsNullOrWhiteSpace(QuestionObject.Questiontext))
+            {
+                MessageBox.Show($"dbg questiontext nul");
+                return;
+            }
+
+            if (Answers.Any(a => string.IsNullOrWhiteSpace(a.Answertext)))
+            {
+                MessageBox.Show($"dbg answer txt is nul");
+                return;
+            }
+
+            if (SelectedAnswerIndex < 0 || SelectedAnswerIndex >= Answers.Count)
+            {
+                MessageBox.Show($"dbg answer index is nul");
+                return;
+            }
+
             using (var context = new AppDbContext())
             {
-                #region Добавление нового билета
-                if (string.IsNullOrWhiteSpace(QuestionObject.Questiontext) ||
-                    string.IsNullOrWhiteSpace(QuestionObject.))
-                {
-                    MessageBox.Show($"dbg: str null");
-                    return;
-                }
-
+                #region Добавление билета
                 if (QuestionObject.Questionid == 0)
                 {
-                    var existQuestion = context.Questions
-                        .FirstOrDefault(q => q.Questiontext ==  QuestionObject.Questiontext);
-
-                    if (existQuestion != null)
-                    {
-                        MessageBox.Show($"dbg Q exist");
-                        return;
-                    }
-
-                    Question newQuestion = new()
-                    {
-                        Questiontext = QuestionObject.Questiontext
-                    };
-
                     try
                     {
-                        context.Questions.Add(newQuestion);
+                        context.Questions.Add(QuestionObject);
                         context.SaveChanges();
-                        MessageBox.Show($"dbg q is OK");
-
+                        MessageBox.Show($"dbg questionobj add");
                     }
                     catch (Exception ex)
                     {
@@ -155,22 +88,16 @@ namespace FireTestingApp_net8.ViewModels
                         throw;
                     }
 
-
-                    var answers = new[]
+                    for (int i = 0; i < Answers.Count; i++)
                     {
-                        new Answer { Questionid = newQuestion.Questionid, Answertext = AnswerObject.Answertext, Iscorrectanswer = (SelectedAnswerIndex == 0) },
-                        new Answer { Questionid = newQuestion.Questionid, Answertext = AnswerObject.Answertext, Iscorrectanswer = (SelectedAnswerIndex == 1) },
-                        new Answer { Questionid = newQuestion.Questionid, Answertext = AnswerObject.Answertext, Iscorrectanswer = (SelectedAnswerIndex == 2) },
-                        new Answer { Questionid = newQuestion.Questionid, Answertext = AnswerObject.Answertext, Iscorrectanswer = (SelectedAnswerIndex == 3) },
-                        new Answer { Questionid = newQuestion.Questionid, Answertext = AnswerObject.Answertext, Iscorrectanswer = (SelectedAnswerIndex == 4) }
-                    };
+                        Answers[i].Questionid = QuestionObject.Questionid;
+                        Answers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+                        context.Answers.Add(Answers[i]);
+                    }
 
                     try
                     {
-                        context.Answers.AddRange(answers);
                         context.SaveChanges();
-                        MessageBox.Show($"dbg answers OK");
-                        return;
                     }
                     catch (Exception ex)
                     {
@@ -179,131 +106,135 @@ namespace FireTestingApp_net8.ViewModels
                     }
                 }
                 #endregion
+
+                #region Редактирование билета
+                if (QuestionObject.Questionid != 0)
+                {
+                    var existedQuestion = context.Questions
+                        .FirstOrDefault(q => q.Questionid ==  QuestionObject.Questionid);
+
+                    if (existedQuestion == null)
+                    {
+                        MessageBox.Show($"dbg question not ex");
+                        return;
+                    }
+
+                    existedQuestion.Questiontext = QuestionObject.Questiontext;
+
+                    try
+                    {
+                        context.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{ex.Message}");
+                        return;
+                        throw;
+                    }
+
+                    var existingAnswers = context.Answers
+                        .Where(a => a.Questionid == QuestionObject.Questionid).ToList();
+
+                    for (int i = 0; i < existingAnswers.Count; i++)
+                    {
+                        existingAnswers[i].Answertext = Answers[i].Answertext;
+                        existingAnswers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+                    }
+
+                    try
+                    {
+                        context.SaveChanges();
+                        MessageBox.Show($"Q and A updated");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{ex.Message}");
+                        return;
+                        throw;
+                    }
+                }
+                #endregion
             }
         }
 
-
-
-
-        //private void AddNewQuestion()
+        //private void Save()
         //{
-        //    //if (string.IsNullOrWhiteSpace(NewQuestionText))
-        //    //{
-        //    //    MessageBox.Show($"DEBUG:STR IS NULL1");
-        //    //    return;
-        //    //}
-
-        //    //if (SelectedAnswerIndex == null ||
-        //    //    SelectedAnswerIndex < 0 ||
-        //    //    SelectedAnswerIndex > 4)
-        //    //{
-        //    //    MessageBox.Show($"debug: index is null");
-        //    //    return;
-        //    //}
-
-        //    //if (string.IsNullOrWhiteSpace(AnswerTextVariant1) ||
-        //    //    string.IsNullOrWhiteSpace(AnswerTextVariant2) ||
-        //    //    string.IsNullOrWhiteSpace(AnswerTextVariant3) ||
-        //    //    string.IsNullOrWhiteSpace(AnswerTextVariant4) ||
-        //    //    string.IsNullOrWhiteSpace(AnswerTextVariant5))
-        //    //{
-        //    //    MessageBox.Show($"debug answ str null1");
-        //    //    return;
-        //    //}
-
-        //    using (var context = new AppDbContext())
+        //    if (string.IsNullOrWhiteSpace(QuestionObject.Questiontext))
         //    {
-        //        #region Добавление нового билета
-        //        //Question newQuestion = new()
-        //        //{
-        //        //    Questiontext = NewQuestionText
-        //        //};
+        //        MessageBox.Show("Вопрос не может быть пустым.");
+        //        return;
+        //    }
 
-        //        //try
-        //        //{
-        //        //    context.Questions.Add(newQuestion);
-        //        //    context.SaveChanges();
-        //        //}
-        //        //catch (Exception ex)
-        //        //{
-        //        //    MessageBox.Show($"{ex.Message}");
-        //        //    return;
-        //        //    throw;
-        //        //}
+        //    if (Answers.Any(a => string.IsNullOrWhiteSpace(a.Answertext)))
+        //    {
+        //        MessageBox.Show("Все ответы должны быть заполнены.");
+        //        return;
+        //    }
 
-        //        //var answers = new[]
-        //        //{
-        //        //    AnswerTextVariant1,
-        //        //    AnswerTextVariant2,
-        //        //    AnswerTextVariant3,
-        //        //    AnswerTextVariant4,
-        //        //    AnswerTextVariant5
-        //        //};
+        //    if (SelectedAnswerIndex < 0 || SelectedAnswerIndex >= Answers.Count)
+        //    {
+        //        MessageBox.Show("Выберите правильный ответ.");
+        //        return;
+        //    }
 
-        //        //for (int i = 0; i < answers.Length; i++)
-        //        //{
-        //        //    Answer newAnswer = new()
-        //        //    {
-        //        //        Questionid = newQuestion.Questionid,
-        //        //        Answertext = answers[i],
-        //        //        Iscorrectanswer = (i == SelectedAnswerIndex)
-        //        //    };
-        //        //    context.Answers.Add(newAnswer);
-        //        //}
+        //    using var context = new AppDbContext();
 
-        //        //try
-        //        //{
-        //        //    context.SaveChanges();
-        //        //    MessageBox.Show($"debug: done");
-        //        //}
-        //        //catch (Exception ex)
-        //        //{
-        //        //    MessageBox.Show($"{ex.Message}");
-        //        //    throw;
-        //        //}
-        //        #endregion
+        //    try
+        //    {
+        //        // Добавление
+        //        if (QuestionObject.Questionid == 0)
+        //        {
+        //            context.Questions.Add(QuestionObject);
+        //            context.SaveChanges();
 
-        //        #region Изменение существующего билета
+        //            for (int i = 0; i < Answers.Count; i++)
+        //            {
+        //                Answers[i].Questionid = QuestionObject.Questionid;
+        //                Answers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+        //                context.Answers.Add(Answers[i]);
+        //            }
 
-        //        var selectedQuestion = context.Questions.FirstOrDefault(q => q.Questionid == QuestionObject.Questionid).ToString();
+        //            context.SaveChanges();
+        //            MessageBox.Show("Вопрос и ответы добавлены.");
+        //        }
+        //        else // Редактирование
+        //        {
+        //            var existingQuestion = context.Questions.FirstOrDefault(q => q.Questionid == QuestionObject.Questionid);
+        //            if (existingQuestion == null)
+        //            {
+        //                MessageBox.Show("Вопрос не найден.");
+        //                return;
+        //            }
 
-        //        NewQuestionText = selectedQuestion;
-        //        //if (QuestionObject != null)
-        //        //{
-        //        //    var selectedQuestion = context.Questions
-        //        //        .Include(q => q.Answers)
-        //        //        .FirstOrDefault(q => q.Questionid == QuestionObject.Questionid);
+        //            existingQuestion.Questiontext = QuestionObject.Questiontext;
+        //            context.SaveChanges();
 
-        //        //    if (selectedQuestion == null)
-        //        //    {
-        //        //        MessageBox.Show($"dbg: select nul");
-        //        //        return;
-        //        //    }
+        //            var existingAnswers = context.Answers.Where(a => a.Questionid == QuestionObject.Questionid).ToList();
 
-        //        //    NewQuestionText = selectedQuestion.Questiontext;
+        //            for (int i = 0; i < existingAnswers.Count; i++)
+        //            {
+        //                existingAnswers[i].Answertext = Answers[i].Answertext;
+        //                existingAnswers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+        //            }
 
-        //        //    var answerOfSelected = QuestionObject.Answers.OrderBy(a => a.Answerid).ToList();
+        //            context.SaveChanges();
+        //            MessageBox.Show("Вопрос и ответы обновлены.");
+        //        }
 
-        //        //    AnswerTextVariant1 = answerOfSelected.ElementAtOrDefault(0)?.Answertext;
-        //        //    AnswerTextVariant2 = answerOfSelected.ElementAtOrDefault(1)?.Answertext;
-        //        //    AnswerTextVariant3 = answerOfSelected.ElementAtOrDefault(2)?.Answertext;
-        //        //    AnswerTextVariant4 = answerOfSelected.ElementAtOrDefault(3)?.Answertext;
-        //        //    AnswerTextVariant5 = answerOfSelected.ElementAtOrDefault(4)?.Answertext;
-
-        //        //    var correctIndex = answerOfSelected.FindIndex(a => a.Iscorrectanswer);
-
-        //        //    if (correctIndex != -1)
-        //        //    {
-        //        //        SelectedAnswerIndex = correctIndex;
-        //        //    }
-        //        //}
-        //        //else
-        //        //{
-        //        //    MessageBox.Show($"debug: ques = nul");
-        //        //    return;
-        //        //}
-        //        #endregion
+        //        WeakReferenceMessenger.Default.Send(new UpdateMessage());
+        //        _navigation.GoBack();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Ошибка сохранения: {ex.Message}");
+        //        throw;
         //    }
         //}
+
+        private void Cancel()
+        {
+            _navigation.GoBack();
+        }
     }
 }

@@ -229,20 +229,11 @@ namespace FireTestingApp_net8.ViewModels
         }
         private void EditQuestion(Question question)
         {
-            
+            if (question == null) return;
 
-            using (var context = new AppDbContext())
-            {
-                var AnswerQuestion = context.Questions
-                    .Include(q => q.Answers)
-                    .FirstOrDefault(q => q.Questionid == question.Questionid);
-
-                if (AnswerQuestion == null) return;
-
-                NavigationParameterService.Set("QuestionObject", AnswerQuestion);
-                //NavigationParameterService.Set("AnswerObject", answer);
-                _navigation.NavigateTo<QuestionEditorViewModel>();
-            }            
+            NavigationParameterService.Set("QuestionObject", question);
+            //NavigationParameterService.Set("AnswerObject", answer);
+            _navigation.NavigateTo<QuestionEditorViewModel>();
         }
     }
 }
