@@ -59,7 +59,9 @@ namespace FireTestingApp_net8.Models
         {
             using (var context = new AppDbContext())
             {
-                var questionList = context.Questions.ToList();
+                var questionList = context.Questions
+                    .Include(q => q.Answers)
+                    .ToList();
                 return new ObservableCollection<Question>(questionList);
             }
         }
