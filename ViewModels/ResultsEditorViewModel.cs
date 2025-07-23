@@ -70,7 +70,7 @@ namespace FireTestingApp_net8.ViewModels
                 }
 
                 MessageBox.Show("данные успешно сохранены");
-                WeakReferenceMessenger.Default.Send(new ResultsUpdatedMessage());
+                WeakReferenceMessenger.Default.Send(new UpdateMessage());
                 MessageBox.Show("MSG SEND!");
                 _navigation.GoBack();
             }

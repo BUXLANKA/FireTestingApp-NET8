@@ -32,8 +32,8 @@ namespace FireTestingApp_net8.ViewModels
             {
                 RoleList = new ObservableCollection<Role>(context.Roles.ToList());
             }
-
-                _navigatoin = navigatoin;
+            
+            _navigatoin = navigatoin;
         }
 
         // public
@@ -123,6 +123,7 @@ namespace FireTestingApp_net8.ViewModels
                     try
                     {
                         context.SaveChanges();
+                        WeakReferenceMessenger.Default.Send(new UpdateMessage());
                         MessageBox.Show($"UPDATED");
                         return;
                     }

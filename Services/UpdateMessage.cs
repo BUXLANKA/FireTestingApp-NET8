@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace FireTestingApp_net8.Services
 {
-    public class ResultsUpdatedMessage : ValueChangedMessage<bool>
+    public class UpdateMessage : ValueChangedMessage<bool>
     {
-        public ResultsUpdatedMessage() : base(true) { }
+        public UpdateMessage() : base(true) { }
     }
 }
