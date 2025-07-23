@@ -91,8 +91,10 @@
                         </Grid>
                     </TabItem>
 
-                    <TabItem x:Name="DGTickets" Header="Тикеты">
-                        <Grid Background="#FFE5E5E5"/>
+                    <TabItem x:Name="DGTickets" Header="Билеты">
+                        <Grid>
+                            <Button Content="Новый билет" HorizontalAlignment="Center" VerticalAlignment="Center" Width="228" Height="52"/>
+                        </Grid>
                     </TabItem>
 
                 </TabControl>
