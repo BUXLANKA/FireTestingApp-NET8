@@ -37,6 +37,7 @@ namespace FireTestingApp_net8.ViewModels
             DeleteResultEvent = new RelayCommand<Result>(DeleteResult);
             CreateNewUserEvent = new RelayCommand(CreateUser);
             AddNewQuestionEvent = new RelayCommand(CreateQuestion);
+            EditQuestionEvent = new RelayCommand<Question>(EditQuestion);
 
             _navigation = navigation;
 
@@ -72,6 +73,7 @@ namespace FireTestingApp_net8.ViewModels
             UserAnswerTable = TableAgent.GetUserAnswers();
             TicketTable = TableAgent.GetTickets();
             UserTable = TableAgent.GetUsers();
+            QuestionTable = TableAgent.GetQuestions();
         }
 
         // public
@@ -98,6 +100,7 @@ namespace FireTestingApp_net8.ViewModels
         public ObservableCollection<Useranswer> UserAnswerTable { get; set; }
         public ObservableCollection<Ticket> TicketTable { get; set; }
         public ObservableCollection<User> UserTable { get; set; }
+        public ObservableCollection<Question> QuestionTable { get; set; }
 
         // command
         public RelayCommand<Result> EditResultEvent { get; }
@@ -107,6 +110,7 @@ namespace FireTestingApp_net8.ViewModels
         public RelayCommand ExitEvent { get; }
         public RelayCommand CreateNewUserEvent { get; }
         public RelayCommand AddNewQuestionEvent { get; }
+        public RelayCommand<Question> EditQuestionEvent { get; }
 
         // logic
         private void Exit()
@@ -221,6 +225,12 @@ namespace FireTestingApp_net8.ViewModels
         }
         private void CreateQuestion()
         {
+            _navigation.NavigateTo<QuestionEditorViewModel>();
+        }
+        private void EditQuestion(Question question)
+        {
+            if (question == null) return;
+            NavigationParameterService.Set("QuestionObject", question);
             _navigation.NavigateTo<QuestionEditorViewModel>();
         }
     }

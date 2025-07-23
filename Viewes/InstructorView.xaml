@@ -93,7 +93,30 @@
 
                     <TabItem x:Name="DGTickets" Header="Билеты">
                         <Grid>
-                            <Button Command="{Binding AddNewQuestionEvent}" Content="Новый билет" HorizontalAlignment="Center" VerticalAlignment="Center" Width="228" Height="52"/>
+                            <Button Command="{Binding AddNewQuestionEvent}" Content="Новый билет" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,10" Height="44" Width="152"/>
+
+                            <DataGrid AutoGenerateColumns="False" IsReadOnly="true" ItemsSource="{Binding QuestionTable}" Margin="0,0,0,65">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Вопрос" Binding="{Binding Questiontext}">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button Content="подробнее"
+                                                        Command="{Binding DataContext.EditQuestionEvent,
+                                                    RelativeSource={RelativeSource AncestorType=Page}}"
+                                                        CommandParameter="{Binding}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </Grid>
                     </TabItem>
 
@@ -152,37 +175,37 @@
                     </TabItem>
                     <TabItem Header="Тикеты">
                         <DataGrid ItemsSource="{Binding TicketTable}" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True" FontSize="14">
-    <DataGrid.Columns>
-        <DataGridTextColumn Header="Имя" Binding="{Binding Fromuser.Firstname}"/>
-        <DataGridTextColumn Header="Фамилия" Binding="{Binding Fromuser.Lastname}"/>
-        <DataGridTextColumn Header="Отчество" Binding="{Binding Fromuser.Surname}"/>
-        <DataGridTextColumn Header="Дата" Binding="{Binding Ticketdate, StringFormat=dd.MM.yyy | HH:MM}"/>
-        <DataGridTextColumn Header="Описание" MaxWidth="500" Binding="{Binding Tickettext}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Имя" Binding="{Binding Fromuser.Firstname}"/>
+                                <DataGridTextColumn Header="Фамилия" Binding="{Binding Fromuser.Lastname}"/>
+                                <DataGridTextColumn Header="Отчество" Binding="{Binding Fromuser.Surname}"/>
+                                <DataGridTextColumn Header="Дата" Binding="{Binding Ticketdate, StringFormat=dd.MM.yyy | HH:MM}"/>
+                                <DataGridTextColumn Header="Описание" MaxWidth="500" Binding="{Binding Tickettext}">
 
-            <DataGridTextColumn.ElementStyle>
-                <Style TargetType="{x:Type TextBlock}">
-                    <Setter Property="TextWrapping" Value="Wrap"/>
-                </Style>
-            </DataGridTextColumn.ElementStyle>
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="TextWrapping" Value="Wrap"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
 
-        </DataGridTextColumn>
-
-
+                                </DataGridTextColumn>
 
 
-        <DataGridTemplateColumn>
-            <DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                    <Button Content="Удалить"
+
+
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Удалить"
                         Background="#F44336"
                         Foreground="White"
                         Command="{Binding DataContext.DeleteTicketEvent, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                         CommandParameter="{Binding}"/>
-                </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-        </DataGridTemplateColumn>
-    </DataGrid.Columns>
-</DataGrid>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
 
                     </TabItem>
                 </TabControl>

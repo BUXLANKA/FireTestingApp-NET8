@@ -55,5 +55,13 @@ namespace FireTestingApp_net8.Models
                 return new ObservableCollection<User>(userList);
             }
         }
+        public static ObservableCollection<Question> GetQuestions()
+        {
+            using (var context = new AppDbContext())
+            {
+                var questionList = context.Questions.ToList();
+                return new ObservableCollection<Question>(questionList);
+            }
+        }
     }
 }

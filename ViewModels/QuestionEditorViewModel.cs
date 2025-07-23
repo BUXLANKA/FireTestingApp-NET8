@@ -1,6 +1,8 @@
 ﻿using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +33,7 @@ namespace FireTestingApp_net8.ViewModels
             _navigation = navigation;
 
             AddNewQuestionEvent = new RelayCommand(AddNewQuestion);
+            QuestionObject = NavigationParameterService.Get<Question>("QuestionObject") ?? new Question();
         }
 
         // public
@@ -97,6 +100,7 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(AnswerTextVariant5));
             }
         }
+        public Question? QuestionObject { get; set; }
 
         // collection
 
@@ -133,7 +137,7 @@ namespace FireTestingApp_net8.ViewModels
 
             using (var context = new AppDbContext())
             {
-                // добавление нового вопроса
+                #region Добавление нового билета
                 Question newQuestion = new()
                 {
                     Questiontext = NewQuestionText
@@ -151,7 +155,6 @@ namespace FireTestingApp_net8.ViewModels
                     throw;
                 }
 
-                // добавление ответов на вопрос
                 var answers = new[]
                 {
                     AnswerTextVariant1,
@@ -182,6 +185,44 @@ namespace FireTestingApp_net8.ViewModels
                     MessageBox.Show($"{ex.Message}");
                     throw;
                 }
+                #endregion
+
+                #region Изменение существующего билета
+                //if (QuestionObject != null)
+                //{
+                //    var selectedQuestion = context.Questions
+                //        .Include(q => q.Answers)
+                //        .FirstOrDefault(q => q.Questionid == QuestionObject.Questionid);
+
+                //    if (selectedQuestion == null)
+                //    {
+                //        MessageBox.Show($"dbg: select nul");
+                //        return;
+                //    }
+
+                //    NewQuestionText = selectedQuestion.Questiontext;
+
+                //    var answerOfSelected = QuestionObject.Answers.OrderBy(a => a.Answerid).ToList();
+
+                //    AnswerTextVariant1 = answerOfSelected.ElementAtOrDefault(0)?.Answertext;
+                //    AnswerTextVariant2 = answerOfSelected.ElementAtOrDefault(1)?.Answertext;
+                //    AnswerTextVariant3 = answerOfSelected.ElementAtOrDefault(2)?.Answertext;
+                //    AnswerTextVariant4 = answerOfSelected.ElementAtOrDefault(3)?.Answertext;
+                //    AnswerTextVariant5 = answerOfSelected.ElementAtOrDefault(4)?.Answertext;
+
+                //    var correctIndex = answerOfSelected.FindIndex(a => a.Iscorrectanswer);
+
+                //    if (correctIndex != -1)
+                //    {
+                //        SelectedAnswerIndex = correctIndex;
+                //    }
+                //}
+                //else
+                //{
+                //    MessageBox.Show($"debug: ques = nul");
+                //    return;
+                //}
+                #endregion
             }
         }
     }
