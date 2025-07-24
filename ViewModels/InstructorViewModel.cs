@@ -38,6 +38,7 @@ namespace FireTestingApp_net8.ViewModels
             CreateNewUserEvent = new RelayCommand(CreateUser);
             AddNewQuestionEvent = new RelayCommand(CreateQuestion);
             EditQuestionEvent = new RelayCommand<Question>(EditQuestion);
+            DeleteQuestionEvent = new RelayCommand<Question>(DeleteQuestion);
 
             _navigation = navigation;
 
@@ -111,6 +112,7 @@ namespace FireTestingApp_net8.ViewModels
         public RelayCommand CreateNewUserEvent { get; }
         public RelayCommand AddNewQuestionEvent { get; }
         public RelayCommand<Question> EditQuestionEvent { get; }
+        public RelayCommand<Question> DeleteQuestionEvent { get; }
 
         // logic
         private void Exit()
@@ -200,6 +202,49 @@ namespace FireTestingApp_net8.ViewModels
                 throw;
             }
         }
+        private void DeleteQuestion(Question question)
+        {
+            if (question == null) return;
+
+            MessageBoxResult msgUserChoice = MessageBox.Show(
+                $"Вы действительно хотите удалить вопрос и все связанные с ним ответы?\nОтменить действие будет невозможно!",
+                "Удаление вопроса",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning,
+                MessageBoxResult.No);
+
+            if (msgUserChoice != MessageBoxResult.Yes)
+            {
+                MessageBox.Show("Процесс удаления остановлен");
+                return;
+            }
+
+            try
+            {
+                using (var context = new AppDbContext())
+                {
+                    var questionToDelete = context.Questions
+                        .Include(q => q.Answers)
+                        .FirstOrDefault(q => q.Questionid == question.Questionid);
+
+                    if (questionToDelete != null)
+                    {
+                        context.Answers.RemoveRange(questionToDelete.Answers);
+                        context.Questions.Remove(questionToDelete);
+                        context.SaveChanges();
+
+                        MessageBox.Show($"Билет успешно удалён");
+
+                        QuestionTable.Remove(question);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка при удалении:\n{ex.Message}");
+            }
+        }
+
         private void UserEdit(User user)
         {
             if (user == null) return;

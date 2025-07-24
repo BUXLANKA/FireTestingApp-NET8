@@ -93,7 +93,7 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    
+
                                 </DataGrid.Columns>
                             </DataGrid>
 
@@ -102,13 +102,13 @@
 
                     <TabItem x:Name="DGTickets" Header="Билеты">
                         <Grid>
-                            <Button Command="{Binding AddNewQuestionEvent}" Content="Новый билет" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,10" Height="44" Width="152"/>
+                            <Button Command="{Binding AddNewQuestionEvent}" Content="Новый билет" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Height="44" Width="152"/>
 
-                            <DataGrid HorizontalAlignment="Stretch" ColumnWidth="*" CanUserReorderColumns="false" AutoGenerateColumns="False" IsReadOnly="true" ItemsSource="{Binding QuestionTable}" Margin="0,0,0,65">
+                            <DataGrid ColumnWidth="*" CanUserReorderColumns="false" AutoGenerateColumns="False" IsReadOnly="true" ItemsSource="{Binding QuestionTable}" Margin="0,0,0,66">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID вопроса" Binding="{Binding Questionid}" MaxWidth="85"/>
-                                    
-                                    <DataGridTextColumn Header="Вопрос" Binding="{Binding Questiontext}">
+
+                                    <DataGridTextColumn Header="Вопрос" MinWidth="700" Binding="{Binding Questiontext}">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="TextWrapping" Value="Wrap"/>
@@ -123,6 +123,20 @@
                                                         Command="{Binding DataContext.EditQuestionEvent,
                                                     RelativeSource={RelativeSource AncestorType=Page}}"
                                                         CommandParameter="{Binding}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Content="Удалить"
+                                                    Background="#F44336"
+                                                    Foreground="white"
+                                                    Command="{Binding DataContext.DeleteQuestionEvent,
+                                                    RelativeSource={RelativeSource AncestorType=Page}}"
+                                                    CommandParameter="{Binding}"/>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
