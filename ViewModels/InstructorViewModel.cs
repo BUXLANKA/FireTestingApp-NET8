@@ -6,7 +6,9 @@ using FireTestingApp_net8.Viewes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -16,6 +18,22 @@ namespace FireTestingApp_net8.ViewModels
         // private
         private string? _welcomeMessage;
         private readonly INavigationService _navigation;
+
+        private string? _resultSearchText;
+        private ICollectionView? _resultsView;
+
+        private string? _userAnswerSearchText;
+        private ICollectionView? _userAnswersView;
+
+        private string? _questionSearchText;
+        private ICollectionView? _questionsView;
+
+        private string? _userSearchText;
+        private ICollectionView? _usersView;
+
+        private string? _ticketSearchText;
+        private ICollectionView? _ticketsView;
+
         //private int _selectedTabIndex;
 
         // constructor
@@ -70,11 +88,27 @@ namespace FireTestingApp_net8.ViewModels
             //    UserTable = new ObservableCollection<User>(userList);
             //}
 
+
             ResultsTable = TableAgent.GetResults();
+            ResultsView = CollectionViewSource.GetDefaultView(ResultsTable);
+            ResultsView.Filter = FilterResults;
+
             UserAnswerTable = TableAgent.GetUserAnswers();
+            UserAnswersView = CollectionViewSource.GetDefaultView(UserAnswerTable);
+            UserAnswersView.Filter = FilterUserAnswers;
+
             TicketTable = TableAgent.GetTickets();
+            TicketsView = CollectionViewSource.GetDefaultView(TicketTable);
+            TicketsView.Filter = FilterTickets;
+
+
             UserTable = TableAgent.GetUsers();
+            UsersView = CollectionViewSource.GetDefaultView(UserTable);
+            UsersView.Filter = FilterUsers;
+
             QuestionTable = TableAgent.GetQuestions();
+            QuestionsView = CollectionViewSource.GetDefaultView(QuestionTable);
+            QuestionsView.Filter = FilterQuestions;
         }
 
         // public
@@ -87,6 +121,113 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(WelcomeMessage));
             }
         }
+        public string? ResultSearchText
+        {
+            get => _resultSearchText;
+            set
+            {
+                _resultSearchText = value;
+                OnPropertyChanged(nameof(ResultSearchText));
+                ResultsView.Refresh();
+            }
+        }
+        public ICollectionView ResultsView
+        {
+            get => _resultsView;
+            set
+            {
+                _resultsView = value;
+                OnPropertyChanged(nameof(ResultsView));
+            }
+        }
+
+        public string? UserAnswerSearchText
+        {
+            get => _userAnswerSearchText;
+            set
+            {
+                _userAnswerSearchText = value;
+                OnPropertyChanged(nameof(UserAnswerSearchText));
+                UserAnswersView.Refresh();
+            }
+        }
+        public ICollectionView UserAnswersView
+        {
+            get => _userAnswersView;
+            set
+            {
+                _userAnswersView = value;
+                OnPropertyChanged(nameof(UserAnswersView));
+            }
+        }
+
+        public string? QuestionSearchText
+        {
+            get => _questionSearchText;
+            set
+            {
+                _questionSearchText = value;
+                OnPropertyChanged(nameof(QuestionSearchText));
+                QuestionsView.Refresh();
+            }
+        }
+        public ICollectionView QuestionsView
+        {
+            get => _questionsView;
+            set
+            {
+                _questionsView = value;
+                OnPropertyChanged(nameof(QuestionsView));
+            }
+        }
+
+        public string? UserSearchText
+        {
+            get => _userSearchText;
+            set
+            {
+                _userSearchText = value;
+                OnPropertyChanged(nameof(UserSearchText));
+                UsersView.Refresh();
+            }
+        }
+        public ICollectionView UsersView
+        {
+            get => _usersView;
+            set
+            {
+                _usersView = value;
+                OnPropertyChanged(nameof(UsersView));
+            }
+        }
+
+        public string? TicketSearchText
+        {
+            get => _ticketSearchText;
+            set
+            {
+                _ticketSearchText = value;
+                OnPropertyChanged(nameof(TicketSearchText));
+                TicketsView.Refresh();
+            }
+        }
+        public ICollectionView TicketsView
+        {
+            get => _ticketsView;
+            set
+            {
+                _ticketsView = value;
+                OnPropertyChanged(nameof(TicketsView));
+            }
+        }
+
+
+
+
+
+
+
+
         //public int SelectedTabIndex
         //{
         //    get => _selectedTabIndex;
@@ -280,5 +421,121 @@ namespace FireTestingApp_net8.ViewModels
             //NavigationParameterService.Set("AnswerObject", answer);
             _navigation.NavigateTo<QuestionEditorViewModel>();
         }
+        private bool FilterResults(object obj)
+        {
+            if (obj is not Result result) return false;
+            if (string.IsNullOrWhiteSpace(ResultSearchText)) return true;
+
+            var search = ResultSearchText.Trim();
+
+            if (result.User != null)
+            {
+                if (!string.IsNullOrEmpty(result.User.Firstname) &&
+                    result.User.Firstname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+
+                if (!string.IsNullOrEmpty(result.User.Lastname) &&
+                    result.User.Lastname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+
+                if (!string.IsNullOrEmpty(result.User.Surname) &&
+                    result.User.Surname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+        private bool FilterUserAnswers(object obj)
+        {
+            if (obj is not Useranswer userAnswer) return false;
+            if (string.IsNullOrWhiteSpace(UserAnswerSearchText)) return true;
+
+            var search = UserAnswerSearchText.Trim();
+
+            if (userAnswer.User != null)
+            {
+                if (!string.IsNullOrEmpty(userAnswer.User.Firstname) &&
+                    userAnswer.User.Firstname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+
+                if (!string.IsNullOrEmpty(userAnswer.User.Lastname) &&
+                    userAnswer.User.Lastname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+
+                if (!string.IsNullOrEmpty(userAnswer.User.Surname) &&
+                    userAnswer.User.Surname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+        private bool FilterQuestions(object obj)
+        {
+            if (obj is not Question question) return false;
+            if (string.IsNullOrWhiteSpace(QuestionSearchText)) return true;
+
+            var search = QuestionSearchText.Trim();
+
+            if (question.Questiontext != null)
+            {
+                if (!string.IsNullOrEmpty(question.Questiontext) &&
+                    question.Questiontext.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+        private bool FilterUsers(object obj)
+        {
+            if (obj is not User user) return false;
+            if (string.IsNullOrWhiteSpace(UserSearchText)) return true;
+
+            var search = UserSearchText.Trim();
+
+            if (user.Userid != 0)
+            {
+                if (!string.IsNullOrEmpty(user.Firstname) &&
+                    user.Firstname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+
+                if (!string.IsNullOrEmpty(user.Lastname) &&
+                    user.Lastname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+
+                if (!string.IsNullOrEmpty(user.Surname) &&
+                    user.Surname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+        private bool FilterTickets(object obj)
+        {
+            if (obj is not Ticket ticket) return false;
+            if (string.IsNullOrWhiteSpace(TicketSearchText)) return true;
+
+            var search = TicketSearchText.Trim();
+
+            if (ticket.Fromuser != null)
+            {
+                if (!string.IsNullOrEmpty(ticket.Fromuser.Firstname) &&
+                    ticket.Fromuser.Firstname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+
+                if (!string.IsNullOrEmpty(ticket.Fromuser.Lastname) &&
+                    ticket.Fromuser.Lastname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+
+                if (!string.IsNullOrEmpty(ticket.Fromuser.Surname) &&
+                    ticket.Fromuser.Surname.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+
+
+
+
     }
 }
