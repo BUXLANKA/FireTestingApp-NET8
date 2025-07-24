@@ -204,8 +204,8 @@ namespace FireTestingApp_net8.ViewModels
                 {
                     using (var Context = new AppDbContext())
                     {
-                        Context.Useranswers.Add(CurrentUserAnswer);
-                        Context.SaveChanges();
+                        //Context.Useranswers.Add(CurrentUserAnswer);
+                        //Context.SaveChanges();
                     }
                 }
                 catch (Exception ex)

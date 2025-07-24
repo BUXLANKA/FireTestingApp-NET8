@@ -23,7 +23,7 @@
                             <!--<Button Command="{Binding ExitEvent}" Content="ВЫЙТИ" HorizontalAlignment="Right" Margin="0,303,10,0" VerticalAlignment="Top" Width="278" Height="40"/>
                             <TextBlock Text="{Binding WelcomeMessage}" HorizontalAlignment="Right" Margin="0,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" Height="33" TextAlignment="Center"/>-->
 
-                            <DataGrid ItemsSource="{Binding ResultsTable}" AutoGenerateColumns="false" ColumnWidth="auto" IsReadOnly="True" FontSize="14">
+                            <DataGrid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HeadersVisibility="Column" CanUserResizeColumns="False" ColumnWidth="*" ItemsSource="{Binding ResultsTable}" AutoGenerateColumns="false" CanUserReorderColumns="False" IsReadOnly="True" FontSize="14">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Имя" Binding="{Binding User.Firstname}"/>
                                     <DataGridTextColumn Header="Фамилия" Binding="{Binding User.Lastname}"/>
@@ -68,7 +68,8 @@
                     <TabItem Header="Пользовательские ответы">
                         <Grid Background="#FFE5E5E5">
 
-                            <DataGrid ItemsSource="{Binding UserAnswerTable}" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True">
+                            <DataGrid ItemsSource="{Binding UserAnswerTable}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False"
+                                      CanUserReorderColumns="False" CanUserResizeColumns="false" HorizontalAlignment="Stretch" ColumnWidth="*">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Имя" Binding="{Binding User.Firstname}"/>
                                     <DataGridTextColumn Header="Фамилия" Binding="{Binding User.Lastname}"/>
@@ -84,7 +85,15 @@
 
                                     </DataGridTextColumn>
                                     <DataGridTextColumn Header="Ответ" Binding="{Binding Answer.Answertext}"/>
-                                    <DataGridTextColumn Header="Правильность" Binding="{Binding Isorrect}"/>
+
+                                    <DataGridTemplateColumn Header="Правильность" CanUserSort="True">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Content="правильный" IsEnabled="false" IsChecked="{Binding Iscorrect, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    
                                 </DataGrid.Columns>
                             </DataGrid>
 
@@ -95,8 +104,10 @@
                         <Grid>
                             <Button Command="{Binding AddNewQuestionEvent}" Content="Новый билет" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,10" Height="44" Width="152"/>
 
-                            <DataGrid AutoGenerateColumns="False" IsReadOnly="true" ItemsSource="{Binding QuestionTable}" Margin="0,0,0,65">
+                            <DataGrid HorizontalAlignment="Stretch" ColumnWidth="*" CanUserReorderColumns="false" AutoGenerateColumns="False" IsReadOnly="true" ItemsSource="{Binding QuestionTable}" Margin="0,0,0,65">
                                 <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID вопроса" Binding="{Binding Questionid}" MaxWidth="85"/>
+                                    
                                     <DataGridTextColumn Header="Вопрос" Binding="{Binding Questiontext}">
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">

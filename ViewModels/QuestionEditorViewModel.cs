@@ -73,165 +73,65 @@ namespace FireTestingApp_net8.ViewModels
 
             using (var context = new AppDbContext())
             {
-                #region Добавление билета
-                if (QuestionObject.Questionid == 0)
+                using (var transaction = context.Database.BeginTransaction())
                 {
                     try
                     {
-                        context.Questions.Add(QuestionObject);
-                        context.SaveChanges();
-                        MessageBox.Show($"dbg questionobj add");
+                        #region Добавление билета
+                        if (QuestionObject.Questionid == 0)
+                        {
+                            context.Questions.Add(QuestionObject);
+                            context.SaveChanges();                        
+
+                            for (int i = 0; i < Answers.Count; i++)
+                            {
+                                Answers[i].Questionid = QuestionObject.Questionid;
+                                Answers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+                                context.Answers.Add(Answers[i]);
+                            }                    
+                        }
+                        #endregion
+
+                        #region Редактирование билета
+                        if (QuestionObject.Questionid != 0)
+                        {
+                            var existedQuestion = context.Questions
+                                .FirstOrDefault(q => q.Questionid == QuestionObject.Questionid);
+
+                            if (existedQuestion == null)
+                            {
+                                MessageBox.Show($"dbg question not ex");
+                                return;
+                            }
+
+                            existedQuestion.Questiontext = QuestionObject.Questiontext;
+
+                            //context.SaveChanges();
+                                                        
+                            var existingAnswers = context.Answers
+                                .Where(a => a.Questionid == QuestionObject.Questionid).ToList();
+
+                            for (int i = 0; i < existingAnswers.Count; i++)
+                            {
+                                existingAnswers[i].Answertext = Answers[i].Answertext;
+                                existingAnswers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+                            }
+
+                            context.SaveChanges();
+                        }
+                        #endregion
+
+                        transaction.Commit();
                     }
                     catch (Exception ex)
                     {
+                        transaction.Rollback();
                         MessageBox.Show($"{ex.Message}");
                         throw;
                     }
-
-                    for (int i = 0; i < Answers.Count; i++)
-                    {
-                        Answers[i].Questionid = QuestionObject.Questionid;
-                        Answers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
-                        context.Answers.Add(Answers[i]);
-                    }
-
-                    try
-                    {
-                        context.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"{ex.Message}");
-                        throw;
-                    }
-                }
-                #endregion
-
-                #region Редактирование билета
-                if (QuestionObject.Questionid != 0)
-                {
-                    var existedQuestion = context.Questions
-                        .FirstOrDefault(q => q.Questionid ==  QuestionObject.Questionid);
-
-                    if (existedQuestion == null)
-                    {
-                        MessageBox.Show($"dbg question not ex");
-                        return;
-                    }
-
-                    existedQuestion.Questiontext = QuestionObject.Questiontext;
-
-                    try
-                    {
-                        context.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"{ex.Message}");
-                        return;
-                        throw;
-                    }
-
-                    var existingAnswers = context.Answers
-                        .Where(a => a.Questionid == QuestionObject.Questionid).ToList();
-
-                    for (int i = 0; i < existingAnswers.Count; i++)
-                    {
-                        existingAnswers[i].Answertext = Answers[i].Answertext;
-                        existingAnswers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
-                    }
-
-                    try
-                    {
-                        context.SaveChanges();
-                        MessageBox.Show($"Q and A updated");
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"{ex.Message}");
-                        return;
-                        throw;
-                    }
-                }
-                #endregion
+                }               
             }
         }
-
-        //private void Save()
-        //{
-        //    if (string.IsNullOrWhiteSpace(QuestionObject.Questiontext))
-        //    {
-        //        MessageBox.Show("Вопрос не может быть пустым.");
-        //        return;
-        //    }
-
-        //    if (Answers.Any(a => string.IsNullOrWhiteSpace(a.Answertext)))
-        //    {
-        //        MessageBox.Show("Все ответы должны быть заполнены.");
-        //        return;
-        //    }
-
-        //    if (SelectedAnswerIndex < 0 || SelectedAnswerIndex >= Answers.Count)
-        //    {
-        //        MessageBox.Show("Выберите правильный ответ.");
-        //        return;
-        //    }
-
-        //    using var context = new AppDbContext();
-
-        //    try
-        //    {
-        //        // Добавление
-        //        if (QuestionObject.Questionid == 0)
-        //        {
-        //            context.Questions.Add(QuestionObject);
-        //            context.SaveChanges();
-
-        //            for (int i = 0; i < Answers.Count; i++)
-        //            {
-        //                Answers[i].Questionid = QuestionObject.Questionid;
-        //                Answers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
-        //                context.Answers.Add(Answers[i]);
-        //            }
-
-        //            context.SaveChanges();
-        //            MessageBox.Show("Вопрос и ответы добавлены.");
-        //        }
-        //        else // Редактирование
-        //        {
-        //            var existingQuestion = context.Questions.FirstOrDefault(q => q.Questionid == QuestionObject.Questionid);
-        //            if (existingQuestion == null)
-        //            {
-        //                MessageBox.Show("Вопрос не найден.");
-        //                return;
-        //            }
-
-        //            existingQuestion.Questiontext = QuestionObject.Questiontext;
-        //            context.SaveChanges();
-
-        //            var existingAnswers = context.Answers.Where(a => a.Questionid == QuestionObject.Questionid).ToList();
-
-        //            for (int i = 0; i < existingAnswers.Count; i++)
-        //            {
-        //                existingAnswers[i].Answertext = Answers[i].Answertext;
-        //                existingAnswers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
-        //            }
-
-        //            context.SaveChanges();
-        //            MessageBox.Show("Вопрос и ответы обновлены.");
-        //        }
-
-        //        WeakReferenceMessenger.Default.Send(new UpdateMessage());
-        //        _navigation.GoBack();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Ошибка сохранения: {ex.Message}");
-        //        throw;
-        //    }
-        //}
-
         private void Cancel()
         {
             _navigation.GoBack();
