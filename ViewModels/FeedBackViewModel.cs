@@ -44,52 +44,86 @@ namespace FireTestingApp_net8.ViewModels
         // logic
         private void SendMessage()
         {
-            if (!string.IsNullOrEmpty(FeedBackMessage))
+            if (string.IsNullOrEmpty(FeedBackMessage))
             {
-                Ticket TicketTable = new()
+                _messageService.NullTextField();
+                return;
+            }
+
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
+            {
+                Ticket ticket = new()
                 {
                     Fromuserid = Session.UserID,
                     Ticketdate = DateTime.Now,
                     Tickettext = FeedBackMessage
                 };
 
-                try
-                {
-                    using (var context = new AppDbContext())
-                    {
-                        context.Tickets.Add(TicketTable);
-                        context.SaveChanges();
+                context.Tickets.Add(ticket);
+                context.SaveChanges();
 
-                        _messageService.TicketCompiteSend();
+                transaction.Commit();
 
-                        //MessageBox.Show(
-                        //"Отзыв успешно отправлен!",
-                        //"Спасибо",
-                        //MessageBoxButton.OK,
-                        //MessageBoxImage.Information);
-
-                        _navigation.NavigateTo<ResultsViewModel>();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //MessageBox.Show($"Возникала внутряняя ошибка:\n{ex.Message}");
-
-                    _messageService.ErrorExMessage(ex);
-                    throw;
-                }
+                _messageService.TicketCompiteSend();
+                _navigation.GoBack();
             }
-            else
+            catch (Exception ex)
             {
-                //MessageBox.Show(
-                //    "Нельзя отправить пустое сообщение",
-                //    "А что исправлять?",
-                //    MessageBoxButton.OK,
-                //    MessageBoxImage.Error);
+                transaction.Rollback();
 
-                _messageService.NullTextField();
-                return;
+                _messageService.ErrorExMessage(ex);
+                throw;
             }
+
+            //if (!string.IsNullOrEmpty(FeedBackMessage))
+            //{
+            //    Ticket TicketTable = new()
+            //    {
+            //        Fromuserid = Session.UserID,
+            //        Ticketdate = DateTime.Now,
+            //        Tickettext = FeedBackMessage
+            //    };
+
+            //    try
+            //    {
+            //        using (var context = new AppDbContext())
+            //        {
+            //            context.Tickets.Add(TicketTable);
+            //            context.SaveChanges();
+
+            //            _messageService.TicketCompiteSend();
+
+            //            //MessageBox.Show(
+            //            //"Отзыв успешно отправлен!",
+            //            //"Спасибо",
+            //            //MessageBoxButton.OK,
+            //            //MessageBoxImage.Information);
+
+            //            _navigation.NavigateTo<ResultsViewModel>();
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        //MessageBox.Show($"Возникала внутряняя ошибка:\n{ex.Message}");
+
+            //        _messageService.ErrorExMessage(ex);
+            //        throw;
+            //    }
+            //}
+            //else
+            //{
+            //    //MessageBox.Show(
+            //    //    "Нельзя отправить пустое сообщение",
+            //    //    "А что исправлять?",
+            //    //    MessageBoxButton.OK,
+            //    //    MessageBoxImage.Error);
+
+            //    _messageService.NullTextField();
+            //    return;
+            //}
         }
         private void GoBack()
         {

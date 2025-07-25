@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Security.Cryptography.Xml;
 using System.Windows;
 using System.Windows.Data;
 
@@ -283,19 +284,24 @@ namespace FireTestingApp_net8.ViewModels
 
             if (msgUserChoice == MessageBoxResult.No) return;
 
-            using (var context = new AppDbContext())
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                try
-                {
-                    context.Tickets.Remove(ticket);
-                    context.SaveChanges();
-                    TicketTable.Remove(ticket);
-                }
-                catch (Exception ex)
-                {
-                    _messageService.ErrorExMessage(ex);
-                    throw;
-                }
+                context.Tickets.Remove(ticket);
+                context.SaveChanges();
+
+                transaction.Commit();
+
+                TicketTable.Remove(ticket);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+
+                _messageService.ErrorExMessage(ex);
+                throw;
             }
                 ////MessageBox.Show(
                 ////$"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
@@ -342,19 +348,24 @@ namespace FireTestingApp_net8.ViewModels
 
             if (msgUserChoice == MessageBoxResult.No) return;
 
-            using (var context = new AppDbContext())
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                try
-                {
-                    context.Results.Remove(result);
-                    context.SaveChanges();
-                    ResultsTable.Remove(result);
-                }
-                catch (Exception ex)
-                {
-                    _messageService.ErrorExMessage(ex);
-                    throw;
-                }
+                context.Results.Remove(result);
+                context.SaveChanges();
+
+                transaction.Commit();
+
+                ResultsTable.Remove(result);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+
+                _messageService.ErrorExMessage(ex);
+                throw;
             }
 
 
@@ -397,30 +408,34 @@ namespace FireTestingApp_net8.ViewModels
 
             if (msgUserChoice == MessageBoxResult.No) return;
 
-            using (var context = new AppDbContext())
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                try
-                {
-                    var questionToDelete = context.Questions
+                var questionToDelete = context.Questions
                         .Include(q => q.Answers)
                         .FirstOrDefault(q => q.Questionid == question.Questionid);
 
-                    if (questionToDelete != null)
-                    {
-                        context.Answers.RemoveRange(questionToDelete.Answers);
-                        context.Questions.Remove(questionToDelete);
-                        context.SaveChanges();
-
-                        MessageBox.Show($"Билет успешно удалён");
-
-                        QuestionTable.Remove(question);
-                    }
-                }
-                catch (Exception ex)
+                if (questionToDelete != null)
                 {
-                    _messageService.ErrorExMessage(ex);
-                    throw;
+                    context.Answers.RemoveRange(questionToDelete.Answers);
+                    context.Questions.Remove(questionToDelete);
+                    context.SaveChanges();
+
+                    transaction.Commit();
+
+                    MessageBox.Show($"Билет успешно удалён"); // todo перенести в Message
+
+                    QuestionTable.Remove(question);
                 }
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+
+                _messageService.ErrorExMessage(ex);
+                throw;
             }
 
 

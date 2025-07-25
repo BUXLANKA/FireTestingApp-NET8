@@ -77,69 +77,137 @@ namespace FireTestingApp_net8.ViewModels
                 return;
             }
 
-            using (var context = new AppDbContext())
+
+
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
             {
-                using (var transaction = context.Database.BeginTransaction())
+                #region Добавление билета
+
+                if (QuestionObject.Questionid == 0)
                 {
-                    try
+                    context.Questions.Add(QuestionObject);
+                    context.SaveChanges();
+
+                    for (int i = 0; i < Answers.Count; i++)
                     {
-                        #region Добавление билета
-                        if (QuestionObject.Questionid == 0)
-                        {
-                            context.Questions.Add(QuestionObject);
-                            context.SaveChanges();                        
-
-                            for (int i = 0; i < Answers.Count; i++)
-                            {
-                                Answers[i].Questionid = QuestionObject.Questionid;
-                                Answers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
-                                context.Answers.Add(Answers[i]);
-                            }                    
-                        }
-                        #endregion
-
-                        #region Редактирование билета
-                        if (QuestionObject.Questionid != 0)
-                        {
-                            var existedQuestion = context.Questions
-                                .FirstOrDefault(q => q.Questionid == QuestionObject.Questionid);
-
-                            if (existedQuestion == null)
-                            {
-                                //MessageBox.Show($"dbg question not ex");
-                                _messageService.Error();
-                                return;
-                            }
-
-                            existedQuestion.Questiontext = QuestionObject.Questiontext;
-
-                            //context.SaveChanges();
-                                                        
-                            var existingAnswers = context.Answers
-                                .Where(a => a.Questionid == QuestionObject.Questionid).ToList();
-
-                            for (int i = 0; i < existingAnswers.Count; i++)
-                            {
-                                existingAnswers[i].Answertext = Answers[i].Answertext;
-                                existingAnswers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
-                            }
-
-                            context.SaveChanges();
-                        }
-                        #endregion
-
-                        transaction.Commit();
+                        Answers[i].Questionid = QuestionObject.Questionid;
+                        Answers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+                        context.Answers.Add(Answers[i]);
                     }
-                    catch (Exception ex)
+                }
+
+                #endregion
+
+                #region Редактирование билета
+
+                if (QuestionObject.Questionid != 0)
+                {
+                    var existedQuestion = context.Questions
+                        .FirstOrDefault(q => q.Questionid == QuestionObject.Questionid);
+
+                    if (existedQuestion == null)
                     {
-                        transaction.Rollback();
-                        //MessageBox.Show($"{ex.Message}");
-
-                        _messageService.ErrorExMessage(ex);
-                        throw;
+                        //MessageBox.Show($"dbg question not ex");
+                        _messageService.Error();
+                        return;
                     }
-                }               
+
+                    existedQuestion.Questiontext = QuestionObject.Questiontext;
+
+                    //context.SaveChanges();
+
+                    var existingAnswers = context.Answers
+                        .Where(a => a.Questionid == QuestionObject.Questionid).ToList();
+
+                    for (int i = 0; i < existingAnswers.Count; i++)
+                    {
+                        existingAnswers[i].Answertext = Answers[i].Answertext;
+                        existingAnswers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+                    }
+
+                    context.SaveChanges();
+                }
+
+                #endregion
+
+                transaction.Commit();
+
+                _messageService.SaveComplite();
             }
+            catch (Exception ex)
+            {
+                transaction.RollbackAsync();
+
+                _messageService.ErrorExMessage(ex);
+                throw;
+            }
+
+            //using (var context = new AppDbContext())
+            //{
+            //    using (var transaction = context.Database.BeginTransaction())
+            //    {
+            //        try
+            //        {
+            //            #region Добавление билета
+            //            if (QuestionObject.Questionid == 0)
+            //            {
+            //                context.Questions.Add(QuestionObject);
+            //                context.SaveChanges();                        
+
+            //                for (int i = 0; i < Answers.Count; i++)
+            //                {
+            //                    Answers[i].Questionid = QuestionObject.Questionid;
+            //                    Answers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+            //                    context.Answers.Add(Answers[i]);
+            //                }                    
+            //            }
+            //            #endregion
+
+            //            #region Редактирование билета
+            //            if (QuestionObject.Questionid != 0)
+            //            {
+            //                var existedQuestion = context.Questions
+            //                    .FirstOrDefault(q => q.Questionid == QuestionObject.Questionid);
+
+            //                if (existedQuestion == null)
+            //                {
+            //                    //MessageBox.Show($"dbg question not ex");
+            //                    _messageService.Error();
+            //                    return;
+            //                }
+
+            //                existedQuestion.Questiontext = QuestionObject.Questiontext;
+
+            //                //context.SaveChanges();
+                                                        
+            //                var existingAnswers = context.Answers
+            //                    .Where(a => a.Questionid == QuestionObject.Questionid).ToList();
+
+            //                for (int i = 0; i < existingAnswers.Count; i++)
+            //                {
+            //                    existingAnswers[i].Answertext = Answers[i].Answertext;
+            //                    existingAnswers[i].Iscorrectanswer = (i == SelectedAnswerIndex);
+            //                }
+
+            //                context.SaveChanges();
+            //            }
+            //            #endregion
+
+            //            transaction.Commit();
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            transaction.Rollback();
+            //            //MessageBox.Show($"{ex.Message}");
+
+            //            _messageService.ErrorExMessage(ex);
+            //            throw;
+            //        }
+            //    }               
+            //}
         }
         private void Cancel()
         {
