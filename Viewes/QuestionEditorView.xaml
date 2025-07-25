@@ -10,38 +10,66 @@
       Title="QuestionEditorView">
 
     <Page.Resources>
-        <conv:IndexToBoolConverter x:Key="IndexToBoolConverter"/>
+        
+
+        <ResourceDictionary>
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/custom_styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:IndexToBoolConverter x:Key="IndexToBoolConverter"/>
+            
+        </ResourceDictionary>
+
     </Page.Resources>
 
     <Grid Background="White" Margin="0,-5,0,5">
 
-        <Button Command="{Binding CancelEvent}" Content="Отмена" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="254" Height="38" Margin="696,0,0,15" FontSize="16"/>
+        <Button Command="{Binding CancelEvent}" 
+        HorizontalContentAlignment="Right"
+        VerticalContentAlignment="Center"
+        HorizontalAlignment="Right" 
+        VerticalAlignment="Top" 
+                Cursor="Hand"
+        Height="30" 
+        FontSize="16" 
+        Margin="0,110,10,0" 
+        Width="30"
+        Style="{StaticResource NoHoverButtonStyle}">
+            <Button.Background>
+                <ImageBrush AlignmentX="Left" 
+                    Stretch="Fill" 
+                    AlignmentY="Center" 
+                    TileMode="None" ImageSource="/Assets/img/close-svgrepo-com.png"/>
+            </Button.Background>
+        </Button>
 
-        <Button Command="{Binding SaveEvent}" Content="Сохранить и закрыть" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="254" Height="38" FontSize="16" Margin="696,0,0,83"/>
-        <TextBlock TextWrapping="Wrap" FontSize="36" FontWeight="Bold" TextAlignment="Center" VerticalAlignment="Top" Margin="0,120,0,0"><Run Text="Редактор "/><Run Language="ru-ru" Text="билетов"/></TextBlock>
+        <Button Command="{Binding SaveEvent}" Content="Сохранить и закрыть" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="254" Height="38" FontSize="16" Margin="0,8,0,59"/>
+        <TextBlock TextWrapping="Wrap" FontSize="36" FontWeight="Bold" TextAlignment="Center" VerticalAlignment="Top" Margin="0,120,0,0" HorizontalAlignment="Center"><Run Text="Редактор "/><Run Language="ru-ru" Text="билетов"/></TextBlock>
         <Rectangle VerticalAlignment="Top" Height="98.8" Fill="#FF194F9E" Stroke="#FF568FE2"/>
         <TextBlock TextWrapping="Wrap" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="White" Margin="0,23,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ"/><LineBreak/><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ"/></TextBlock>
         <Rectangle Height="80" Width="80" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0">
             <Rectangle.Fill>
-                <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
+                <ImageBrush TileMode="None" Stretch="UniformToFill" ImageSource="/Assets/img/auto-891-1.png"/>
             </Rectangle.Fill>
         </Rectangle>
-        <Label Content="Вопрос" HorizontalAlignment="Left" Margin="10,211,0,0" VerticalAlignment="Top"/>
-        <TextBox Text="{Binding QuestionObject.Questiontext, Mode=TwoWay}" HorizontalAlignment="Left" Margin="65,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="367" Height="76"/>
-        <Label Content="ВАриант ответа №1" HorizontalAlignment="Left" Margin="10,364,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="134,364,0,0" TextWrapping="Wrap" Text="{Binding Answers[0].Answertext, Mode=TwoWay}" VerticalAlignment="Top" Width="298" Height="26"/>
-        <Label Content="ВАриант ответа №2" HorizontalAlignment="Left" Margin="10,395,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="134,395,0,0" TextWrapping="Wrap" Text="{Binding Answers[1].Answertext, Mode=TwoWay}" VerticalAlignment="Top" Width="298" Height="26"/>
-        <Label Content="ВАриант ответа №3" HorizontalAlignment="Left" Margin="10,426,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="134,426,0,0" TextWrapping="Wrap" Text="{Binding Answers[2].Answertext, Mode=TwoWay}" VerticalAlignment="Top" Width="298" Height="26"/>
-        <Label Content="ВАриант ответа №4" HorizontalAlignment="Left" Margin="10,457,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="134,457,0,0" TextWrapping="Wrap" Text="{Binding Answers[3].Answertext, Mode=TwoWay}" VerticalAlignment="Top" Width="298" Height="26"/>
-        <Label Content="ВАриант ответа №5" HorizontalAlignment="Left" Margin="10,488,0,0" VerticalAlignment="Top"/>
-        <TextBox HorizontalAlignment="Left" Margin="134,488,0,0" TextWrapping="Wrap" Text="{Binding Answers[4].Answertext, Mode=TwoWay}" VerticalAlignment="Top" Width="298" Height="26"/>
-        <RadioButton IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=0}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" Margin="0,365,0,0" VerticalAlignment="Top" Height="25" Width="86"/>
-        <RadioButton IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=1}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" Margin="0,396,0,0" VerticalAlignment="Top" Height="25" Width="86"/>
-        <RadioButton IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=2}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" Margin="0,427,0,0" VerticalAlignment="Top" Height="25" Width="86"/>
-        <RadioButton IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=3}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" Margin="0,457,0,0" VerticalAlignment="Top" Height="25" Width="86"/>
-        <RadioButton IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=4}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" Margin="0,488,0,0" VerticalAlignment="Top" Height="25" Width="86"/>
+        <Label Content="Текст билета:" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Height="37" Margin="0,-100,710,0"/>
+        <TextBox FontSize="14" Text="{Binding QuestionObject.Questiontext, Mode=TwoWay}" TextWrapping="Wrap" Width="608" Height="132" Margin="0,-100,0,0" VerticalAlignment="Center"/>
+        <Label Content="Ответ №1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,100,680,0" FontSize="14"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,100,0,0" TextWrapping="Wrap" Text="{Binding Answers[0].Answertext, Mode=TwoWay}" VerticalAlignment="Center" Width="608" Height="26"/>
+        <Label Content="Ответ №2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,170,678,0" FontSize="14"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,170,0,0" TextWrapping="Wrap" Text="{Binding Answers[1].Answertext, Mode=TwoWay}" VerticalAlignment="Center" Width="608" Height="26"/>
+        <Label Content="Ответ №3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,240,680,0" FontSize="14"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,240,0,0" TextWrapping="Wrap" Text="{Binding Answers[2].Answertext, Mode=TwoWay}" VerticalAlignment="Center" Width="608" Height="26"/>
+        <Label Content="Ответ №4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,310,680,0" FontSize="14"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,310,0,0" TextWrapping="Wrap" Text="{Binding Answers[3].Answertext, Mode=TwoWay}" VerticalAlignment="Center" Width="608" Height="26"/>
+        <Label Content="Ответ №5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,380,680,0" FontSize="14"/>
+        <TextBox HorizontalAlignment="Center" Margin="0,380,0,0" TextWrapping="Wrap" Text="{Binding Answers[4].Answertext, Mode=TwoWay}" VerticalAlignment="Center" Width="608" Height="26"/>
+        <RadioButton VerticalContentAlignment="Center" IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=0}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="67" Margin="0,100,-680,0" FontSize="14"/>
+        <RadioButton VerticalContentAlignment="Center" IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=1}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="67" Margin="0,170,-680,0" FontSize="14"/>
+        <RadioButton VerticalContentAlignment="Center" IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=2}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="67" Margin="0,240,-681,0" FontSize="14"/>
+        <RadioButton VerticalContentAlignment="Center" IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=3}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="67" Margin="0,310,-680,0"/>
+        <RadioButton VerticalContentAlignment="Center" IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=4}" GroupName="CorrectAnswer" Content="Верный" HorizontalAlignment="Center" VerticalAlignment="Center" Height="25" Width="67" Margin="0,380,-680,0" FontSize="14"/>
     </Grid>
 </Page>

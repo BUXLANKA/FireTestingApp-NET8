@@ -35,7 +35,7 @@
         <TextBlock TextWrapping="Wrap" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="White" Margin="0,23,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ"/><LineBreak/><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ"/></TextBlock>
         <Rectangle Height="80" Width="80" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0">
             <Rectangle.Fill>
-                <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
+                <ImageBrush ImageSource="/Assets/img/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
             </Rectangle.Fill>
         </Rectangle>
     </Grid>

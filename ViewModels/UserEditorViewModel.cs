@@ -19,9 +19,10 @@ namespace FireTestingApp_net8.ViewModels
     {
         // private
         private readonly INavigationService _navigatoin;
+        private readonly IMessageService _messageService;
 
         // constructor
-        public UserEditorViewModel(INavigationService navigatoin)
+        public UserEditorViewModel(INavigationService navigatoin, IMessageService messegeService)
         {
             UserObject = NavigationParameterService.Get<User>("UserKeyObject") ?? new User();
 
@@ -34,6 +35,7 @@ namespace FireTestingApp_net8.ViewModels
             }
             
             _navigatoin = navigatoin;
+            _messageService = messegeService;
         }
 
         // public
@@ -54,7 +56,9 @@ namespace FireTestingApp_net8.ViewModels
                 #region Adding new user code
                 if (UserObject.Roleid == 0)
                 {
-                    MessageBox.Show($"role is null");
+                    //MessageBox.Show($"role is null");
+
+                    _messageService.Error();
                     return;
                 }
 
@@ -64,7 +68,9 @@ namespace FireTestingApp_net8.ViewModels
                     || string.IsNullOrWhiteSpace(UserObject.Userlogin)
                     || string.IsNullOrWhiteSpace(UserObject.Userpassword))
                 {
-                    MessageBox.Show($"str is null?");
+                    //MessageBox.Show($"str is null?");
+                    _messageService.NullTextField();
+                    return;
                 }
 
                 if (UserObject.Userid == 0)
@@ -87,12 +93,15 @@ namespace FireTestingApp_net8.ViewModels
                     {
                         context.Users.Add(newUser);
                         context.SaveChanges();
-                        MessageBox.Show($"DONE!");
+                        //MessageBox.Show($"DONE!");
+
+                        _messageService.SaveComplite();
                         return;
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"{ex.Message}");
+                        //MessageBox.Show($"{ex.Message}");
+                        _messageService.ErrorExMessage(ex);
                         throw;
                     }
                 }
@@ -109,7 +118,8 @@ namespace FireTestingApp_net8.ViewModels
                         || string.IsNullOrWhiteSpace(UserObject.Userlogin)
                         || string.IsNullOrWhiteSpace(UserObject.Userpassword))
                     {
-                        MessageBox.Show($"string is null");
+                        //MessageBox.Show($"string is null");
+                        _messageService.NullTextField();
                         return;
                     }
 
@@ -124,12 +134,13 @@ namespace FireTestingApp_net8.ViewModels
                     {
                         context.SaveChanges();
                         WeakReferenceMessenger.Default.Send(new UpdateMessage());
-                        MessageBox.Show($"UPDATED");
+                        //MessageBox.Show($"UPDATED");
                         return;
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"{ex.Message}");
+                        //MessageBox.Show($"{ex.Message}");
+                        _messageService.ErrorExMessage(ex);
                         throw;
                     }
                 }

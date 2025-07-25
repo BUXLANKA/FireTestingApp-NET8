@@ -1,99 +1,52 @@
 ﻿using FireTestingApp_net8.Services;
 using FireTestingApp_net8.Viewes;
 using FireTestingApp_net8.ViewModels;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
 namespace FireTestingApp_net8
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        public static PageService? Navigation;
+        private readonly NavigationService _navigation;
 
-        public MainWindow()
+        public MainWindow(IServiceProvider provider)
         {
             InitializeComponent();
 
-            Navigation = new PageService(MainFrame);
+            _navigation = new NavigationService(MainFrame);
 
-            Navigation.Register<LoginViewModel>(() =>
-            {
-                var vm = new LoginViewModel(Navigation);
-                var page = new LoginView();
-                page.DataContext = vm;
-                return page;
-            });
 
-            Navigation.Register<InstructorViewModel>(() =>
-            {
-                var vm = new InstructorViewModel(Navigation);
-                var page = new InstructorView();
-                page.DataContext = vm;
-                return page;
-            });
 
-            Navigation.Register<FeedBackViewModel>(() =>
-            {
-                var vm = new FeedBackViewModel(Navigation);
-                var page = new FeedBackView();
-                page.DataContext = vm;
-                return page;
-            });
+            _navigation.Register<LoginView, LoginViewModel>(provider);
+            _navigation.Register<InstructorView, InstructorViewModel>(provider);
+            _navigation.Register<FeedBackView, FeedBackViewModel>(provider);
+            _navigation.Register<MainTestView, MainTestViewModel>(provider);
+            _navigation.Register<ResultsView, ResultsViewModel>(provider);
+            _navigation.Register<ResultsEditorView, ResultsEditorViewModel>(provider);
+            _navigation.Register<AnnotationView, AnnotationViewModel>(provider);
+            _navigation.Register<UserEditorView, UserEditorViewModel>(provider);
+            _navigation.Register<QuestionEditorView, QuestionEditorViewModel>(provider);
 
-            Navigation.Register<MainTestViewModel>(() =>
-            {
-                var vm = new MainTestViewModel(Navigation);
-                var page = new MainTestView();
-                page.DataContext = vm;
-                return page;
-            });
+            _navigation.NavigateTo<InstructorViewModel>();
 
-            Navigation.Register<ResultsViewModel>(() =>
-            {
-                var vm = new ResultsViewModel(Navigation);
-                var page = new ResultsView();
-                page.DataContext = vm;
-                return page;
-            });
-
-            Navigation.Register<ResultsEditorViewModel>(() =>
-            {
-                var vm = new ResultsEditorViewModel(Navigation);
-                var page = new ResultsEditorView();
-                page.DataContext = vm;
-                return page;
-            });
-
-            Navigation.Register<AnnotationViewModel>(() =>
-            {
-                var vm = new AnnotationViewModel(Navigation);
-                var page = new AnnotationView();
-                page.DataContext = vm;
-                return page;
-            });
-
-            Navigation.Register<UserEditorViewModel>(() =>
-            {
-                var vm = new UserEditorViewModel(Navigation);
-                var page = new UserEditorView();
-                page.DataContext = vm;
-                return page;
-            });
-
-            Navigation.Register<QuestionEditorViewModel>(() =>
-            {
-                var vm = new QuestionEditorViewModel(Navigation);
-                var page = new QuestionEditorView();
-                page.DataContext = vm;
-                return page;
-            });
-
-            Navigation.NavigateTo<InstructorViewModel>();
-
-            this.MinHeight = 720;
-            this.MinWidth = 1024;
+            MinHeight = 720;
+            MinWidth = 1024;
         }
+
+        //private void RegisterPage<TView, TViewModel>(IServiceProvider provider)
+        //    where TView : System.Windows.Controls.Page
+        //    where TViewModel : class
+        //{
+        //    _pageService.Register<TViewModel>(() =>
+        //    {
+        //        // Вручную создаём ViewModel, передаём навигацию и нужные сервисы
+        //        var vm = ActivatorUtilities.CreateInstance<TViewModel>(provider, _pageService);
+        //        var view = provider.GetRequiredService<TView>();
+        //        view.DataContext = vm;
+        //        return view;
+        //    });
+        //}
     }
 }

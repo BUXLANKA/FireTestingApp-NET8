@@ -13,8 +13,9 @@ namespace FireTestingApp_net8.ViewModels
     public class QuestionEditorViewModel : BaseViewModel
     {
         private readonly INavigationService _navigation;
+        private readonly IMessageService _messageService;
 
-        public QuestionEditorViewModel(INavigationService navigation)
+        public QuestionEditorViewModel(INavigationService navigation, IMessageService messageService)
         {
             _navigation = navigation;
 
@@ -42,6 +43,8 @@ namespace FireTestingApp_net8.ViewModels
                 for (int i = 0; i < 5; i++)
                     Answers.Add(new Answer());
             }
+
+            _messageService = messageService;
         }
 
         public Question QuestionObject { get; set; }
@@ -55,19 +58,22 @@ namespace FireTestingApp_net8.ViewModels
         {
             if (string.IsNullOrWhiteSpace(QuestionObject.Questiontext))
             {
-                MessageBox.Show($"dbg questiontext nul");
+                //MessageBox.Show($"dbg questiontext nul");
+                _messageService.Error();
                 return;
             }
 
             if (Answers.Any(a => string.IsNullOrWhiteSpace(a.Answertext)))
             {
-                MessageBox.Show($"dbg answer txt is nul");
+                //MessageBox.Show($"dbg answer txt is nul");
+                _messageService.Error();
                 return;
             }
 
             if (SelectedAnswerIndex < 0 || SelectedAnswerIndex >= Answers.Count)
             {
-                MessageBox.Show($"dbg answer index is nul");
+                //MessageBox.Show($"dbg answer index is nul");
+                _messageService.Error();
                 return;
             }
 
@@ -100,7 +106,8 @@ namespace FireTestingApp_net8.ViewModels
 
                             if (existedQuestion == null)
                             {
-                                MessageBox.Show($"dbg question not ex");
+                                //MessageBox.Show($"dbg question not ex");
+                                _messageService.Error();
                                 return;
                             }
 
@@ -126,7 +133,9 @@ namespace FireTestingApp_net8.ViewModels
                     catch (Exception ex)
                     {
                         transaction.Rollback();
-                        MessageBox.Show($"{ex.Message}");
+                        //MessageBox.Show($"{ex.Message}");
+
+                        _messageService.ErrorExMessage(ex);
                         throw;
                     }
                 }               

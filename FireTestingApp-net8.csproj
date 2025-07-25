@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <None Remove="Assets\auto-891-1.png" />
+    <None Remove="Assets\close-svgrepo-com.png" />
+    <None Remove="Assets\exit-export-logout-svgrepo-com.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,9 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\auto-891-1.png">
+    <Resource Include="Assets\img\auto-891-1.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\img\close-svgrepo-com.png" />
+    <Resource Include="Assets\img\exit-export-logout-svgrepo-com.png" />
   </ItemGroup>
 
 </Project>

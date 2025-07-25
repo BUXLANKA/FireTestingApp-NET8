@@ -18,6 +18,7 @@ namespace FireTestingApp_net8.ViewModels
         // private
         private string? _welcomeMessage;
         private readonly INavigationService _navigation;
+        private readonly IMessageService _messageService;
 
         private string? _resultSearchText;
         private ICollectionView? _resultsView;
@@ -37,7 +38,7 @@ namespace FireTestingApp_net8.ViewModels
         //private int _selectedTabIndex;
 
         // constructor
-        public InstructorViewModel(INavigationService navigation)
+        public InstructorViewModel(INavigationService navigation, IMessageService messageService)
         {
             WeakReferenceMessenger.Default.Register<UpdateMessage>(this, (r, m) =>
             {
@@ -59,6 +60,7 @@ namespace FireTestingApp_net8.ViewModels
             DeleteQuestionEvent = new RelayCommand<Question>(DeleteQuestion);
 
             _navigation = navigation;
+            _messageService = messageService;
 
             //WeakReferenceMessenger.Default.Register(this);
 
@@ -277,92 +279,127 @@ namespace FireTestingApp_net8.ViewModels
         {
             if (ticket == null) return;
 
-            MessageBoxResult msgUserChoice = MessageBox.Show(
-                $"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
-                "Удаление строки",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning,
-                MessageBoxResult.No);
+            MessageBoxResult msgUserChoice = _messageService.ConfirmDelete();
 
-            try
+            if (msgUserChoice == MessageBoxResult.No) return;
+
+            using (var context = new AppDbContext())
             {
-                if (msgUserChoice == MessageBoxResult.Yes)
+                try
                 {
-                    using (var context = new AppDbContext())
-                    {
-                        context.Tickets.Remove(ticket);
-                        context.SaveChanges();
-                        TicketTable.Remove(ticket);
-                    }
+                    context.Tickets.Remove(ticket);
+                    context.SaveChanges();
+                    TicketTable.Remove(ticket);
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Процесс удаления остановлен");
-                    return;
+                    _messageService.ErrorExMessage(ex);
+                    throw;
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Произошла ошибка при выполнении запроса\n{ex.Message}");
-                return;
-                throw;
-            }
+                ////MessageBox.Show(
+                ////$"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
+                ////"Удаление строки",
+                ////MessageBoxButton.YesNo,
+                ////MessageBoxImage.Warning,
+                ////MessageBoxResult.No);
+
+                //try
+                //{
+                //    if (msgUserChoice == MessageBoxResult.Yes)
+                //    {
+                //        using (var context = new AppDbContext())
+                //        {
+                //            context.Tickets.Remove(ticket);
+                //            context.SaveChanges();
+                //            TicketTable.Remove(ticket);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        MessageBox.Show("Процесс удаления остановлен");
+                //        return;
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show($"Произошла ошибка при выполнении запроса\n{ex.Message}");
+                //    return;
+                //    throw;
+                //}
         }
         private void DeleteResult(Result result)
         {
             if (result == null) return;
 
-            MessageBoxResult msgUserChoice = MessageBox.Show(
-                        $"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
-                        "Удаление строки",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Warning,
-                        MessageBoxResult.No);
+            MessageBoxResult msgUserChoice = _messageService.ConfirmDelete();
+            //MessageBox.Show(
+            //        $"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
+            //        "Удаление строки",
+            //        MessageBoxButton.YesNo,
+            //        MessageBoxImage.Warning,
+            //        MessageBoxResult.No);\
 
-            try
+            if (msgUserChoice == MessageBoxResult.No) return;
+
+            using (var context = new AppDbContext())
             {
-                if (msgUserChoice == MessageBoxResult.Yes)
+                try
                 {
-                    using (var context = new AppDbContext())
-                    {
-                        context.Results.Remove(result);
-                        context.SaveChanges();
-                        ResultsTable.Remove(result);
-                    }
+                    context.Results.Remove(result);
+                    context.SaveChanges();
+                    ResultsTable.Remove(result);
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Процесс удаления остановлен");
-                    return;
+                    _messageService.ErrorExMessage(ex);
+                    throw;
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Произошла ошибка при выполнении запроса\n{ex.Message}");
-                return;
-                throw;
-            }
+
+
+                //try
+                //{
+                //    if (msgUserChoice == MessageBoxResult.Yes)
+                //    {
+                //        using (var context = new AppDbContext())
+                //        {
+                //            context.Results.Remove(result);
+                //            context.SaveChanges();
+                //            ResultsTable.Remove(result);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        MessageBox.Show("Процесс удаления остановлен");
+                //        return;
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show($"Произошла ошибка при выполнении запроса\n{ex.Message}");
+                //    return;
+                //    throw;
+                //}
         }
         private void DeleteQuestion(Question question)
         {
             if (question == null) return;
 
-            MessageBoxResult msgUserChoice = MessageBox.Show(
-                $"Вы действительно хотите удалить вопрос и все связанные с ним ответы?\nОтменить действие будет невозможно!",
-                "Удаление вопроса",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning,
-                MessageBoxResult.No);
+            MessageBoxResult msgUserChoice = _messageService.ConfirmDelete();
+            //MessageBox.Show(
+            //$"Вы действительно хотите удалить вопрос и все связанные с ним ответы?\nОтменить действие будет невозможно!",
+            //"Удаление вопроса",
+            //MessageBoxButton.YesNo,
+            //MessageBoxImage.Warning,
+            //MessageBoxResult.No);
 
-            if (msgUserChoice != MessageBoxResult.Yes)
-            {
-                MessageBox.Show("Процесс удаления остановлен");
-                return;
-            }
 
-            try
+            if (msgUserChoice == MessageBoxResult.No) return;
+
+            using (var context = new AppDbContext())
             {
-                using (var context = new AppDbContext())
+                try
                 {
                     var questionToDelete = context.Questions
                         .Include(q => q.Answers)
@@ -379,11 +416,45 @@ namespace FireTestingApp_net8.ViewModels
                         QuestionTable.Remove(question);
                     }
                 }
+                catch (Exception ex)
+                {
+                    _messageService.ErrorExMessage(ex);
+                    throw;
+                }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Произошла ошибка при удалении:\n{ex.Message}");
-            }
+
+
+
+            //if (msgUserChoice != MessageBoxResult.Yes)
+            //{
+            //    MessageBox.Show("Процесс удаления остановлен");
+            //    return;
+            //}
+
+            //try
+            //{
+            //    using (var context = new AppDbContext())
+            //    {
+            //        var questionToDelete = context.Questions
+            //            .Include(q => q.Answers)
+            //            .FirstOrDefault(q => q.Questionid == question.Questionid);
+
+            //        if (questionToDelete != null)
+            //        {
+            //            context.Answers.RemoveRange(questionToDelete.Answers);
+            //            context.Questions.Remove(questionToDelete);
+            //            context.SaveChanges();
+
+            //            MessageBox.Show($"Билет успешно удалён");
+
+            //            QuestionTable.Remove(question);
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Произошла ошибка при удалении:\n{ex.Message}");
+            //}
         }
 
         private void UserEdit(User user)
