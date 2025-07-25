@@ -10,14 +10,16 @@ namespace FireTestingApp_net8.ViewModels
         // private
         private string? _feedBackMessage;
         private readonly INavigationService _navigation;
+        private readonly IMessageService _messageService;
 
         // constructor
-        public FeedBackViewModel(INavigationService navigation)
+        public FeedBackViewModel(INavigationService navigation, IMessageService messageService)
         {
             SendMessageEvent = new RelayCommand(SendMessage);
             GoBackEvent = new RelayCommand(GoBack);
 
             _navigation = navigation;
+            _messageService = messageService;
         }
 
         // public
@@ -58,28 +60,34 @@ namespace FireTestingApp_net8.ViewModels
                         context.Tickets.Add(TicketTable);
                         context.SaveChanges();
 
-                        MessageBox.Show(
-                        "Отзыв успешно отправлен!",
-                        "Спасибо",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                        _messageService.TicketCompiteSend();
+
+                        //MessageBox.Show(
+                        //"Отзыв успешно отправлен!",
+                        //"Спасибо",
+                        //MessageBoxButton.OK,
+                        //MessageBoxImage.Information);
 
                         _navigation.NavigateTo<ResultsViewModel>();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Возникала внутряняя ошибка:\n{ex.Message}");
+                    //MessageBox.Show($"Возникала внутряняя ошибка:\n{ex.Message}");
+
+                    _messageService.ErrorExMessage(ex);
                     throw;
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "Нельзя отправить пустое сообщение",
-                    "А что исправлять?",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                //MessageBox.Show(
+                //    "Нельзя отправить пустое сообщение",
+                //    "А что исправлять?",
+                //    MessageBoxButton.OK,
+                //    MessageBoxImage.Error);
+
+                _messageService.NullTextField();
                 return;
             }
         }

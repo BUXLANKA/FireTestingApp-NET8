@@ -1,4 +1,5 @@
-﻿using FireTestingApp_net8.Models.Shema;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -9,9 +10,10 @@ namespace FireTestingApp_net8.ViewModels
     {
         // private
         private readonly INavigationService _navigation;
+        private readonly IMessageService _messageService;
 
         // constructor
-        public ResultsEditorViewModel(INavigationService navigation)
+        public ResultsEditorViewModel(INavigationService navigation, IMessageService messageService)
         {
             _navigation = navigation;
 
@@ -26,6 +28,8 @@ namespace FireTestingApp_net8.ViewModels
 
             SaveEvent = new RelayCommand(Save);
             CancelEvent = new RelayCommand(Cancel);
+
+            _messageService = messageService;
         }
 
         // public
@@ -55,29 +59,40 @@ namespace FireTestingApp_net8.ViewModels
                             result.Statusid = EditedResult.Statusid;
                             result.Testdate = EditedResult.Testdate;
                             context.SaveChanges();
+
                         }
                     }
                     else
                     {
-                        MessageBox.Show(
-                            "EditResult оказался Null",
-                            "Ошибка данных",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error);
+                        //MessageBox.Show(
+                        //    "EditResult оказался Null",
+                        //    "Ошибка данных",
+                        //    MessageBoxButton.OK,
+                        //    MessageBoxImage.Error);
+
+                        _messageService.Error();
                     }
                 }
 
-                MessageBox.Show("данные успешно сохранены");
-                _navigation.NavigateTo<InstructorViewModel>();
+                //MessageBox.Show("данные успешно сохранены");
+                _messageService.SaveComplite();
+
+                WeakReferenceMessenger.Default.Send(new UpdateMessage());
+
+                //MessageBox.Show("MSG SEND!");
+                _navigation.GoBack();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при сохранении: " + ex.Message);
+                //MessageBox.Show("Ошибка при сохранении: " + ex.Message);
+
+                _messageService.ErrorExMessage(ex);
             }
         }
         private void Cancel()
         {
-            _navigation.NavigateTo<InstructorViewModel>();
+            //_navigation.NavigateTo<InstructorViewModel>();
+            _navigation.GoBack();
         }
     }
 }
