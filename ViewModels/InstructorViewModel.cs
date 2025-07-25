@@ -402,7 +402,10 @@ namespace FireTestingApp_net8.ViewModels
         private void UpdateResultTable()
         {
             ResultsTable = TableAgent.GetResults();
-            OnPropertyChanged(nameof(ResultsTable));
+            ResultsView = CollectionViewSource.GetDefaultView(ResultsTable);
+            ResultsView.Filter = FilterResults;
+
+            OnPropertyChanged(nameof(ResultsView));
         }
         private void UpdateUserTable()
         {
