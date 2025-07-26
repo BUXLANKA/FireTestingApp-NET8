@@ -1,8 +1,13 @@
-﻿namespace FireTestingApp_net8.Services
+﻿
+///////////////////////////////////////////////////////////////////////////
+//                              ШАБЛОННЫЙ КOД                            //
+///////////////////////////////////////////////////////////////////////////
+
+namespace FireTestingApp_net8.Services
 {
     public static class NavigationParameterService
     {
-        private static readonly Dictionary<string, object?> _parameters = new();
+        private static readonly Dictionary<string, object?> _parameters = [];
 
         public static void Set(string key, object? value)
         {

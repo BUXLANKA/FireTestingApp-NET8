@@ -51,27 +51,42 @@ namespace FireTestingApp_net8.ViewModels
         // logic
         private void Save()
         {
-            using (var context = new AppDbContext())
+            if (UserObject.Roleid == 0)
             {
-                #region Adding new user code
-                if (UserObject.Roleid == 0)
-                {
-                    //MessageBox.Show($"role is null");
+                //MessageBox.Show($"role is null");
 
-                    _messageService.Error();
-                    return;
-                }
+                _messageService.Error();
+                return;
+            }
 
-                if (string.IsNullOrWhiteSpace(UserObject.Firstname)
-                    || string.IsNullOrWhiteSpace(UserObject.Surname)
-                    || string.IsNullOrWhiteSpace(UserObject.Lastname)
-                    || string.IsNullOrWhiteSpace(UserObject.Userlogin)
-                    || string.IsNullOrWhiteSpace(UserObject.Userpassword))
-                {
-                    //MessageBox.Show($"str is null?");
-                    _messageService.NullTextField();
-                    return;
-                }
+            if (string.IsNullOrWhiteSpace(UserObject.Firstname) || 
+                string.IsNullOrWhiteSpace(UserObject.Surname) || 
+                string.IsNullOrWhiteSpace(UserObject.Lastname) || 
+                string.IsNullOrWhiteSpace(UserObject.Userlogin) || 
+                string.IsNullOrWhiteSpace(UserObject.Userpassword))
+            {
+                //MessageBox.Show($"str is null?");
+                _messageService.NullTextField();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(UserObject.Firstname) ||
+                string.IsNullOrWhiteSpace(UserObject.Surname) || 
+                string.IsNullOrWhiteSpace(UserObject.Lastname) || 
+                string.IsNullOrWhiteSpace(UserObject.Userlogin) ||
+                string.IsNullOrWhiteSpace(UserObject.Userpassword))
+            {
+                //MessageBox.Show($"string is null");
+                _messageService.NullTextField();
+                return;
+            }
+
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
+            {
+                #region Добавление нового пользователя            
 
                 if (UserObject.Userid == 0)
                 {
@@ -89,40 +104,22 @@ namespace FireTestingApp_net8.ViewModels
                         Userpassword = UserObject.Userpassword
                     };
 
-                    try
-                    {
-                        context.Users.Add(newUser);
-                        context.SaveChanges();
-                        //MessageBox.Show($"DONE!");
+                    context.Users.Add(newUser);
+                    context.SaveChanges();
 
-                        _messageService.SaveComplite();
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        //MessageBox.Show($"{ex.Message}");
-                        _messageService.ErrorExMessage(ex);
-                        throw;
-                    }
+                    transaction.Commit();
+
+                    _messageService.SaveComplite();
+                    return;
                 }
                 #endregion
 
-                #region User editing
+                #region Редактирование пользователя
+
                 var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
 
                 if (user != null)
                 {
-                    if (string.IsNullOrWhiteSpace(UserObject.Firstname)
-                        ||string.IsNullOrWhiteSpace(UserObject.Surname)
-                        || string.IsNullOrWhiteSpace(UserObject.Lastname)
-                        || string.IsNullOrWhiteSpace(UserObject.Userlogin)
-                        || string.IsNullOrWhiteSpace(UserObject.Userpassword))
-                    {
-                        //MessageBox.Show($"string is null");
-                        _messageService.NullTextField();
-                        return;
-                    }
-
                     user.Firstname = UserObject.Firstname;
                     user.Surname = UserObject.Surname;
                     user.Lastname = UserObject.Lastname;
@@ -130,109 +127,122 @@ namespace FireTestingApp_net8.ViewModels
                     user.Userlogin = UserObject.Userlogin;
                     user.Userpassword = UserObject.Userpassword;
 
-                    try
-                    {
-                        context.SaveChanges();
-                        WeakReferenceMessenger.Default.Send(new UpdateMessage());
-                        //MessageBox.Show($"UPDATED");
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        //MessageBox.Show($"{ex.Message}");
-                        _messageService.ErrorExMessage(ex);
-                        throw;
-                    }
+                    context.SaveChanges();
+
+                    transaction.Commit();
+
+                    _messageService.SaveComplite();
+
+                    WeakReferenceMessenger.Default.Send(new UpdateMessage());
+                    return;
                 }
                 #endregion
-
-                //#region Editing exists users code
-                //var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
-
-                //if (user != null)
-                //{
-
-                //}
-                //#endregion
-
-
-
-                //if (UserObject.Role == null)
-                //{
-                //    MessageBox.Show("Роль пользователя не выбрана!");
-                //    return;
-                //}
-
-                //var role = context.Roles.FirstOrDefault(r => r.Roleid == UserObject.Role.Roleid);
-
-                ////добавление
-                //if (UserObject.Userid == 0)
-                //{
-                //    User newUser = new()
-                //    {
-                //        Firstname = UserObject.Firstname,
-                //        Surname = UserObject.Surname,
-                //        Lastname = UserObject.Lastname,
-                //        Roleid = UserObject.Role.Roleid,
-                //        Userpassword = UserObject.Userpassword,
-                //        Userlogin = UserObject.Userlogin
-                //    };
-
-                //    bool duplicateUser = context.Users.Any(u => u.Userlogin == UserObject.Userlogin);
-
-                //    if (!duplicateUser)
-                //    {
-                //        try
-                //        {
-                //            //context.Users.Add(newUser);
-                //            //context.SaveChanges();
-                //            MessageBox.Show("user added");
-                //            return;
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            MessageBox.Show($"{ex.Message}");
-                //            throw;
-                //        }
-                //    }
-                //}
-
-                //// изменение
-                //var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
-
-                //if (user != null)
-                //{
-                //    user.Firstname = UserObject.Firstname;
-                //    user.Surname = UserObject.Surname;
-                //    user.Lastname = UserObject.Lastname;
-                //    user.Role = role!;
-                //    user.Userpassword = UserObject.Userpassword;
-
-                //    bool exitstLogin = context.Users.Any(u => u.Userlogin == UserObject.Userlogin
-                //        && u.Userid != UserObject.Userid);
-
-                //    if (!exitstLogin)
-                //    {
-                //        user.Userlogin = UserObject.Userlogin;
-                //    }
-                //    else
-                //    {
-                //        MessageBox.Show("REPEAT");
-                //    }
-
-                //        try
-                //        {
-                //            context.SaveChanges();
-                //            MessageBox.Show("DONE!");
-                //            _navigatoin.GoBack();
-                //        }
-                //        catch (Exception ex)
-                //        {
-                //            MessageBox.Show($"{ex.Message}");
-                //            throw;
-                //        }
-                //}
             }
+            catch (Exception ex)
+            {
+                _messageService.ErrorExMessage(ex);
+                throw;
+            }
+
+
+
+
+
+
+
+
+
+            //using (var context = new AppDbContext())
+            //{
+               
+
+            //    //#region Editing exists users code
+            //    //var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
+
+            //    //if (user != null)
+            //    //{
+
+            //    //}
+            //    //#endregion
+
+
+
+            //    //if (UserObject.Role == null)
+            //    //{
+            //    //    MessageBox.Show("Роль пользователя не выбрана!");
+            //    //    return;
+            //    //}
+
+            //    //var role = context.Roles.FirstOrDefault(r => r.Roleid == UserObject.Role.Roleid);
+
+            //    ////добавление
+            //    //if (UserObject.Userid == 0)
+            //    //{
+            //    //    User newUser = new()
+            //    //    {
+            //    //        Firstname = UserObject.Firstname,
+            //    //        Surname = UserObject.Surname,
+            //    //        Lastname = UserObject.Lastname,
+            //    //        Roleid = UserObject.Role.Roleid,
+            //    //        Userpassword = UserObject.Userpassword,
+            //    //        Userlogin = UserObject.Userlogin
+            //    //    };
+
+            //    //    bool duplicateUser = context.Users.Any(u => u.Userlogin == UserObject.Userlogin);
+
+            //    //    if (!duplicateUser)
+            //    //    {
+            //    //        try
+            //    //        {
+            //    //            //context.Users.Add(newUser);
+            //    //            //context.SaveChanges();
+            //    //            MessageBox.Show("user added");
+            //    //            return;
+            //    //        }
+            //    //        catch (Exception ex)
+            //    //        {
+            //    //            MessageBox.Show($"{ex.Message}");
+            //    //            throw;
+            //    //        }
+            //    //    }
+            //    //}
+
+            //    //// изменение
+            //    //var user = context.Users.FirstOrDefault(u => u.Userid == UserObject.Userid);
+
+            //    //if (user != null)
+            //    //{
+            //    //    user.Firstname = UserObject.Firstname;
+            //    //    user.Surname = UserObject.Surname;
+            //    //    user.Lastname = UserObject.Lastname;
+            //    //    user.Role = role!;
+            //    //    user.Userpassword = UserObject.Userpassword;
+
+            //    //    bool exitstLogin = context.Users.Any(u => u.Userlogin == UserObject.Userlogin
+            //    //        && u.Userid != UserObject.Userid);
+
+            //    //    if (!exitstLogin)
+            //    //    {
+            //    //        user.Userlogin = UserObject.Userlogin;
+            //    //    }
+            //    //    else
+            //    //    {
+            //    //        MessageBox.Show("REPEAT");
+            //    //    }
+
+            //    //        try
+            //    //        {
+            //    //            context.SaveChanges();
+            //    //            MessageBox.Show("DONE!");
+            //    //            _navigatoin.GoBack();
+            //    //        }
+            //    //        catch (Exception ex)
+            //    //        {
+            //    //            MessageBox.Show($"{ex.Message}");
+            //    //            throw;
+            //    //        }
+            //    //}
+            //}
 
             //try
             //{

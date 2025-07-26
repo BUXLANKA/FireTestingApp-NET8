@@ -45,49 +45,94 @@ namespace FireTestingApp_net8.ViewModels
         // logic
         private void Save()
         {
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
             try
             {
-                using (var context = new AppDbContext())
+                if (EditedResult != null)
                 {
-                    if (EditedResult != null)
+                    var result = context.Results.FirstOrDefault(r => r.Resultid == EditedResult.Resultid);
+
+                    if (result == null)
                     {
-                        var result = context.Results.FirstOrDefault(r => r.Resultid == EditedResult.Resultid);
-
-                        if (result != null)
-                        {
-                            result.Userscore = EditedResult.Userscore;
-                            result.Statusid = EditedResult.Statusid;
-                            result.Testdate = EditedResult.Testdate;
-                            context.SaveChanges();
-
-                        }
-                    }
-                    else
-                    {
-                        //MessageBox.Show(
-                        //    "EditResult оказался Null",
-                        //    "Ошибка данных",
-                        //    MessageBoxButton.OK,
-                        //    MessageBoxImage.Error);
-
                         _messageService.Error();
+                        return;
                     }
+
+                    result.Userscore = EditedResult.Userscore;
+                    result.Statusid = EditedResult.Statusid;
+                    result.Testdate = EditedResult.Testdate;
+
+                    context.SaveChanges();
+
+                    transaction.Commit();
+
+                    WeakReferenceMessenger.Default.Send(new UpdateMessage());
+
+                    _messageService.SaveComplite();
+                    _navigation.GoBack();
                 }
-
-                //MessageBox.Show("данные успешно сохранены");
-                _messageService.SaveComplite();
-
-                WeakReferenceMessenger.Default.Send(new UpdateMessage());
-
-                //MessageBox.Show("MSG SEND!");
-                _navigation.GoBack();
             }
             catch (Exception ex)
             {
-                //MessageBox.Show("Ошибка при сохранении: " + ex.Message);
+                transaction.Rollback();
 
                 _messageService.ErrorExMessage(ex);
+                throw;
             }
+
+
+
+                
+
+
+
+
+
+                //try
+                //{
+                //    using (var context = new AppDbContext())
+                //    {
+                //        if (EditedResult != null)
+                //        {
+                //            var result = context.Results.FirstOrDefault(r => r.Resultid == EditedResult.Resultid);
+
+                //            if (result != null)
+                //            {
+                //                result.Userscore = EditedResult.Userscore;
+                //                result.Statusid = EditedResult.Statusid;
+                //                result.Testdate = EditedResult.Testdate;
+                //                context.SaveChanges();
+
+                //            }
+                //        }
+                //        else
+                //        {
+                //            //MessageBox.Show(
+                //            //    "EditResult оказался Null",
+                //            //    "Ошибка данных",
+                //            //    MessageBoxButton.OK,
+                //            //    MessageBoxImage.Error);
+
+                //            _messageService.Error();
+                //        }
+                //    }
+
+                //    //MessageBox.Show("данные успешно сохранены");
+                //    _messageService.SaveComplite();
+
+                //    WeakReferenceMessenger.Default.Send(new UpdateMessage());
+
+                //    //MessageBox.Show("MSG SEND!");
+                //    _navigation.GoBack();
+                //}
+                //catch (Exception ex)
+                //{
+                //    //MessageBox.Show("Ошибка при сохранении: " + ex.Message);
+
+                //    _messageService.ErrorExMessage(ex);
+                //}
         }
         private void Cancel()
         {

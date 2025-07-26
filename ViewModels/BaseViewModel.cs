@@ -1,6 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
 
+///////////////////////////////////////////////////////////////////////////
+//                              ШАБЛОННЫЙ КOД                            //
+///////////////////////////////////////////////////////////////////////////
+
 namespace FireTestingApp_net8.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
@@ -9,14 +13,6 @@ namespace FireTestingApp_net8.ViewModels
 
         protected void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-        //protected bool SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
-        //{
-        //    if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-        //    field = value;
-        //    OnPropertyChanged(propertyName!);
-        //    return true;
-        //}
     }
 
     public class RelayCommand : ICommand
