@@ -9,15 +9,22 @@ namespace FireTestingApp_net8.Services
 {
     public interface IMessageService
     {
-        void TicketCompiteSend();
+        // error
+        void DbConnectionError(Exception ex);
         void ErrorExMessage(Exception ex);
         void NullTextField();
-        void DbConnectionError(Exception ex);
-        void LoginError();
-        void UserTestRestriction();
-        MessageBoxResult ConfirmDelete();
         void Error();
-        void TestTimeOut();
+        void LoginError();
+
+        // complite
+        void TicketCompiteSend();
         void SaveComplite();
+
+        // info
+        void UserTestRestriction();
+        void TestTimeOut();
+
+        // confirm
+        MessageBoxResult ConfirmDelete();
     }
 }

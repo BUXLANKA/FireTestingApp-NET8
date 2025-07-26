@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FireTestingApp_net8.Models
 {
-    public class TableAgent
+    public static class TableAgent
     {
         public static ObservableCollection<Result> GetResults()
         {

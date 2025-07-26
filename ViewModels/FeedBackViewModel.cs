@@ -9,17 +9,18 @@ namespace FireTestingApp_net8.ViewModels
     {
         // private
         private string? _feedBackMessage;
+
         private readonly INavigationService _navigation;
-        private readonly IMessageService _messageService;
+        private readonly IMessageService _message;
 
         // constructor
-        public FeedBackViewModel(INavigationService navigation, IMessageService messageService)
+        public FeedBackViewModel(INavigationService navigation, IMessageService message)
         {
             SendMessageEvent = new RelayCommand(SendMessage);
             GoBackEvent = new RelayCommand(GoBack);
 
             _navigation = navigation;
-            _messageService = messageService;
+            _message = message;
         }
 
         // public
@@ -37,7 +38,6 @@ namespace FireTestingApp_net8.ViewModels
 
 
         // command
-
         public RelayCommand SendMessageEvent { get; }
         public RelayCommand GoBackEvent { get; }
 
@@ -46,7 +46,7 @@ namespace FireTestingApp_net8.ViewModels
         {
             if (string.IsNullOrEmpty(FeedBackMessage))
             {
-                _messageService.NullTextField();
+                _message.NullTextField();
                 return;
             }
 
@@ -67,63 +67,16 @@ namespace FireTestingApp_net8.ViewModels
 
                 transaction.Commit();
 
-                _messageService.TicketCompiteSend();
+                _message.TicketCompiteSend();
                 _navigation.GoBack();
             }
             catch (Exception ex)
             {
                 transaction.Rollback();
 
-                _messageService.ErrorExMessage(ex);
+                _message.ErrorExMessage(ex);
                 throw;
             }
-
-            //if (!string.IsNullOrEmpty(FeedBackMessage))
-            //{
-            //    Ticket TicketTable = new()
-            //    {
-            //        Fromuserid = Session.UserID,
-            //        Ticketdate = DateTime.Now,
-            //        Tickettext = FeedBackMessage
-            //    };
-
-            //    try
-            //    {
-            //        using (var context = new AppDbContext())
-            //        {
-            //            context.Tickets.Add(TicketTable);
-            //            context.SaveChanges();
-
-            //            _messageService.TicketCompiteSend();
-
-            //            //MessageBox.Show(
-            //            //"Отзыв успешно отправлен!",
-            //            //"Спасибо",
-            //            //MessageBoxButton.OK,
-            //            //MessageBoxImage.Information);
-
-            //            _navigation.NavigateTo<ResultsViewModel>();
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        //MessageBox.Show($"Возникала внутряняя ошибка:\n{ex.Message}");
-
-            //        _messageService.ErrorExMessage(ex);
-            //        throw;
-            //    }
-            //}
-            //else
-            //{
-            //    //MessageBox.Show(
-            //    //    "Нельзя отправить пустое сообщение",
-            //    //    "А что исправлять?",
-            //    //    MessageBoxButton.OK,
-            //    //    MessageBoxImage.Error);
-
-            //    _messageService.NullTextField();
-            //    return;
-            //}
         }
         private void GoBack()
         {

@@ -29,7 +29,7 @@ namespace FireTestingApp_net8
             _navigation.Register<UserEditorView, UserEditorViewModel>(provider);
             _navigation.Register<QuestionEditorView, QuestionEditorViewModel>(provider);
 
-            _navigation.NavigateTo<InstructorViewModel>();
+            _navigation.NavigateTo<LoginViewModel>();
 
             MinHeight = 720;
             MinWidth = 1024;

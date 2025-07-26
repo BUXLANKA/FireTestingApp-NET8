@@ -2,12 +2,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
+///////////////////////////////////////////////////////////////////////////
+//                              ШАБЛОННЫЙ КOД                            //
+///////////////////////////////////////////////////////////////////////////
+
 namespace FireTestingApp_net8.Services
 {
     public class NavigationService : INavigationService
     {
         private readonly Frame _mainFrame;
-        private readonly Dictionary<Type, Func<Page>> _pageMap = new();
+        private readonly Dictionary<Type, Func<Page>> _pageMap = [];
 
         public NavigationService(Frame mainFrame)
         {
@@ -49,8 +53,6 @@ namespace FireTestingApp_net8.Services
             where TViewModel : class
         {
             services.AddTransient<TView>();
-            // ViewModel создаём через фабрику, чтобы передать INavigationService из MainWindow
-            // Регистрация просто для разрешения в DI, реальное создание — вручную в MainWindow
             services.AddTransient<TViewModel>();
         }
     }
