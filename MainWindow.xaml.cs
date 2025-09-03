@@ -1,8 +1,6 @@
 ﻿using FireTestingApp_net8.Services;
 using FireTestingApp_net8.Viewes;
 using FireTestingApp_net8.ViewModels;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
 namespace FireTestingApp_net8

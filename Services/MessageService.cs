@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace FireTestingApp_net8.Services
 {
@@ -44,6 +39,10 @@ namespace FireTestingApp_net8.Services
         public void SaveComplite()
         {
             MessageBox.Show("данные успешно сохранены");
+        }
+        public void DeleteComplite()
+        {
+            MessageBox.Show($"Объект успешно удалён!");
         }
 
         // info

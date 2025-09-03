@@ -1,11 +1,6 @@
 ﻿using FireTestingApp_net8.Models.Shema;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FireTestingApp_net8.Models
 {
@@ -19,7 +14,7 @@ namespace FireTestingApp_net8.Models
                     .Include(r => r.User)
                     .Include(r => r.Status)
                     .ToList();
-                return new ObservableCollection<Result>(ResultsList);      
+                return new ObservableCollection<Result>(ResultsList);
             }
         }
         public static ObservableCollection<Useranswer> GetUserAnswers()

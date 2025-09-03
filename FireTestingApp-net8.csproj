@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+    <Page Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\auto-891-1.png" />
     <None Remove="Assets\close-svgrepo-com.png" />
     <None Remove="Assets\exit-export-logout-svgrepo-com.png" />

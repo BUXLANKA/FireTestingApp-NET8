@@ -2,7 +2,6 @@
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -71,6 +70,7 @@ namespace FireTestingApp_net8.ViewModels
                     WeakReferenceMessenger.Default.Send(new UpdateMessage());
 
                     _messageService.SaveComplite();
+                    NavigationParameterService.Clear("SelectedResult");
                     _navigation.GoBack();
                 }
             }
@@ -81,62 +81,10 @@ namespace FireTestingApp_net8.ViewModels
                 _messageService.ErrorExMessage(ex);
                 throw;
             }
-
-
-
-                
-
-
-
-
-
-                //try
-                //{
-                //    using (var context = new AppDbContext())
-                //    {
-                //        if (EditedResult != null)
-                //        {
-                //            var result = context.Results.FirstOrDefault(r => r.Resultid == EditedResult.Resultid);
-
-                //            if (result != null)
-                //            {
-                //                result.Userscore = EditedResult.Userscore;
-                //                result.Statusid = EditedResult.Statusid;
-                //                result.Testdate = EditedResult.Testdate;
-                //                context.SaveChanges();
-
-                //            }
-                //        }
-                //        else
-                //        {
-                //            //MessageBox.Show(
-                //            //    "EditResult оказался Null",
-                //            //    "Ошибка данных",
-                //            //    MessageBoxButton.OK,
-                //            //    MessageBoxImage.Error);
-
-                //            _messageService.Error();
-                //        }
-                //    }
-
-                //    //MessageBox.Show("данные успешно сохранены");
-                //    _messageService.SaveComplite();
-
-                //    WeakReferenceMessenger.Default.Send(new UpdateMessage());
-
-                //    //MessageBox.Show("MSG SEND!");
-                //    _navigation.GoBack();
-                //}
-                //catch (Exception ex)
-                //{
-                //    //MessageBox.Show("Ошибка при сохранении: " + ex.Message);
-
-                //    _messageService.ErrorExMessage(ex);
-                //}
         }
         private void Cancel()
         {
-            //_navigation.NavigateTo<InstructorViewModel>();
+            NavigationParameterService.Clear("SelectedResult");
             _navigation.GoBack();
         }
     }

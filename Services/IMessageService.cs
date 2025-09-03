@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace FireTestingApp_net8.Services
 {
@@ -19,6 +14,7 @@ namespace FireTestingApp_net8.Services
         // complite
         void TicketCompiteSend();
         void SaveComplite();
+        void DeleteComplite();
 
         // info
         void UserTestRestriction();

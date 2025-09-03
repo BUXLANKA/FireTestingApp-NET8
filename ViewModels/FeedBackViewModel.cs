@@ -1,7 +1,6 @@
 ﻿using FireTestingApp.Models;
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
-using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -33,9 +32,6 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(FeedBackMessage));
             }
         }
-
-        // collection
-
 
         // command
         public RelayCommand SendMessageEvent { get; }

@@ -43,8 +43,6 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
-        // collection
-
         // command
         public RelayCommand StartTestEvent { get; }
 
