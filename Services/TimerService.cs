@@ -4,48 +4,48 @@ namespace FireTestingApp_net8.Services
 {
     public class TimerService
     {
-        public event EventHandler? TimeUpdated;
+        private DispatcherTimer _timer;
+        private TimeSpan _timeLeft;
 
-        private DispatcherTimer timer;
-        private TimeSpan timeLeft;
+        public event EventHandler? TimeUpdated;
 
         public TimerService()
         {
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += Timer_Tick;
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Tick += Timer_Tick;
         }
 
         public void SetMinutes(int minutes)
         {
-            timeLeft = TimeSpan.FromMinutes(minutes);
+            _timeLeft = TimeSpan.FromMinutes(minutes);
         }
 
         public void Start()
         {
-            timer.Start();
+            _timer.Start();
         }
 
         public void Stop()
         {
-            timer.Stop();
+            _timer.Stop();
         }
 
         public TimeSpan GetTimeLeft()
         {
-            return timeLeft;
+            return _timeLeft;
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            if (timeLeft.TotalSeconds > 0)
+            if (_timeLeft.TotalSeconds > 0)
             {
-                timeLeft = timeLeft - TimeSpan.FromSeconds(1);
+                _timeLeft = _timeLeft - TimeSpan.FromSeconds(1);
                 TimeUpdated?.Invoke(this, EventArgs.Empty);
             }
             else
             {
-                timer.Stop();
+                _timer.Stop();
             }
         }
     }

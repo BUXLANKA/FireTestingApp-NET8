@@ -1,6 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Windows.Input;
 
+///////////////////////////////////////////////////////////////////////////
+//                              ШАБЛОННЫЙ КOД                            //
+///////////////////////////////////////////////////////////////////////////
+
 namespace FireTestingApp_net8.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged

@@ -1,7 +1,6 @@
 ﻿using FireTestingApp.Models;
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
-using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -9,15 +8,18 @@ namespace FireTestingApp_net8.ViewModels
     {
         // private
         private string? _feedBackMessage;
+
         private readonly INavigationService _navigation;
+        private readonly IMessageService _message;
 
         // constructor
-        public FeedBackViewModel(INavigationService navigation)
+        public FeedBackViewModel(INavigationService navigation, IMessageService message)
         {
             SendMessageEvent = new RelayCommand(SendMessage);
             GoBackEvent = new RelayCommand(GoBack);
 
             _navigation = navigation;
+            _message = message;
         }
 
         // public
@@ -31,56 +33,45 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
-        // collection
-
-
         // command
-
         public RelayCommand SendMessageEvent { get; }
         public RelayCommand GoBackEvent { get; }
 
         // logic
         private void SendMessage()
         {
-            if (!string.IsNullOrEmpty(FeedBackMessage))
+            if (string.IsNullOrEmpty(FeedBackMessage))
             {
-                Ticket TicketTable = new()
+                _message.NullTextField();
+                return;
+            }
+
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
+            try
+            {
+                Ticket ticket = new()
                 {
                     Fromuserid = Session.UserID,
                     Ticketdate = DateTime.Now,
                     Tickettext = FeedBackMessage
                 };
 
-                try
-                {
-                    using (var context = new AppDbContext())
-                    {
-                        context.Tickets.Add(TicketTable);
-                        context.SaveChanges();
+                context.Tickets.Add(ticket);
+                context.SaveChanges();
 
-                        MessageBox.Show(
-                        "Отзыв успешно отправлен!",
-                        "Спасибо",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                transaction.Commit();
 
-                        _navigation.NavigateTo<ResultsViewModel>();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Возникала внутряняя ошибка:\n{ex.Message}");
-                    throw;
-                }
+                _message.TicketCompiteSend();
+                _navigation.GoBack();
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show(
-                    "Нельзя отправить пустое сообщение",
-                    "А что исправлять?",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-                return;
+                transaction.Rollback();
+
+                _message.ErrorExMessage(ex);
+                throw;
             }
         }
         private void GoBack()

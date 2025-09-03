@@ -10,6 +10,7 @@ public partial class User
 {
     [Key]
     [Column("userid")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Userid { get; set; }
 
     [Column("firstname")]

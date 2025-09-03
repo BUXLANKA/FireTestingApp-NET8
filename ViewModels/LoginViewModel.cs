@@ -2,7 +2,6 @@
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -13,12 +12,14 @@ namespace FireTestingApp_net8.ViewModels
         private string? _password;
 
         private readonly INavigationService _navigation;
+        private readonly IMessageService _messageService;
 
         // constructor
-        public LoginViewModel(INavigationService navigation)
+        public LoginViewModel(INavigationService navigation, IMessageService messageService)
         {
             EnterEvent = new RelayCommand(EnterAccount);
             _navigation = navigation;
+            _messageService = messageService;
         }
 
         // public
@@ -40,8 +41,6 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(Password));
             }
         }
-
-        // collection
 
         // command
         public RelayCommand EnterEvent { get; }
@@ -67,7 +66,7 @@ namespace FireTestingApp_net8.ViewModels
 
                         switch (Session.RoleID)
                         {
-                            case 1:
+                            case 1 or 4:
                                 _navigation.NavigateTo<InstructorViewModel>();
                                 break;
 
@@ -77,11 +76,7 @@ namespace FireTestingApp_net8.ViewModels
 
                                 if (ExamDateRestrict?.Testdate != null && (DateTime.Now - ExamDateRestrict.Testdate).TotalDays <= 31)
                                 {
-                                    MessageBox.Show(
-                                        "Повторная сдача будет доступна после 31 дня с момента последней сдачи.\nЗа подробностями обратитесь к инструктору.",
-                                        "Информация",
-                                        MessageBoxButton.OK,
-                                        MessageBoxImage.Information);
+                                    _messageService.UserTestRestriction();
                                     return;
                                 }
                                 else
@@ -93,34 +88,19 @@ namespace FireTestingApp_net8.ViewModels
                     }
                     else
                     {
-                        MessageBox.Show(
-                            "Неправильный логин или пароль",
-                            "Ошибка авторизации",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error);
-
+                        _messageService.LoginError();
                         return;
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(
-                        "Не удаётся создать соединение с базой данный. Обратитесь к администратору.",
-                        "Ошибка сервера",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                    MessageBox.Show(ex.Message);
+                    _messageService.DbConnectionError(ex);
                     throw;
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "Введите логин или пароль",
-                    "Пусто? Пусто!",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-
+                _messageService.NullTextField();
                 return;
             }
         }

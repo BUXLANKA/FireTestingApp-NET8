@@ -1,0 +1,232 @@
+﻿<Page
+    x:Class="FireTestingApp_net8.Viewes.QuestionEditorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:FireTestingApp_net8.Services"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="QuestionEditorView"
+    d:DesignHeight="640"
+    d:DesignWidth="960"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Assets/custom_styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:IndexToBoolConverter x:Key="IndexToBoolConverter" />
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Margin="0,-5,0,5" Background="White">
+
+        <Button
+            Width="30"
+            Height="30"
+            Margin="0,110,10,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            HorizontalContentAlignment="Right"
+            VerticalContentAlignment="Center"
+            Command="{Binding CancelEvent}"
+            Cursor="Hand"
+            FontSize="16"
+            Style="{StaticResource NoHoverButtonStyle}">
+            <Button.Background>
+                <ImageBrush
+                    AlignmentX="Left"
+                    AlignmentY="Center"
+                    ImageSource="/Assets/img/close-svgrepo-com.png"
+                    Stretch="Fill"
+                    TileMode="None" />
+            </Button.Background>
+        </Button>
+
+        <Button
+            Width="254"
+            Height="38"
+            Margin="0,8,0,59"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Command="{Binding SaveEvent}"
+            Content="Сохранить и закрыть"
+            FontSize="16" />
+        <TextBlock
+            Margin="0,120,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            FontSize="36"
+            FontWeight="Bold"
+            TextAlignment="Center"
+            TextWrapping="Wrap"><Run Text="Редактор " /><Run Language="ru-ru" Text="билетов" /></TextBlock>
+        <Rectangle
+            Height="98.8"
+            VerticalAlignment="Top"
+            Fill="#FF194F9E"
+            Stroke="#FF568FE2" />
+        <TextBlock
+            Margin="0,23,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            FontSize="20"
+            FontWeight="Bold"
+            Foreground="White"
+            TextAlignment="Center"
+            TextWrapping="Wrap"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ" /><LineBreak /><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ" /></TextBlock>
+        <Rectangle
+            Width="80"
+            Height="80"
+            Margin="10,9,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top">
+            <Rectangle.Fill>
+                <ImageBrush
+                    ImageSource="/Assets/img/auto-891-1.png"
+                    Stretch="UniformToFill"
+                    TileMode="None" />
+            </Rectangle.Fill>
+        </Rectangle>
+        <Label
+            Height="37"
+            Margin="0,-100,710,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Текст билета:"
+            FontSize="14" />
+        <TextBox
+            Width="608"
+            Height="132"
+            Margin="0,-100,0,0"
+            VerticalAlignment="Center"
+            FontSize="14"
+            Text="{Binding QuestionObject.Questiontext, Mode=TwoWay}"
+            TextWrapping="Wrap" />
+        <Label
+            Margin="0,100,680,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Ответ №1"
+            FontSize="14" />
+        <TextBox
+            Width="608"
+            Height="26"
+            Margin="0,100,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="{Binding Answers[0].Answertext, Mode=TwoWay}"
+            TextWrapping="Wrap" />
+        <Label
+            Margin="0,170,678,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Ответ №2"
+            FontSize="14" />
+        <TextBox
+            Width="608"
+            Height="26"
+            Margin="0,170,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="{Binding Answers[1].Answertext, Mode=TwoWay}"
+            TextWrapping="Wrap" />
+        <Label
+            Margin="0,240,680,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Ответ №3"
+            FontSize="14" />
+        <TextBox
+            Width="608"
+            Height="26"
+            Margin="0,240,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="{Binding Answers[2].Answertext, Mode=TwoWay}"
+            TextWrapping="Wrap" />
+        <Label
+            Margin="0,310,680,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Ответ №4"
+            FontSize="14" />
+        <TextBox
+            Width="608"
+            Height="26"
+            Margin="0,310,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="{Binding Answers[3].Answertext, Mode=TwoWay}"
+            TextWrapping="Wrap" />
+        <Label
+            Margin="0,380,680,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Content="Ответ №5"
+            FontSize="14" />
+        <TextBox
+            Width="608"
+            Height="26"
+            Margin="0,380,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="{Binding Answers[4].Answertext, Mode=TwoWay}"
+            TextWrapping="Wrap" />
+        <RadioButton
+            Width="67"
+            Height="25"
+            Margin="0,100,-680,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            Content="Верный"
+            FontSize="14"
+            GroupName="CorrectAnswer"
+            IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=0}" />
+        <RadioButton
+            Width="67"
+            Height="25"
+            Margin="0,170,-680,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            Content="Верный"
+            FontSize="14"
+            GroupName="CorrectAnswer"
+            IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=1}" />
+        <RadioButton
+            Width="67"
+            Height="25"
+            Margin="0,240,-681,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            Content="Верный"
+            FontSize="14"
+            GroupName="CorrectAnswer"
+            IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=2}" />
+        <RadioButton
+            Width="67"
+            Height="25"
+            Margin="0,310,-680,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            Content="Верный"
+            GroupName="CorrectAnswer"
+            IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=3}" />
+        <RadioButton
+            Width="67"
+            Height="25"
+            Margin="0,380,-680,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            Content="Верный"
+            FontSize="14"
+            GroupName="CorrectAnswer"
+            IsChecked="{Binding SelectedAnswerIndex, Converter={StaticResource IndexToBoolConverter}, ConverterParameter=4}" />
+    </Grid>
+</Page>

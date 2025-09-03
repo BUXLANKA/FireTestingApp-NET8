@@ -19,9 +19,10 @@ namespace FireTestingApp_net8.ViewModels
         private Result _сurrentResults = new();
 
         private readonly INavigationService _navigation;
+        private readonly IMessageService _messageService;
 
         // constructor
-        public MainTestViewModel(INavigationService navigation)
+        public MainTestViewModel(INavigationService navigation, IMessageService messageService)
         {
             Timer.SetMinutes(5);
             Timer.TimeUpdated += Timer_TimeUpdated;
@@ -44,6 +45,7 @@ namespace FireTestingApp_net8.ViewModels
             GoToNextQuestionEvent = new RelayCommand(GoNext);
 
             _navigation = navigation;
+            _messageService = messageService;
         }
 
         // public
@@ -196,9 +198,7 @@ namespace FireTestingApp_net8.ViewModels
                 };
 
                 if (CurrentUserAnswer.Iscorrect)
-                {
                     Score++;
-                }
 
                 try
                 {
@@ -210,17 +210,13 @@ namespace FireTestingApp_net8.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка при сохранении ответа: {ex.Message}");
+                    _messageService.ErrorExMessage(ex);
                     throw;
                 }
             }
             else
             {
-                MessageBox.Show(
-                    "Выбранный ответ имел неверные значения",
-                    "Ошибка",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                _messageService.Error();
                 return;
             }
         }
@@ -231,11 +227,8 @@ namespace FireTestingApp_net8.ViewModels
             if (Timer.GetTimeLeft().TotalSeconds == 0)
             {
                 Timer.Stop();
-                MessageBox.Show(
-                    "Тест закрыт по истечению времени прохождения.",
-                    "Кажется, вы не успели...",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+
+                _messageService.TestTimeOut();
 
                 // добавление в базу данных данных о закрытии теста
                 _сurrentResults.Userid = Session.UserID;
@@ -253,7 +246,7 @@ namespace FireTestingApp_net8.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка при сохранении результата: {ex.Message}");
+                    _messageService.ErrorExMessage(ex);
                     throw;
                 }
                 Timer.TimeUpdated -= Timer_TimeUpdated;

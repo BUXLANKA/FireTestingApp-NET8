@@ -1,91 +1,440 @@
-﻿<Page x:Class="FireTestingApp_net8.Viewes.InstructorView"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
-      xmlns:vm="clr-namespace:FireTestingApp_net8.ViewModels"
-      mc:Ignorable="d" 
-      d:DesignHeight="640" d:DesignWidth="960"
-      Title="Админ-панель">
+﻿<Page
+    x:Class="FireTestingApp_net8.Viewes.InstructorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:common="clr-namespace:FireTestingApp_net8.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FireTestingApp_net8.Viewes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:FireTestingApp_net8.ViewModels"
+    Title="Админ-панель"
+    d:DesignHeight="640"
+    d:DesignWidth="960"
+    mc:Ignorable="d">
 
     <Grid Background="White">
-        <TabControl Margin="0,104,0,0" FontSize="14">
 
-            <TabItem Header="Результаты тестирования">
-                <Grid Background="#FFE5E5E5">
-                    <Button Command="{Binding ExitEvent}" Content="ВЫЙТИ" HorizontalAlignment="Right" Margin="0,303,10,0" VerticalAlignment="Top" Width="278" Height="40"/>
-                    <TextBlock Text="{Binding WelcomeMessage}" HorizontalAlignment="Right" Margin="0,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" Height="33" TextAlignment="Center"/>
+        <!--  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}  -->
+        <TabControl Margin="0,150,0,0">
 
-                    <DataGrid ItemsSource="{Binding ResultsTable}" AutoGenerateColumns="false" ColumnWidth="auto" IsReadOnly="True" Margin="0,0,303,0" FontSize="14">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding User.Firstname}"/>
-                            <DataGridTextColumn Header="Фамилия" Binding="{Binding User.Lastname}"/>
-                            <DataGridTextColumn Header="Отчество" Binding="{Binding User.Surname}"/>
-                            <DataGridTextColumn Header="Дата сдачи" Binding="{Binding Testdate, StringFormat=dd.MM.yyy | HH:MM}"/>
-                            <DataGridTextColumn Header="Баллы" Binding="{Binding Userscore}"/>
-                            <DataGridTextColumn Header="Статус экзамена" Binding="{Binding Status.Statusname}"/>
-                            <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="Редактировать"
-                                        Command="{Binding DataContext.EditResultEvent, RelativeSource={RelativeSource AncestorType=Page}}"
-                                        CommandParameter="{Binding}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+            <!--  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"  -->
+            <TabItem FontSize="14" Header="Администрирование тестов">
+                <TabControl FontSize="14">
+
+                    <TabItem Header="Результаты тестирования">
+                        <Grid Background="#FFE5E5E5">
+                            <!--<Button Command="{Binding ExitEvent}" Content="ВЫЙТИ" HorizontalAlignment="Right" Margin="0,303,10,0" VerticalAlignment="Top" Width="278" Height="40"/>
+                            <TextBlock Text="{Binding WelcomeMessage}" HorizontalAlignment="Right" Margin="0,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" Height="33" TextAlignment="Center"/>-->
+
+                            <DataGrid
+                                Margin="0,41,0,0"
+                                AutoGenerateColumns="false"
+                                CanUserReorderColumns="False"
+                                CanUserResizeColumns="False"
+                                ColumnWidth="*"
+                                FontSize="14"
+                                HeadersVisibility="Column"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding ResultsView}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding User.Firstname}" Header="Имя" />
+                                    <DataGridTextColumn Binding="{Binding User.Lastname}" Header="Фамилия" />
+                                    <DataGridTextColumn Binding="{Binding User.Surname}" Header="Отчество" />
+                                    <DataGridTextColumn Binding="{Binding Testdate, StringFormat=dd.MM.yyy | HH:MM}" Header="Дата сдачи" />
+                                    <DataGridTextColumn Binding="{Binding Userscore}" Header="Баллы" />
+                                    <DataGridTextColumn Binding="{Binding Status.Statusname}" Header="Статус экзамена" />
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Background="#4CAF50"
+                                                    Command="{Binding DataContext.EditResultEvent, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="Редактировать"
+                                                    Foreground="White" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Background="#F44336"
+                                                    Command="{Binding DataContext.DeleteResultEvent, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="Удалить"
+                                                    Foreground="White" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Label
+                                Margin="0,7,480,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Content="Поиск:" />
+                            <TextBox
+                                Width="420"
+                                Height="26"
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Text="{Binding ResultSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap"
+                                ToolTip="{x:Static common:AppToolTip.SearchForUser}" />
 
 
-                </Grid>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Пользовательские ответы">
+                        <Grid Background="#FFE5E5E5">
+
+                            <DataGrid
+                                Grid.ColumnSpan="2"
+                                Margin="0,41,0,0"
+                                AutoGenerateColumns="False"
+                                CanUserAddRows="False"
+                                CanUserDeleteRows="False"
+                                CanUserReorderColumns="False"
+                                CanUserResizeColumns="false"
+                                ColumnWidth="*"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding UserAnswersView}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding User.Firstname}" Header="Имя" />
+                                    <DataGridTextColumn Binding="{Binding User.Lastname}" Header="Фамилия" />
+                                    <DataGridTextColumn Binding="{Binding User.Surname}" Header="Отчество" />
+                                    <DataGridTextColumn Binding="{Binding Answerdate, StringFormat=dd.MM.yyy | HH:MM}" Header="Дата" />
+                                    <DataGridTextColumn Binding="{Binding Question.Questiontext}" Header="Вопрос">
+
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Binding="{Binding Answer.Answertext}" Header="Ответ" />
+
+                                    <DataGridTemplateColumn CanUserSort="True" Header="Правильность">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Content="правильный"
+                                                    IsChecked="{Binding Iscorrect, Mode=TwoWay}"
+                                                    IsEnabled="false" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Label
+                                Margin="0,7,480,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Content="Поиск:" />
+                            <TextBox
+                                Width="420"
+                                Height="26"
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Text="{Binding UserAnswerSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap"
+                                ToolTip="{x:Static common:AppToolTip.SearchForUser}" />
+
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem x:Name="DGTickets" Header="Билеты">
+                        <Grid Background="#FFE5E5E5">
+                            <Button
+                                Width="152"
+                                Height="27"
+                                Margin="0,7,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Command="{Binding AddNewQuestionEvent}"
+                                Content="Новый билет" />
+
+                            <DataGrid
+                                Margin="0,41,0,0"
+                                AutoGenerateColumns="False"
+                                CanUserReorderColumns="false"
+                                ColumnWidth="*"
+                                IsReadOnly="true"
+                                ItemsSource="{Binding QuestionsView}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        MaxWidth="85"
+                                        Binding="{Binding Questionid}"
+                                        Header="ID билета" />
+
+                                    <DataGridTextColumn
+                                        MinWidth="700"
+                                        Binding="{Binding Questiontext}"
+                                        Header="Вопрос">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Command="{Binding DataContext.EditQuestionEvent, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="подробнее" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Background="#F44336"
+                                                    Command="{Binding DataContext.DeleteQuestionEvent, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="Удалить"
+                                                    Foreground="white" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Label
+                                Margin="0,7,480,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Content="Поиск:" />
+                            <TextBox
+                                Width="420"
+                                Height="26"
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Text="{Binding QuestionSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap"
+                                ToolTip="{x:Static common:AppToolTip.SearchForQuestion}" />
+                        </Grid>
+                    </TabItem>
+
+                </TabControl>
             </TabItem>
 
-            <TabItem Header="Пользовательские ответы">
-                <Grid Background="#FFE5E5E5">
+            <TabItem FontSize="14" Header="Администрирование пользователей">
 
-                    <DataGrid ItemsSource="{Binding UserAnswerTable}" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding User.Firstname}"/>
-                            <DataGridTextColumn Header="Фамилия" Binding="{Binding User.Lastname}"/>
-                            <DataGridTextColumn Header="Отчество" Binding="{Binding User.Surname}"/>
-                            <DataGridTextColumn Header="Дата" Binding="{Binding Answerdate, StringFormat=dd.MM.yyy | HH:MM}"/>
-                            <DataGridTextColumn Header="Вопрос" Binding="{Binding Question.Questiontext}">
-                                <DataGridTextColumn.ElementStyle>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="TextWrapping" Value="Wrap"/>
-                                    </Style>
-                                </DataGridTextColumn.ElementStyle>
-                            </DataGridTextColumn>
-                            <DataGridTextColumn Header="Ответ" Binding="{Binding Answer.Answertext}"/>
-                            <DataGridTextColumn Header="Правильность" Binding="{Binding Isorrect}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                <TabControl>
+                    <TabItem Header="Пользователи">
 
-                </Grid>
+                        <Grid Background="#FFE5E5E5">
+
+
+
+                            <DataGrid
+                                Margin="0,41,0,0"
+                                AutoGenerateColumns="false"
+                                CanUserReorderColumns="False"
+                                CanUserResizeColumns="False"
+                                ColumnWidth="*"
+                                IsReadOnly="true"
+                                ItemsSource="{Binding UsersView}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Firstname}" Header="Имя" />
+                                    <DataGridTextColumn Binding="{Binding Lastname}" Header="Фамилия" />
+                                    <DataGridTextColumn Binding="{Binding Surname}" Header="Отчество" />
+                                    <DataGridTextColumn Binding="{Binding Role.Rolename}" Header="Роль" />
+                                    <DataGridTextColumn Binding="{Binding Userlogin}" Header="Логин" />
+                                    <DataGridTextColumn Binding="{Binding Userpassword}" Header="Пароль" />
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Background="#4CAF50"
+                                                    Command="{Binding DataContext.EditUserEvent, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="Редактировать"
+                                                    Foreground="White" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Background="#F44336"
+                                                    Command=""
+                                                    CommandParameter=""
+                                                    Content="Удалить"
+                                                    Foreground="White" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Button
+                                Width="150"
+                                Height="26"
+                                Margin="0,8,10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Command="{Binding CreateNewUserEvent}"
+                                Content="Создать пользователя" />
+                            <Label
+                                Margin="0,7,480,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Content="Поиск:" />
+                            <TextBox
+                                Width="420"
+                                Height="26"
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Text="{Binding UserSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap"
+                                ToolTip="{x:Static common:AppToolTip.SearchForUser}" />
+                        </Grid>
+
+                    </TabItem>
+                    <TabItem Header="Тикеты">
+                        <Grid Background="#FFE5E5E5">
+                            <DataGrid
+                                Margin="0,41,0,0"
+                                AutoGenerateColumns="False"
+                                CanUserReorderColumns="False"
+                                CanUserResizeColumns="False"
+                                ColumnWidth="*"
+                                FontSize="14"
+                                IsReadOnly="True"
+                                ItemsSource="{Binding TicketsView}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Fromuser.Firstname}" Header="Имя" />
+                                    <DataGridTextColumn Binding="{Binding Fromuser.Lastname}" Header="Фамилия" />
+                                    <DataGridTextColumn Binding="{Binding Fromuser.Surname}" Header="Отчество" />
+                                    <DataGridTextColumn Binding="{Binding Ticketdate, StringFormat=dd.MM.yyy | HH:MM}" Header="Дата" />
+                                    <DataGridTextColumn
+                                        MaxWidth="500"
+                                        Binding="{Binding Tickettext}"
+                                        Header="Описание">
+
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="TextWrapping" Value="Wrap" />
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+
+                                    </DataGridTextColumn>
+
+
+
+
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Background="#F44336"
+                                                    Command="{Binding DataContext.DeleteTicketEvent, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="Удалить"
+                                                    Foreground="White" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Label
+                                Margin="0,7,480,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Content="Поиск:" />
+                            <TextBox
+                                Width="420"
+                                Height="26"
+                                Margin="0,8,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Text="{Binding TicketSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap"
+                                ToolTip="{x:Static common:AppToolTip.SearchForUser}" />
+                        </Grid>
+
+
+                    </TabItem>
+                </TabControl>
+
             </TabItem>
-
-            <TabItem x:Name="DGTickets" Header="Тикеты">
-                <Grid Background="#FFE5E5E5">
-                    <DataGrid ItemsSource="{Binding TicketTable}" AutoGenerateColumns="False" ColumnWidth="auto" IsReadOnly="True" FontSize="14">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding Fromuser.Firstname}"/>
-                            <DataGridTextColumn Header="Фамилия" Binding="{Binding Fromuser.Lastname}"/>
-                            <DataGridTextColumn Header="Отчество" Binding="{Binding Fromuser.Surname}"/>
-                            <DataGridTextColumn Header="Дата" Binding="{Binding Ticketdate, StringFormat=dd.MM.yyy | HH:MM}"/>
-                            <DataGridTextColumn Header="Описание" Binding="{Binding Tickettext}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-
         </TabControl>
-        <Rectangle VerticalAlignment="Top" Height="98.8" Fill="#FF194F9E" Stroke="#FF568FE2"/>
-        <TextBlock TextWrapping="Wrap" FontSize="20" FontWeight="Bold" TextAlignment="Center" Foreground="White" Margin="0,23,0,0" VerticalAlignment="Top" HorizontalAlignment="Center"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ"/><LineBreak/><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ"/></TextBlock>
-        <Rectangle Height="80" Width="80" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0">
+
+
+
+        <Rectangle
+            Height="98.8"
+            VerticalAlignment="Top"
+            Fill="#FF194F9E"
+            Stroke="#FF568FE2" />
+        <TextBlock
+            Margin="0,23,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            FontSize="20"
+            FontWeight="Bold"
+            Foreground="White"
+            TextAlignment="Center"
+            TextWrapping="Wrap"><Run Text="КОМПЬЮТЕРНАЯ СИCТЕМА ТЕСТИРОВАНИЯ МЧС РОССИИ" /><LineBreak /><Run Text="ПО ПОЖАРНОЙ БЕЗОПАСНОСТИ" /></TextBlock>
+        <Rectangle
+            Width="80"
+            Height="80"
+            Margin="10,9,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top">
             <Rectangle.Fill>
-                <ImageBrush ImageSource="/Assets/auto-891-1.png" TileMode="None" Stretch="UniformToFill"/>
+                <ImageBrush
+                    ImageSource="/Assets/img/auto-891-1.png"
+                    Stretch="UniformToFill"
+                    TileMode="None" />
             </Rectangle.Fill>
         </Rectangle>
+        <Label
+            Width="217"
+            Margin="2,108,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Content="{Binding WelcomeMessage}"
+            FontSize="14" />
+        <Button
+            Width="143"
+            Height="30"
+            Margin="0,120,10,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Command="{Binding ExitEvent}"
+            Content="ВЫЙТИ"
+            FontSize="14" />
+        <Image
+            Width="20"
+            Height="20"
+            Margin="0,125,125,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Source="/Assets/img/exit-export-logout-svgrepo-com.png"
+            Stretch="Fill" />
     </Grid>
 </Page>

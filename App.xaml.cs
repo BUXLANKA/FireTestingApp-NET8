@@ -1,12 +1,17 @@
-﻿using System.Windows;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
 namespace FireTestingApp_net8
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-    }
+        private readonly Bootstrapper _bootstrapper = new();
 
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            var mainWindow = _bootstrapper.ServiceProvider.GetRequiredService<MainWindow>();
+            base.OnStartup(e);
+            MainWindow.Show();
+        }
+    }
 }

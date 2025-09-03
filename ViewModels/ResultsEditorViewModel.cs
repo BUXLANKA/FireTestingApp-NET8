@@ -1,7 +1,7 @@
-﻿using FireTestingApp_net8.Models.Shema;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -9,9 +9,10 @@ namespace FireTestingApp_net8.ViewModels
     {
         // private
         private readonly INavigationService _navigation;
+        private readonly IMessageService _messageService;
 
         // constructor
-        public ResultsEditorViewModel(INavigationService navigation)
+        public ResultsEditorViewModel(INavigationService navigation, IMessageService messageService)
         {
             _navigation = navigation;
 
@@ -26,6 +27,8 @@ namespace FireTestingApp_net8.ViewModels
 
             SaveEvent = new RelayCommand(Save);
             CancelEvent = new RelayCommand(Cancel);
+
+            _messageService = messageService;
         }
 
         // public
@@ -41,43 +44,48 @@ namespace FireTestingApp_net8.ViewModels
         // logic
         private void Save()
         {
+            using var context = new AppDbContext();
+            using var transaction = context.Database.BeginTransaction();
+
             try
             {
-                using (var context = new AppDbContext())
+                if (EditedResult != null)
                 {
-                    if (EditedResult != null)
-                    {
-                        var result = context.Results.FirstOrDefault(r => r.Resultid == EditedResult.Resultid);
+                    var result = context.Results.FirstOrDefault(r => r.Resultid == EditedResult.Resultid);
 
-                        if (result != null)
-                        {
-                            result.Userscore = EditedResult.Userscore;
-                            result.Statusid = EditedResult.Statusid;
-                            result.Testdate = EditedResult.Testdate;
-                            context.SaveChanges();
-                        }
-                    }
-                    else
+                    if (result == null)
                     {
-                        MessageBox.Show(
-                            "EditResult оказался Null",
-                            "Ошибка данных",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error);
+                        _messageService.Error();
+                        return;
                     }
+
+                    result.Userscore = EditedResult.Userscore;
+                    result.Statusid = EditedResult.Statusid;
+                    result.Testdate = EditedResult.Testdate;
+
+                    context.SaveChanges();
+
+                    transaction.Commit();
+
+                    WeakReferenceMessenger.Default.Send(new UpdateMessage());
+
+                    _messageService.SaveComplite();
+                    NavigationParameterService.Clear("SelectedResult");
+                    _navigation.GoBack();
                 }
-
-                MessageBox.Show("данные успешно сохранены");
-                _navigation.NavigateTo<InstructorViewModel>();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при сохранении: " + ex.Message);
+                transaction.Rollback();
+
+                _messageService.ErrorExMessage(ex);
+                throw;
             }
         }
         private void Cancel()
         {
-            _navigation.NavigateTo<InstructorViewModel>();
+            NavigationParameterService.Clear("SelectedResult");
+            _navigation.GoBack();
         }
     }
 }
