@@ -2,116 +2,67 @@
 using FireTestingApp_net8.Models;
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
-using FireTestingApp_net8.Viewes;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Security.Cryptography.Xml;
 using System.Windows;
 using System.Windows.Data;
 
 namespace FireTestingApp_net8.ViewModels
 {
     public class InstructorViewModel : BaseViewModel
-        //, IRecipient<SelectTabMessage>
     {
         // private
         private string? _welcomeMessage;
-        private readonly INavigationService _navigation;
-        private readonly IMessageService _messageService;
-
         private string? _resultSearchText;
-        private ICollectionView? _resultsView;
-
         private string? _userAnswerSearchText;
-        private ICollectionView? _userAnswersView;
-
         private string? _questionSearchText;
-        private ICollectionView? _questionsView;
-
         private string? _userSearchText;
-        private ICollectionView? _usersView;
-
         private string? _ticketSearchText;
+
+        private ICollectionView? _resultsView;
+        private ICollectionView? _userAnswersView;
+        private ICollectionView? _questionsView;
+        private ICollectionView? _usersView;
         private ICollectionView? _ticketsView;
 
-        //private int _selectedTabIndex;
+        private readonly INavigationService _navigation;
+        private readonly IMessageService _message;
 
         // constructor
         public InstructorViewModel(INavigationService navigation, IMessageService messageService)
         {
             WeakReferenceMessenger.Default.Register<UpdateMessage>(this, (r, m) =>
             {
+                UpdateQuestionTable();
                 UpdateResultTable();
                 UpdateUserTable();
             });
-            //UpdateResultTable();
 
             WelcomeMessage = $"Добро пожаловать!";
 
             ExitEvent = new RelayCommand(Exit);
-            EditResultEvent = new RelayCommand<Result>(OnEdit);
-            EditUserEvent = new RelayCommand<User>(UserEdit);
-            DeleteTicketEvent = new RelayCommand<Ticket>(DeleteTicket);
-            DeleteResultEvent = new RelayCommand<Result>(DeleteResult);
+
+            EditUserEvent = new RelayCommand<User>(EditUser);
+            EditResultEvent = new RelayCommand<Result>(EditResult);
+            EditQuestionEvent = new RelayCommand<Question>(EditQuestion);
+
             CreateNewUserEvent = new RelayCommand(CreateUser);
             AddNewQuestionEvent = new RelayCommand(CreateQuestion);
-            EditQuestionEvent = new RelayCommand<Question>(EditQuestion);
+
+            DeleteTicketEvent = new RelayCommand<Ticket>(DeleteTicket);
+            DeleteResultEvent = new RelayCommand<Result>(DeleteResult);
             DeleteQuestionEvent = new RelayCommand<Question>(DeleteQuestion);
 
+            UpdateQuestionTable();
+            UpdateResultTable();
+            UpdateAnswerTable();
+            UpdateTicketTable();
+            UpdateUserTable();
+
+
             _navigation = navigation;
-            _messageService = messageService;
-
-            //WeakReferenceMessenger.Default.Register(this);
-
-            //using (var Context = new AppDbContext())
-            //{
-            //    var ResultsList = Context.Results
-            //        .Include(r => r.User)
-            //        .Include(r => r.Status)
-            //        .ToList();
-            //    ResultsTable = new ObservableCollection<Result>(ResultsList);
-
-            //    var UserAnswerList = Context.Useranswers
-            //        .Include(r => r.User)
-            //        .Include(r => r.Question)
-            //        .Include(r => r.Answer)
-            //        .ToList();
-            //    UserAnswerTable = new ObservableCollection<Useranswer>(UserAnswerList);
-
-            //    var TicketList = Context.Tickets
-            //        .Include(r => r.Fromuser)
-            //        .ToList();
-            //    TicketTable = new ObservableCollection<Ticket>(TicketList);
-
-            //    var userList = Context.Users
-            //        .Include(r => r.Role)
-            //        .ToList();
-            //    UserTable = new ObservableCollection<User>(userList);
-            //}
-
-
-            ResultsTable = TableAgent.GetResults();
-            ResultsView = CollectionViewSource.GetDefaultView(ResultsTable);
-            ResultsView.Filter = FilterResults;
-
-            UserAnswerTable = TableAgent.GetUserAnswers();
-            UserAnswersView = CollectionViewSource.GetDefaultView(UserAnswerTable);
-            UserAnswersView.Filter = FilterUserAnswers;
-
-            TicketTable = TableAgent.GetTickets();
-            TicketsView = CollectionViewSource.GetDefaultView(TicketTable);
-            TicketsView.Filter = FilterTickets;
-
-
-            UserTable = TableAgent.GetUsers();
-            UsersView = CollectionViewSource.GetDefaultView(UserTable);
-            UsersView.Filter = FilterUsers;
-
-            QuestionTable = TableAgent.GetQuestions();
-            QuestionsView = CollectionViewSource.GetDefaultView(QuestionTable);
-            QuestionsView.Filter = FilterQuestions;
+            _message = messageService;
         }
 
         // public
@@ -134,16 +85,6 @@ namespace FireTestingApp_net8.ViewModels
                 ResultsView.Refresh();
             }
         }
-        public ICollectionView ResultsView
-        {
-            get => _resultsView;
-            set
-            {
-                _resultsView = value;
-                OnPropertyChanged(nameof(ResultsView));
-            }
-        }
-
         public string? UserAnswerSearchText
         {
             get => _userAnswerSearchText;
@@ -152,6 +93,46 @@ namespace FireTestingApp_net8.ViewModels
                 _userAnswerSearchText = value;
                 OnPropertyChanged(nameof(UserAnswerSearchText));
                 UserAnswersView.Refresh();
+            }
+        }
+        public string? QuestionSearchText
+        {
+            get => _questionSearchText;
+            set
+            {
+                _questionSearchText = value;
+                OnPropertyChanged(nameof(QuestionSearchText));
+                QuestionsView.Refresh();
+            }
+        }
+        public string? UserSearchText
+        {
+            get => _userSearchText;
+            set
+            {
+                _userSearchText = value;
+                OnPropertyChanged(nameof(UserSearchText));
+                UsersView.Refresh();
+            }
+        }
+        public string? TicketSearchText
+        {
+            get => _ticketSearchText;
+            set
+            {
+                _ticketSearchText = value;
+                OnPropertyChanged(nameof(TicketSearchText));
+                TicketsView.Refresh();
+            }
+        }
+
+        public ICollectionView ResultsView
+        {
+            get => _resultsView;
+            set
+            {
+                _resultsView = value;
+                OnPropertyChanged(nameof(ResultsView));
             }
         }
         public ICollectionView UserAnswersView
@@ -163,17 +144,6 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(UserAnswersView));
             }
         }
-
-        public string? QuestionSearchText
-        {
-            get => _questionSearchText;
-            set
-            {
-                _questionSearchText = value;
-                OnPropertyChanged(nameof(QuestionSearchText));
-                QuestionsView.Refresh();
-            }
-        }
         public ICollectionView QuestionsView
         {
             get => _questionsView;
@@ -183,17 +153,6 @@ namespace FireTestingApp_net8.ViewModels
                 OnPropertyChanged(nameof(QuestionsView));
             }
         }
-
-        public string? UserSearchText
-        {
-            get => _userSearchText;
-            set
-            {
-                _userSearchText = value;
-                OnPropertyChanged(nameof(UserSearchText));
-                UsersView.Refresh();
-            }
-        }
         public ICollectionView UsersView
         {
             get => _usersView;
@@ -201,17 +160,6 @@ namespace FireTestingApp_net8.ViewModels
             {
                 _usersView = value;
                 OnPropertyChanged(nameof(UsersView));
-            }
-        }
-
-        public string? TicketSearchText
-        {
-            get => _ticketSearchText;
-            set
-            {
-                _ticketSearchText = value;
-                OnPropertyChanged(nameof(TicketSearchText));
-                TicketsView.Refresh();
             }
         }
         public ICollectionView TicketsView
@@ -224,37 +172,22 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
-
-
-
-
-
-
-
-        //public int SelectedTabIndex
-        //{
-        //    get => _selectedTabIndex;
-        //    set => SetProperty(ref _selectedTabIndex, value);
-        //}
-
         // collection
-
-        // todo сделать эту хуйню через private - public свойства. иначе нихуя не работает
-
-        public ObservableCollection<Result> ResultsTable { get; set; }
-        public ObservableCollection<Useranswer> UserAnswerTable { get; set; }
-        public ObservableCollection<Ticket> TicketTable { get; set; }
-        public ObservableCollection<User> UserTable { get; set; }
-        public ObservableCollection<Question> QuestionTable { get; set; }
+        public ObservableCollection<Result>? ResultsTable { get; set; }
+        public ObservableCollection<Useranswer>? UserAnswerTable { get; set; }
+        public ObservableCollection<Ticket>? TicketTable { get; set; }
+        public ObservableCollection<User>? UserTable { get; set; }
+        public ObservableCollection<Question>? QuestionTable { get; set; }
 
         // command
+        public RelayCommand ExitEvent { get; }
+        public RelayCommand CreateNewUserEvent { get; }
+        public RelayCommand AddNewQuestionEvent { get; }
+
         public RelayCommand<Result> EditResultEvent { get; }
         public RelayCommand<User> EditUserEvent { get; }
         public RelayCommand<Ticket> DeleteTicketEvent { get; }
         public RelayCommand<Result> DeleteResultEvent { get; }
-        public RelayCommand ExitEvent { get; }
-        public RelayCommand CreateNewUserEvent { get; }
-        public RelayCommand AddNewQuestionEvent { get; }
         public RelayCommand<Question> EditQuestionEvent { get; }
         public RelayCommand<Question> DeleteQuestionEvent { get; }
 
@@ -263,24 +196,44 @@ namespace FireTestingApp_net8.ViewModels
         {
             _navigation.NavigateTo<LoginViewModel>();
         }
-        private void OnEdit(Result result)
+
+        private void EditUser(User user)
+        {
+            if (user == null) return;
+
+            NavigationParameterService.Set("UserKeyObject", user);
+            _navigation.NavigateTo<UserEditorViewModel>();
+        }
+        private void EditResult(Result result)
         {
             if (result == null) return;
 
             NavigationParameterService.Set("SelectedResult", result);
             _navigation.NavigateTo<ResultsEditorViewModel>();
         }
+        private void EditQuestion(Question question)
+        {
+            if (question == null) return;
 
-        //public void Receive(SelectTabMessage message)
-        //{
-        //    SelectedTabIndex = message.TabIndex;
-        //}
+            NavigationParameterService.Set("QuestionObject", question);
+            _navigation.NavigateTo<QuestionEditorViewModel>();
+        }
+
+        private void CreateUser()
+        {
+            NavigationParameterService.Set("UserKeyObject", new User());
+            _navigation.NavigateTo<UserEditorViewModel>();
+        }
+        private void CreateQuestion()
+        {
+            _navigation.NavigateTo<QuestionEditorViewModel>();
+        }
 
         private void DeleteTicket(Ticket ticket)
         {
             if (ticket == null) return;
 
-            MessageBoxResult msgUserChoice = _messageService.ConfirmDelete();
+            MessageBoxResult msgUserChoice = _message.ConfirmDelete();
 
             if (msgUserChoice == MessageBoxResult.No) return;
 
@@ -300,51 +253,15 @@ namespace FireTestingApp_net8.ViewModels
             {
                 transaction.Rollback();
 
-                _messageService.ErrorExMessage(ex);
+                _message.ErrorExMessage(ex);
                 throw;
             }
-                ////MessageBox.Show(
-                ////$"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
-                ////"Удаление строки",
-                ////MessageBoxButton.YesNo,
-                ////MessageBoxImage.Warning,
-                ////MessageBoxResult.No);
-
-                //try
-                //{
-                //    if (msgUserChoice == MessageBoxResult.Yes)
-                //    {
-                //        using (var context = new AppDbContext())
-                //        {
-                //            context.Tickets.Remove(ticket);
-                //            context.SaveChanges();
-                //            TicketTable.Remove(ticket);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        MessageBox.Show("Процесс удаления остановлен");
-                //        return;
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show($"Произошла ошибка при выполнении запроса\n{ex.Message}");
-                //    return;
-                //    throw;
-                //}
         }
         private void DeleteResult(Result result)
         {
             if (result == null) return;
 
-            MessageBoxResult msgUserChoice = _messageService.ConfirmDelete();
-            //MessageBox.Show(
-            //        $"Вы действительно хотите удалить строку? Отменить действие будет невозможно!",
-            //        "Удаление строки",
-            //        MessageBoxButton.YesNo,
-            //        MessageBoxImage.Warning,
-            //        MessageBoxResult.No);\
+            MessageBoxResult msgUserChoice = _message.ConfirmDelete();
 
             if (msgUserChoice == MessageBoxResult.No) return;
 
@@ -364,47 +281,15 @@ namespace FireTestingApp_net8.ViewModels
             {
                 transaction.Rollback();
 
-                _messageService.ErrorExMessage(ex);
+                _message.ErrorExMessage(ex);
                 throw;
             }
-
-
-                //try
-                //{
-                //    if (msgUserChoice == MessageBoxResult.Yes)
-                //    {
-                //        using (var context = new AppDbContext())
-                //        {
-                //            context.Results.Remove(result);
-                //            context.SaveChanges();
-                //            ResultsTable.Remove(result);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        MessageBox.Show("Процесс удаления остановлен");
-                //        return;
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show($"Произошла ошибка при выполнении запроса\n{ex.Message}");
-                //    return;
-                //    throw;
-                //}
         }
         private void DeleteQuestion(Question question)
         {
             if (question == null) return;
 
-            MessageBoxResult msgUserChoice = _messageService.ConfirmDelete();
-            //MessageBox.Show(
-            //$"Вы действительно хотите удалить вопрос и все связанные с ним ответы?\nОтменить действие будет невозможно!",
-            //"Удаление вопроса",
-            //MessageBoxButton.YesNo,
-            //MessageBoxImage.Warning,
-            //MessageBoxResult.No);
-
+            MessageBoxResult msgUserChoice = _message.ConfirmDelete();
 
             if (msgUserChoice == MessageBoxResult.No) return;
 
@@ -425,7 +310,7 @@ namespace FireTestingApp_net8.ViewModels
 
                     transaction.Commit();
 
-                    MessageBox.Show($"Билет успешно удалён"); // todo перенести в Message
+                    _message.DeleteComplite();
 
                     QuestionTable.Remove(question);
                 }
@@ -434,55 +319,18 @@ namespace FireTestingApp_net8.ViewModels
             {
                 transaction.Rollback();
 
-                _messageService.ErrorExMessage(ex);
+                _message.ErrorExMessage(ex);
                 throw;
             }
-
-
-
-            //if (msgUserChoice != MessageBoxResult.Yes)
-            //{
-            //    MessageBox.Show("Процесс удаления остановлен");
-            //    return;
-            //}
-
-            //try
-            //{
-            //    using (var context = new AppDbContext())
-            //    {
-            //        var questionToDelete = context.Questions
-            //            .Include(q => q.Answers)
-            //            .FirstOrDefault(q => q.Questionid == question.Questionid);
-
-            //        if (questionToDelete != null)
-            //        {
-            //            context.Answers.RemoveRange(questionToDelete.Answers);
-            //            context.Questions.Remove(questionToDelete);
-            //            context.SaveChanges();
-
-            //            MessageBox.Show($"Билет успешно удалён");
-
-            //            QuestionTable.Remove(question);
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Произошла ошибка при удалении:\n{ex.Message}");
-            //}
         }
 
-        private void UserEdit(User user)
+        private void UpdateQuestionTable()
         {
-            if (user == null) return;
+            QuestionTable = TableAgent.GetQuestions();
+            QuestionsView = CollectionViewSource.GetDefaultView(QuestionTable);
+            QuestionsView.Filter = FilterQuestions;
 
-            NavigationParameterService.Set("UserKeyObject", user);
-            _navigation.NavigateTo<UserEditorViewModel>();
-        }
-        private void CreateUser()
-        {
-            NavigationParameterService.Set("UserKeyObject", new User());
-            _navigation.NavigateTo<UserEditorViewModel>();
+            OnPropertyChanged(nameof(QuestionsView));
         }
 
         private void UpdateResultTable()
@@ -493,23 +341,31 @@ namespace FireTestingApp_net8.ViewModels
 
             OnPropertyChanged(nameof(ResultsView));
         }
+        private void UpdateAnswerTable()
+        {
+            UserAnswerTable = TableAgent.GetUserAnswers();
+            UserAnswersView = CollectionViewSource.GetDefaultView(UserAnswerTable);
+            UserAnswersView.Filter = FilterUserAnswers;
+
+            OnPropertyChanged(nameof(UserAnswersView));
+        }
+        private void UpdateTicketTable()
+        {
+            TicketTable = TableAgent.GetTickets();
+            TicketsView = CollectionViewSource.GetDefaultView(TicketTable);
+            TicketsView.Filter = FilterTickets;
+
+            OnPropertyChanged(nameof(TicketTable));
+        }
         private void UpdateUserTable()
         {
             UserTable = TableAgent.GetUsers();
+            UsersView = CollectionViewSource.GetDefaultView(UserTable);
+            UsersView.Filter = FilterUsers;
+
             OnPropertyChanged(nameof(UserTable));
         }
-        private void CreateQuestion()
-        {
-            _navigation.NavigateTo<QuestionEditorViewModel>();
-        }
-        private void EditQuestion(Question question)
-        {
-            if (question == null) return;
 
-            NavigationParameterService.Set("QuestionObject", question);
-            //NavigationParameterService.Set("AnswerObject", answer);
-            _navigation.NavigateTo<QuestionEditorViewModel>();
-        }
         private bool FilterResults(object obj)
         {
             if (obj is not Result result) return false;
@@ -622,9 +478,5 @@ namespace FireTestingApp_net8.ViewModels
 
             return false;
         }
-
-
-
-
     }
 }

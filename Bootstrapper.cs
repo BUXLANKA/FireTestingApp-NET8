@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using FireTestingApp_net8.ViewModels;
+﻿using FireTestingApp_net8.Services;
 using FireTestingApp_net8.Viewes;
-using FireTestingApp_net8.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using FireTestingApp_net8.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FireTestingApp_net8
 {
@@ -22,7 +20,7 @@ namespace FireTestingApp_net8
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IMessageService, MessageService>(); 
+            services.AddSingleton<IMessageService, MessageService>();
             services.AddSingleton<INavigationService, NavigationService>();
 
             NavigationService.RegisterViewAndViewModel<LoginView, LoginViewModel>(services);

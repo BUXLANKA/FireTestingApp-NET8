@@ -2,7 +2,6 @@
 using FireTestingApp_net8.Models.Shema;
 using FireTestingApp_net8.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Windows;
 
 namespace FireTestingApp_net8.ViewModels
 {
@@ -43,8 +42,6 @@ namespace FireTestingApp_net8.ViewModels
             }
         }
 
-        // collection
-
         // command
         public RelayCommand EnterEvent { get; }
 
@@ -79,12 +76,6 @@ namespace FireTestingApp_net8.ViewModels
 
                                 if (ExamDateRestrict?.Testdate != null && (DateTime.Now - ExamDateRestrict.Testdate).TotalDays <= 31)
                                 {
-                                    //MessageBox.Show(
-                                    //    "Повторная сдача будет доступна после 31 дня с момента последней сдачи.\nЗа подробностями обратитесь к инструктору.",
-                                    //    "Информация",
-                                    //    MessageBoxButton.OK,
-                                    //    MessageBoxImage.Information);
-
                                     _messageService.UserTestRestriction();
                                     return;
                                 }
@@ -97,40 +88,19 @@ namespace FireTestingApp_net8.ViewModels
                     }
                     else
                     {
-                        //MessageBox.Show(
-                        //    "Неправильный логин или пароль",
-                        //    "Ошибка авторизации",
-                        //    MessageBoxButton.OK,
-                        //    MessageBoxImage.Error);
-
                         _messageService.LoginError();
-
                         return;
                     }
                 }
                 catch (Exception ex)
                 {
-                    //MessageBox.Show(
-                    //    "Не удаётся создать соединение с базой данный. Обратитесь к администратору.",
-                    //    "Ошибка сервера",
-                    //    MessageBoxButton.OK,
-                    //    MessageBoxImage.Error);
-                    //MessageBox.Show(ex.Message);
-
                     _messageService.DbConnectionError(ex);
                     throw;
                 }
             }
             else
             {
-                //MessageBox.Show(
-                //    "Введите логин или пароль",
-                //    "Пусто? Пусто!",
-                //    MessageBoxButton.OK,
-                //    MessageBoxImage.Error);
-
                 _messageService.NullTextField();
-
                 return;
             }
         }
